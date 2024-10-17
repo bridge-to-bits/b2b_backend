@@ -12,7 +12,7 @@ namespace Users.Core.Models
 
         public string Email { get; set; }
 
-        [StringLength(32)]
+        [StringLength(255)]
         public string Password { get; set; }
 
         public int Age { get; set; }
