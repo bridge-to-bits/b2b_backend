@@ -7,18 +7,23 @@ namespace Users.Core.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        public UserService(IUserRepository userRepository)
+        private IPasswordHasher _passwordHasher;
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
         {
             _userRepository = userRepository;
+            _passwordHasher = passwordHasher;
         }
         public async Task<User> Register(RegistrationDTO registrationDTO)
         {
+            string hashPasword = this._passwordHasher.HashPassword(registrationDTO.Password);
+            Console.WriteLine(hashPasword);
+
             var user = new User()
             {
                 Id = Guid.NewGuid(),
                 Username = registrationDTO.Username,
                 Email = registrationDTO.Email,
-                Password = registrationDTO.Password,  //Create PasswordHasher
+                Password = hashPasword,
                 FirstName = registrationDTO.FirstName,
                 LastName = registrationDTO.LastName,
                 City = registrationDTO.City,

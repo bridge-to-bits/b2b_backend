@@ -4,12 +4,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Api", "Users\Users.Api\Users.Api.csproj", "{F922BDF4-DDA5-436F-8E9F-77121583845E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4B72F093-BD76-49A7-9F53-5076C44D5722} = {4B72F093-BD76-49A7-9F53-5076C44D5722}
+		{FD5A88BD-75A7-46F1-B4AA-B3F1E0C83100} = {FD5A88BD-75A7-46F1-B4AA-B3F1E0C83100}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Users", "Users", "{4708FBEF-E9DA-4FBA-A4A1-D233EE5D91BF}"
+	ProjectSection(SolutionItems) = preProject
+		appsettings.example.json = appsettings.example.json
+		appsettings.json = appsettings.json
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateway", "Gateway", "{631970E1-315D-4AB2-8EFB-78CF171F5C31}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Data", "Users\Users.Data\Users.Data.csproj", "{4B72F093-BD76-49A7-9F53-5076C44D5722}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FD5A88BD-75A7-46F1-B4AA-B3F1E0C83100} = {FD5A88BD-75A7-46F1-B4AA-B3F1E0C83100}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Users.Core", "Users\Users.Core\Users.Core.csproj", "{FD5A88BD-75A7-46F1-B4AA-B3F1E0C83100}"
 EndProject

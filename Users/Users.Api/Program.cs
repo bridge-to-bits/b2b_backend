@@ -16,6 +16,7 @@ namespace Users.Api
             builder.Services.AddSingleton<IDbContextConfigurer<UsersDbContext>, UsersDbContextConfigurer>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
             var serviceProvider = builder.Services.BuildServiceProvider();
             var connectionString = serviceProvider
