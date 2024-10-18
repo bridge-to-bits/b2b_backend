@@ -6,5 +6,6 @@ namespace Users.Core.Interfaces
     public interface IUserService
     {
         public Task<User> Register(RegistrationDTO user);
+        public Task<string> Login(LoginDTO user);
     }
 }
