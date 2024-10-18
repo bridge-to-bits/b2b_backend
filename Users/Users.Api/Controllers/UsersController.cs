@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Users.Core.DTOs;
 using Users.Core.Interfaces;
-using Users.Core.Services;
 
 namespace Users.Api.Controllers
 {
@@ -22,6 +22,20 @@ namespace Users.Api.Controllers
             var createdUser = await _userService.Register(registrationDTO);
             return Ok(createdUser.Id.ToString());
         }
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
+        {
+            var token = await _userService.Login(loginDTO);
+            return Ok(token);
+        }
+
+        [Authorize]
+        [HttpGet("test")]
+        public async Task<IActionResult> Test()
+        {
+            return Ok(1);
+        }
+
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUser(string userId)
         {
@@ -29,5 +43,4 @@ namespace Users.Api.Controllers
             return Ok(await _userService.GetUser(userId));
         }
     }
-    
 }
