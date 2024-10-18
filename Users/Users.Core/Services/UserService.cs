@@ -9,15 +9,17 @@ namespace Users.Core.Services
     {
         private readonly IUserRepository _userRepository;
         private IPasswordHasher _passwordHasher;
-        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher)
+        private readonly IAuthService _authService;
+        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IAuthService authService)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _authService = authService;
+
         }
         public async Task<User> Register(RegistrationDTO registrationDTO)
         {
             string hashPasword = this._passwordHasher.HashPassword(registrationDTO.Password);
-            Console.WriteLine(hashPasword);
 
             var user = new User()
             {
@@ -51,6 +53,18 @@ namespace Users.Core.Services
                 Email = user.Email
             };
             return response;
+        }
+
+        public async Task<string> Login(LoginDTO loginDTO)
+        {
+            var user = await _userRepository.GetUser(user=>user.Email==loginDTO.Email);
+            var check = _passwordHasher.VerifyHashedPassword(loginDTO.Password, user.Password);
+            if (!check)
+            {
+                throw new Exception("wrong password");
+            }
+            var token = _authService.GenerateToken(user.Id.ToString());
+            return token;
         }
     }
 }
