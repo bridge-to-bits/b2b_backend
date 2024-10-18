@@ -9,7 +9,7 @@ namespace Users.Core.Models
 
         [StringLength(40)]
         public string Username { get; set; }
-
+    
         public string Email { get; set; }
 
         [StringLength(255)]
@@ -31,5 +31,7 @@ namespace Users.Core.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        public ICollection<Role> Roles { get; set; }
     }
 }
