@@ -1,6 +1,6 @@
 ﻿using Common.Interfaces;
+using Common.Utils;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Users.Data.DatabaseContext
 {
@@ -17,14 +17,7 @@ namespace Users.Data.DatabaseContext
 
         public string GetConnectionString()
         {
-            var baseDirectory = AppContext.BaseDirectory;
-            var solutionDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
-
-            IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile($"{solutionDirectory}/appsettings.json")
-                .Build();
-            return configuration.GetConnectionString("UsersDbConnectionString") ?? "";
+            return AppConfig.GetConnectionString("UsersDbConnectionString") ?? "";
         }
     }
 }
