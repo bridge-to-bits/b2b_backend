@@ -1,5 +1,6 @@
 using Common.Interfaces;
 using Common.Models;
+using Common.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -16,29 +17,10 @@ namespace Users.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(nameof(JwtOptions)));
-            builder.Services.AddControllers();
-            builder.Services.AddSingleton<IDbContextConfigurer<UsersDbContext>, UsersDbContextConfigurer>();
-            builder.Services.AddScoped<IUserRepository, UserRepository>();
-            builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IJwtProvider, JwtProvider>();
+            ServicesConfig(builder.Services);
+            AuthConfig(builder.Services);
+            DocsConfig(builder.Services);
 
-            var serviceProvider = builder.Services.BuildServiceProvider();
-            var connectionString = serviceProvider
-                .GetService<IDbContextConfigurer<UsersDbContext>>()!
-                .GetConnectionString();
-
-            builder.Services.AddDbContext<UsersDbContext>(options =>
-                serviceProvider
-                    .GetService<IDbContextConfigurer<UsersDbContext>>()!
-                    .Configure(options, connectionString));
-
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-
-            AuthConfig(builder.Services, builder.Configuration);
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -46,13 +28,21 @@ namespace Users.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
             app.UseAuthentication();
             app.UseAuthorization();
+
             app.MapControllers();
             app.Run();
         }
 
-        private static void AuthConfig(IServiceCollection services, IConfiguration config)
+        private static void DocsConfig(IServiceCollection services)
+        {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+        }
+
+        private static void AuthConfig(IServiceCollection services)
         {
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
@@ -64,12 +54,45 @@ namespace Users.Api
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(config["JwtOptions:SecretKey"]!))
+                            Encoding.UTF8.GetBytes(AppConfig.GetSetting("JwtOptions:SecretKey"!)))
                     };
                 });
 
-            //services.AddAuthorization();
+            services.AddAuthorization();
         }
 
+        private static void ServicesConfig(IServiceCollection services)
+        {
+            services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
+
+            DIConfig(services);
+
+            services.AddControllers();
+
+            DbContextConfig(services);
+        }
+
+        private static void DIConfig(IServiceCollection services)
+        {
+            services.AddSingleton<IDbContextConfigurer<UsersDbContext>, UsersDbContextConfigurer>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IJwtProvider, JwtProvider>();
+        }
+
+        private static void DbContextConfig(IServiceCollection services)
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var connectionString = serviceProvider
+                .GetService<IDbContextConfigurer<UsersDbContext>>()!
+                .GetConnectionString();
+
+            services.AddDbContext<UsersDbContext>(options =>
+                serviceProvider
+                    .GetService<IDbContextConfigurer<UsersDbContext>>()!
+                    .Configure(options, connectionString));
+        }
     }
 }
