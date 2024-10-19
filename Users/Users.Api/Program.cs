@@ -67,8 +67,6 @@ namespace Users.Api
                             Encoding.UTF8.GetBytes(config["JwtOptions:SecretKey"]!))
                     };
                 });
-
-            //services.AddAuthorization();
         }
 
     }
