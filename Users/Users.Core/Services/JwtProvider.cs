@@ -8,14 +8,9 @@ using Users.Core.Interfaces;
 
 namespace Users.Core.Services
 {
-    public class JwtProvider : IJwtProvider
+    public class JwtProvider (IOptions<JwtOptions> options) : IJwtProvider
     {
-        private readonly JwtOptions _options;
-
-        public JwtProvider(IOptions<JwtOptions> options)
-        {
-            _options = options.Value;
-        }
+        private readonly JwtOptions _options = options.Value;
 
         public string GenerateToken(string userId)
         {

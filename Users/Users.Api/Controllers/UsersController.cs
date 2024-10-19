@@ -2,30 +2,24 @@
 using Microsoft.AspNetCore.Mvc;
 using Users.Core.DTOs;
 using Users.Core.Interfaces;
+using Users.Core.Models;
 
 namespace Users.Api.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController (IUserService userService) : ControllerBase
     {
-        private readonly IUserService _userService;
-
-        public UsersController(IUserService userService)
-        {
-            _userService = userService;
-        }
-
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationDTO registrationDTO)
         {
-            var createdUser = await _userService.Register(registrationDTO);
+            var createdUser = await userService.Register(registrationDTO);
             return Ok(createdUser.Id.ToString());
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
-            var token = await _userService.Login(loginDTO);
+            var token = await userService.Login(loginDTO);
             return Ok(token);
         }
 
