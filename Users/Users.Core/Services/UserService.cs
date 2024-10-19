@@ -32,6 +32,9 @@ namespace Users.Core.Services
 
             await userRepository.CreateUser(user);
 
+            await authService.CreateUserRole(user.Id.ToString(), registrationDTO.Role);
+            await authService.SetPermissions(user.Id.ToString(), ["getInfo"]);
+
             return user;
         }
         public async Task<UserInfoResponse> GetUser(string id)

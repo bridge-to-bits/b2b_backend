@@ -36,5 +36,8 @@ namespace Users.Core.DTOs
 
         [Required (ErrorMessage = "Avatar cannot be empty")]
         public string Avatar { get; set; }
+
+        [Required(ErrorMessage = "Role cannot be empty")]
+        public string Role { get; set; }
     }
 }

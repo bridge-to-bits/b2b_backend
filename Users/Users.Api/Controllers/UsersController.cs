@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Users.Core.DTOs;
+using Users.Core.Filters;
 using Users.Core.Interfaces;
 using Users.Core.Models;
 
@@ -8,7 +8,7 @@ namespace Users.Api.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersController (IUserService userService) : ControllerBase
+    public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
     {
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegistrationDTO registrationDTO)
@@ -23,17 +23,27 @@ namespace Users.Api.Controllers
             return Ok(token);
         }
 
-        [Authorize]
         [HttpGet("test")]
+        [AuthorizePermission("getInfo")]
         public async Task<IActionResult> Test()
         {
             return Ok(1);
         }
 
+        [HttpPost("setPermissions/{userId}")]
+        public async Task<IActionResult> SetPermissions(
+            [FromBody] SetPermissionsDTO permissionsDTO,
+            string userId
+        )
+        {
+            await authService.SetPermissions(userId, permissionsDTO.Permissions);
+
+            return Ok();
+        }
+
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUser(string userId)
         {
-
             return Ok(await _userService.GetUser(userId));
         }
     }
