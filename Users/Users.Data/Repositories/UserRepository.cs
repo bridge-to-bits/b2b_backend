@@ -6,30 +6,23 @@ using Users.Data.DatabaseContext;
 
 namespace Users.Data.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository (UsersDbContext context) : IUserRepository
     {
-        private readonly UsersDbContext _context;
-
-        public UserRepository(UsersDbContext context)
-        {
-            _context = context;
-        }
-
         public async Task<User> CreateUser(User user)
         {
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await context.Users.AddAsync(user);
+            await context.SaveChangesAsync();
             return user;
         }
 
         public async Task<User> GetUser(Expression<Func<User, bool>> predicate)
         {
-            return await _context.Users.AsNoTracking().Where(predicate).FirstAsync();
+            return await context.Users.AsNoTracking().Where(predicate).FirstAsync();
         }
 
         public async Task<IEnumerable<User>> GetUsers(Expression<Func<User, bool>> predicate)
         {
-           return await _context.Users.AsNoTracking().Where(predicate).ToListAsync();
+           return await context.Users.AsNoTracking().Where(predicate).ToListAsync();
         }
     }
 }

@@ -5,21 +5,15 @@ using Users.Core.Responses;
 
 namespace Users.Core.Services
 {
-    public class UserService : IUserService
+    public class UserService (
+        IUserRepository userRepository,
+        IPasswordHasher passwordHasher,
+        IAuthService authService
+        ) : IUserService
     {
-        private readonly IUserRepository _userRepository;
-        private IPasswordHasher _passwordHasher;
-        private readonly IAuthService _authService;
-        public UserService(IUserRepository userRepository, IPasswordHasher passwordHasher, IAuthService authService)
+        public async Task<User> Register (RegistrationDTO registrationDTO)
         {
-            _userRepository = userRepository;
-            _passwordHasher = passwordHasher;
-            _authService = authService;
-
-        }
-        public async Task<User> Register(RegistrationDTO registrationDTO)
-        {
-            string hashPasword = this._passwordHasher.HashPassword(registrationDTO.Password);
+            string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
 
             var user = new User()
             {
@@ -36,7 +30,7 @@ namespace Users.Core.Services
                 UpdatedAt = DateTime.Now,
             };
 
-            await _userRepository.CreateUser(user);
+            await userRepository.CreateUser(user);
 
             return user;
         }
@@ -57,13 +51,13 @@ namespace Users.Core.Services
 
         public async Task<string> Login(LoginDTO loginDTO)
         {
-            var user = await _userRepository.GetUser(user=>user.Email==loginDTO.Email);
-            var check = _passwordHasher.VerifyHashedPassword(loginDTO.Password, user.Password);
+            var user = await userRepository.GetUser(user => user.Email==loginDTO.Email);
+            var check = passwordHasher.VerifyHashedPassword(loginDTO.Password, user.Password);
             if (!check)
             {
                 throw new Exception("wrong password");
             }
-            var token = _authService.GenerateToken(user.Id.ToString());
+            var token = authService.GenerateToken(user.Id.ToString());
             return token;
         }
     }
