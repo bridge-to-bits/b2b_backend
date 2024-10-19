@@ -1,6 +1,7 @@
 ﻿using Users.Core.DTOs;
 using Users.Core.Interfaces;
 using Users.Core.Models;
+using Users.Core.Responses;
 
 namespace Users.Core.Services
 {
@@ -31,6 +32,20 @@ namespace Users.Core.Services
             await _userRepository.CreateUser(user);
 
             return user;
+        }
+        public async Task<UserInfoResponse> GetUser(string id)
+        {
+            var user = await _userRepository.GetUser(user => user.Id.ToString() == id);
+            var response = new UserInfoResponse()
+            {
+                Username = user.Username,
+                Avatar = user.Avatar,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                City = user.City,
+                Email = user.Email
+            };
+            return response;
         }
     }
 }
