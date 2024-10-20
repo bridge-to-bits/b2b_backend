@@ -44,7 +44,7 @@ namespace Users.Api.Controllers
         [HttpGet("userInfo")]
         public async Task<IActionResult> GetUser(string userId)
         {
-            return Ok(await _userService.GetUser(userId));
+            return Ok(await userService.GetUser(userId));
         }
     }
 }
