@@ -39,7 +39,7 @@ namespace Users.Core.Services
         }
         public async Task<UserInfoResponse> GetUser(string id)
         {
-            var user = await _userRepository.GetUser(user => user.Id.ToString() == id);
+            var user = await userRepository.GetUser(user => user.Id.ToString() == id);
             var response = new UserInfoResponse()
             {
                 Username = user.Username,
