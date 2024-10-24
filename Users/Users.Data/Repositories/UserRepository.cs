@@ -46,5 +46,25 @@ namespace Users.Data.Repositories
                 .Where(predicate)
                 .ToListAsync();
         }
+
+        public async Task<T> AttachEntityToUser<T>(string userId) where T : class, new()
+        {
+            var entity = new T();
+            if (entity is Producer producer)
+            {
+                producer.UserId = Guid.Parse(userId);
+                await context.Producers.AddAsync(producer);
+            }
+
+            else if (entity is Performer performer)
+            {
+                performer.UserId = Guid.Parse(userId);
+                await context.Performers.AddAsync(performer);
+            }
+
+            await context.SaveChangesAsync();
+            return entity;
+        }
+
     }
 }

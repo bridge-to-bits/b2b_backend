@@ -11,5 +11,6 @@ namespace Users.Core.Interfaces
 
         public Task<User?> GetUser(Expression<Func<User, bool>> predicate);
         public Task<IEnumerable<User>> GetUsers(Expression<Func<User, bool>> predicate);
+        public Task<T> AttachEntityToUser<T>(string userId) where T : class, new();
     }
 }
