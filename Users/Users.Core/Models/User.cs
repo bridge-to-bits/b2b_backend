@@ -33,5 +33,7 @@ namespace Users.Core.Models
         public DateTime UpdatedAt { get; set; }
 
         public ICollection<Role> Roles { get; set; }
+        public Producer Producer { get; set; }
+        public Performer Performer { get; set; }
     }
 }

@@ -5,14 +5,21 @@ using Users.Core.Responses;
 
 namespace Users.Core.Services
 {
-    public class UserService (
+    public class UserService(
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         IAuthService authService
         ) : IUserService
     {
+
         public async Task<User> Register (RegistrationDTO registrationDTO)
         {
+            Dictionary<string, Func<string, Task>> _roleActions = new()
+            {
+                { "Producer", AttachProducer },
+                { "Performer", AttachPerformer }
+            };
+
             string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
 
             var user = new User()
@@ -32,8 +39,13 @@ namespace Users.Core.Services
 
             await userRepository.CreateUser(user);
 
-            await authService.CreateUserRole(user.Id.ToString(), registrationDTO.Role);
+            await authService.CreateUserRole(user.Id.ToString(), registrationDTO.IsAdmin ? "Admin" : "User");
             await authService.SetPermissions(user.Id.ToString(), ["getInfo"]);
+
+            if (_roleActions.TryGetValue(registrationDTO.Role.ToString(), out var attachRoleMethod))
+            {
+                await attachRoleMethod(user.Id.ToString());
+            }
 
             return user;
         }
@@ -62,6 +74,18 @@ namespace Users.Core.Services
             }
             var token = authService.GenerateToken(user.Id.ToString());
             return token;
+        }
+
+        public async Task<string> AttachProducer(string userId)
+        {
+            var producer = await userRepository.AttachEntityToUser<Producer>(userId);
+            return producer.Id.ToString();
+        }
+
+        public async Task<string> AttachPerformer(string userId)
+        {
+            var performer = await userRepository.AttachEntityToUser<Performer>(userId);
+            return performer.Id.ToString();
         }
     }
 }

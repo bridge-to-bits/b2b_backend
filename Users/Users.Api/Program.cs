@@ -4,6 +4,8 @@ using Common.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 using Users.Core.Interfaces;
 using Users.Core.Services;
 using Users.Data.DatabaseContext;
@@ -67,7 +69,10 @@ namespace Users.Api
 
             DIConfig(services);
 
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            });
 
             DbContextConfig(services);
         }

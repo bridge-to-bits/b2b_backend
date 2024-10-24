@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Users.Core.Filters;
+using Users.Core.Models;
 
 namespace Users.Core.DTOs
 {
@@ -38,6 +40,9 @@ namespace Users.Core.DTOs
         public string Avatar { get; set; }
 
         [Required(ErrorMessage = "Role cannot be empty")]
-        public string Role { get; set; }
+        public RoleType Role { get; set; }
+
+        [Required(ErrorMessage = "IsAdmin cannot be empty")]
+        public bool IsAdmin { get; set; }
     }
 }
