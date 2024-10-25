@@ -31,5 +31,8 @@ namespace Users.Core.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
+
+        [MaxLength(255)]
+        public string AboutMe { get; set; }
     }
 }
