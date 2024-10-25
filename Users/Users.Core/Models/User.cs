@@ -9,7 +9,7 @@ namespace Users.Core.Models
 
         [StringLength(40)]
         public string Username { get; set; }
-    
+
         public string Email { get; set; }
 
         [StringLength(255)]
@@ -25,15 +25,14 @@ namespace Users.Core.Models
 
         [MaxLength(100)]
         public string City { get; set; }
-
         public string Avatar { get; set; }
-
         public DateTime CreatedAt { get; set; }
-
         public DateTime UpdatedAt { get; set; }
 
         public ICollection<Role> Roles { get; set; }
         public Producer Producer { get; set; }
         public Performer Performer { get; set; }
+        public ICollection<Rating> ReceivedRatings { get; set; }
+        public ICollection<Rating> GivenRatings { get; set; }
     }
 }

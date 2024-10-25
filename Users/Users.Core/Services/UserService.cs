@@ -12,12 +12,18 @@ namespace Users.Core.Services
         ) : IUserService
     {
 
-        public async Task<User> Register (RegistrationDTO registrationDTO)
+        public async Task<User> Register(RegistrationDTO registrationDTO)
         {
             Dictionary<string, Func<string, Task>> _roleActions = new()
             {
                 { "Producer", AttachProducer },
                 { "Performer", AttachPerformer }
+            };
+
+            Dictionary<string, IEnumerable<string>> _rolePermissions = new()
+            {
+                { "User", ["addRating"] },
+                { "Admin", ["setPermissions"] }
             };
 
             string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
@@ -39,8 +45,12 @@ namespace Users.Core.Services
 
             await userRepository.CreateUser(user);
 
-            await authService.CreateUserRole(user.Id.ToString(), registrationDTO.IsAdmin ? "Admin" : "User");
-            await authService.SetPermissions(user.Id.ToString(), ["getInfo"]);
+            var securityRole = registrationDTO.IsAdmin ? "Admin" : "User";
+            await authService.CreateUserRole(user.Id.ToString(), securityRole);
+            await authService.SetPermissions(
+                user.Id.ToString(), 
+                _rolePermissions.GetValueOrDefault(securityRole)!
+            );
 
             if (_roleActions.TryGetValue(registrationDTO.Role.ToString(), out var attachRoleMethod))
             {
@@ -49,9 +59,13 @@ namespace Users.Core.Services
 
             return user;
         }
+
         public async Task<UserInfoResponse> GetUser(string id)
         {
-            var user = await userRepository.GetUser(user => user.Id.ToString() == id);
+            var user = await userRepository.GetUser(user => user.Id.ToString() == id)
+                ?? throw new Exception("User do not exist");
+            var rating = await GetUserAverageRating(id);
+
             var response = new UserInfoResponse()
             {
                 Username = user.Username,
@@ -59,14 +73,17 @@ namespace Users.Core.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 City = user.City,
-                Email = user.Email
+                Email = user.Email,
+                Rating = rating,
             };
             return response;
         }
 
         public async Task<string> Login(LoginDTO loginDTO)
         {
-            var user = await userRepository.GetUser(user => user.Email==loginDTO.Email);
+            var user = await userRepository.GetUser(user => user.Email == loginDTO.Email)
+                ?? throw new Exception("User do not exist");
+
             var check = passwordHasher.VerifyHashedPassword(loginDTO.Password, user.Password);
             if (!check)
             {
@@ -86,6 +103,22 @@ namespace Users.Core.Services
         {
             var performer = await userRepository.AttachEntityToUser<Performer>(userId);
             return performer.Id.ToString();
+        }
+
+        public async Task AddRating(AddRatingDTO addRatingDTO, string targetUserId)
+        {
+            await userRepository.AddRating(new Rating()
+            {
+                InitiatorUserId = Guid.Parse(addRatingDTO.InitiatorUserId),
+                TargetUserId = Guid.Parse(targetUserId),
+                RatingValue = addRatingDTO.Rating
+            });
+        }
+
+        public async Task<double> GetUserAverageRating(string userId)
+        {
+            var ratings = await userRepository.GetRatingsForUser(userId);
+            return ratings.Average(r => r.RatingValue);
         }
     }
 }
