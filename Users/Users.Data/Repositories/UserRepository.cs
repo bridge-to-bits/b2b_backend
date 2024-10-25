@@ -66,5 +66,22 @@ namespace Users.Data.Repositories
             return entity;
         }
 
+        public async Task<IEnumerable<User>> GetAllProducers()
+        {
+            return await context.Producers
+                .AsNoTracking()
+                .Include(p => p.User)
+                .Select(p => p.User)
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<User>> GetAllPerformers()
+        {
+            return await context.Performers
+                .AsNoTracking()
+                .Include(p => p.User)
+                .Select(p => p.User)
+                .ToListAsync();
+        }
+
     }
 }

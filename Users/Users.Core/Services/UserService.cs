@@ -64,6 +64,40 @@ namespace Users.Core.Services
             return response;
         }
 
+        public async Task<List<UserInfoResponse>> GetAllProducers(int pagenumber, int pagesize)
+        {
+            var users = await userRepository.GetAllProducers();
+            return users
+                .Skip((pagenumber - 1) * pagesize)
+                .Take(pagesize)
+                .Select(user => new UserInfoResponse()
+            {
+                Username = user.Username,
+                Avatar = user.Avatar,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                City = user.City,
+                Email = user.Email
+            }).ToList();
+        }
+
+        public async Task<List<UserInfoResponse>> GetAllPerformers(int pagenumber, int pagesize)
+        {
+            var users = await userRepository.GetAllPerformers();
+            return users
+                .Skip((pagenumber - 1) * pagesize)
+                .Take(pagesize)
+                .Select(user => new UserInfoResponse()
+            {
+                Username = user.Username,
+                Avatar = user.Avatar,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                City = user.City,
+                Email = user.Email
+            }).ToList();
+        }
+
         public async Task<string> Login(LoginDTO loginDTO)
         {
             var user = await userRepository.GetUser(user => user.Email==loginDTO.Email);

@@ -46,5 +46,16 @@ namespace Users.Api.Controllers
         {
             return Ok(await userService.GetUser(userId));
         }
+
+        [HttpGet("getAllProducers")]
+        public async Task<IActionResult> GetAllProducers(int pagenumber = 1, int pagesize = 10)
+        {
+            return Ok(await userService.GetAllProducers(pagenumber, pagesize));
+        }
+        [HttpGet("getAllPerformers")]
+        public async Task<IActionResult> GetAllPerformers(int pagenumber = 1, int pagesize = 10)
+        {
+            return Ok(await userService.GetAllPerformers(pagenumber, pagesize));
+        }
     }
 }
