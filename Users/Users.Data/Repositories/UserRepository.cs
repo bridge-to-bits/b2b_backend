@@ -66,5 +66,18 @@ namespace Users.Data.Repositories
             return entity;
         }
 
+        public async Task AddRating(Rating rating)
+        {
+            await context.Ratings.AddAsync(rating);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Rating>> GetRatingsForUser(string userId)
+        {
+            return await context.Ratings
+                .AsNoTracking()
+                .Where(r => r.TargetUserId == Guid.Parse(userId))
+                .ToListAsync();
+        }
     }
 }

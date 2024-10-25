@@ -23,28 +23,31 @@ namespace Users.Api.Controllers
             return Ok(token);
         }
 
-        [HttpGet("test")]
-        [AuthorizePermission("getInfo")]
-        public async Task<IActionResult> Test()
-        {
-            return Ok(1);
-        }
-
-        [HttpPost("setPermissions/{userId}")]
+        [HttpPost("{userId}/setPermissions")]
+        [AuthorizePermission("setPermissions")]
         public async Task<IActionResult> SetPermissions(
             [FromBody] SetPermissionsDTO permissionsDTO,
-            string userId
-        )
+            string userId)
         {
             await authService.SetPermissions(userId, permissionsDTO.Permissions);
 
             return Ok();
         }
 
-        [HttpGet("userInfo")]
+        [HttpGet("{userId}")]
         public async Task<IActionResult> GetUser(string userId)
         {
             return Ok(await userService.GetUser(userId));
+        }
+
+        [HttpPost("{targetUserId}/addRating")]
+        [AuthorizePermission("addRating")]
+        public async Task<IActionResult> AddRating(
+            [FromBody] AddRatingDTO addRatingDTO, 
+            string targetUserId)
+        {
+            await userService.AddRating(addRatingDTO, targetUserId);
+            return Ok();
         }
     }
 }

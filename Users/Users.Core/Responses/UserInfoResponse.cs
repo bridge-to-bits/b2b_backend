@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Users.Core.Models;
-
-namespace Users.Core.Responses
+﻿namespace Users.Core.Responses
 {
     public class UserInfoResponse
     {
@@ -16,5 +8,6 @@ namespace Users.Core.Responses
         public string FirstName { get; set; }
         public string City { get; set; }
         public string Avatar { get; set; }
+        public double Rating { get; set; }
     }
 }
