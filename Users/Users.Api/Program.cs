@@ -10,6 +10,7 @@ using Users.Core.Interfaces;
 using Users.Core.Services;
 using Users.Data.DatabaseContext;
 using Users.Data.Repositories;
+using Users.Core.Profiles;
 
 namespace Users.Api
 {
@@ -79,6 +80,7 @@ namespace Users.Api
 
         private static void DIConfig(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(UserMappingProfile).Assembly);
             services.AddSingleton<IDbContextConfigurer<UsersDbContext>, UsersDbContextConfigurer>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();

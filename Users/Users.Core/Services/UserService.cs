@@ -1,4 +1,7 @@
-﻿using Users.Core.DTOs;
+﻿using AutoMapper;
+using System.Linq.Expressions;
+using Users.Core.DTOs;
+using Users.Core.Includes;
 using Users.Core.Interfaces;
 using Users.Core.Models;
 using Users.Core.Responses;
@@ -8,7 +11,8 @@ namespace Users.Core.Services
     public class UserService(
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
-        IAuthService authService
+        IAuthService authService,
+        IMapper mapper
         ) : IUserService
     {
 
@@ -28,21 +32,8 @@ namespace Users.Core.Services
 
             string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
 
-            var user = new User()
-            {
-                Id = Guid.NewGuid(),
-                Username = registrationDTO.Username,
-                Email = registrationDTO.Email,
-                Password = hashPasword,
-                FirstName = registrationDTO.FirstName,
-                LastName = registrationDTO.LastName,
-                City = registrationDTO.City,
-                Age = registrationDTO.Age,
-                Avatar = registrationDTO.Avatar,
-                CreatedAt = DateTime.Now,
-                UpdatedAt = DateTime.Now,
-            };
-
+            var user = mapper.Map<User>(registrationDTO);
+            user.Password = hashPasword;
             await userRepository.CreateUser(user);
 
             var securityRole = registrationDTO.IsAdmin ? "Admin" : "User";
@@ -62,20 +53,15 @@ namespace Users.Core.Services
 
         public async Task<UserInfoResponse> GetUser(string id)
         {
-            var user = await userRepository.GetUser(user => user.Id.ToString() == id)
+            var user = await userRepository.GetUser(
+                user => user.Id.ToString() == id, UserIncludes.ProducerAndPerformer)
                 ?? throw new Exception("User do not exist");
+
             var rating = await GetUserAverageRating(id);
 
-            var response = new UserInfoResponse()
-            {
-                Username = user.Username,
-                Avatar = user.Avatar,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                City = user.City,
-                Email = user.Email,
-                Rating = rating,
-            };
+            var response = mapper.Map<UserInfoResponse>(user);
+            response.UserType = DetermineUserType(user);
+            response.Rating = rating;
             return response;
         }
 
@@ -89,6 +75,7 @@ namespace Users.Core.Services
             {
                 throw new Exception("wrong password");
             }
+
             var token = authService.GenerateToken(user.Id.ToString());
             return token;
         }
@@ -118,7 +105,16 @@ namespace Users.Core.Services
         public async Task<double> GetUserAverageRating(string userId)
         {
             var ratings = await userRepository.GetRatingsForUser(userId);
-            return ratings.Average(r => r.RatingValue);
+            return ratings.Any() ? ratings.Average(r => r.RatingValue) : 0;
+        }
+
+        private static UserType DetermineUserType(User user)
+        {
+            if (user.Performer != null) return UserType.Performer;
+
+            if (user.Producer != null) return UserType.Producer;
+
+            throw new Exception("User type not found");
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Users.Core.Interfaces;
+﻿using Users.Core.Includes;
+using Users.Core.Interfaces;
 using Users.Core.Models;
 
 namespace Users.Core.Services
@@ -15,7 +16,8 @@ namespace Users.Core.Services
 
         public async Task<bool> HasPermission(string userId, string permission)
         {
-            var user = await userRepository.GetUser(user => user.Id.ToString() == userId);
+            var user = await userRepository.GetUserWithRolesAndGrants(user => user.Id.ToString() == userId);
+
             if (user == null)
             {
                 return false;
@@ -26,7 +28,7 @@ namespace Users.Core.Services
 
         public async Task SetPermissions(string userId, IEnumerable<string> permissions)
         {
-            var user = await userRepository.GetUser(user => user.Id.ToString() == userId)
+            var user = await userRepository.GetUserWithRolesAndGrants(user => user.Id.ToString() == userId)
                 ?? throw new Exception("user does not exist");
 
             var userRole = user.Roles.First() 
@@ -55,7 +57,7 @@ namespace Users.Core.Services
             await userRepository.CreateRole(new Role() { Name = roleName, UserId = Guid.Parse(userId) });
         }
 
-        private bool HasPermissions(IEnumerable<Grant> userGrants, IEnumerable<string> permissions)
+        private static bool HasPermissions(IEnumerable<Grant> userGrants, IEnumerable<string> permissions)
         {
             return userGrants
                 .Select(grant => grant.Permission)
@@ -63,7 +65,7 @@ namespace Users.Core.Services
                 .Any();
         }
 
-        private bool HasPermission(IEnumerable<Role> userRoles, string permission)
+        private static bool HasPermission(IEnumerable<Role> userRoles, string permission)
         {
             return userRoles
                 .SelectMany(role => role.Grants)

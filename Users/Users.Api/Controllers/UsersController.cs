@@ -16,6 +16,7 @@ namespace Users.Api.Controllers
             var createdUser = await userService.Register(registrationDTO);
             return Ok(createdUser.Id.ToString());
         }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
