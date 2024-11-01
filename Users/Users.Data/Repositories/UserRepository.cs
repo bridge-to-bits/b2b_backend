@@ -27,24 +27,35 @@ namespace Users.Data.Repositories
             return user;
         }
 
-        public async Task<User?> GetUser(Expression<Func<User, bool>> predicate)
+        public async Task<User?> GetUser( 
+            Expression<Func<User, bool>> predicate,
+            params Expression<Func<User, object>>[] includes)
+        {
+            IQueryable<User> query = context.Users.AsNoTracking();
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<User?> GetUserWithRolesAndGrants(Expression<Func<User, bool>> predicate)
         {
             return await context.Users
                 .AsNoTracking()
-                .Include(u => u.Roles)
-                .ThenInclude(r => r.Grants)
-                .Where(predicate)
-                .FirstOrDefaultAsync();
+                .Include(user => user.Roles)
+                .ThenInclude(role => role.Grants)
+                .FirstOrDefaultAsync(predicate);       
         }
 
-        public async Task<IEnumerable<User>> GetUsers(Expression<Func<User, bool>> predicate)
+        public async Task<IEnumerable<User>> GetUsers(
+            Expression<Func<User, bool>> predicate,
+            params Expression<Func<User, object>>[] includes)
         {
-           return await context.Users
-                .AsNoTracking()
-                .Include(u => u.Roles)
-                .ThenInclude(r => r.Grants)
-                .Where(predicate)
-                .ToListAsync();
+            IQueryable<User> query = context.Users.AsNoTracking();
+
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+            return await query.Where(predicate).ToListAsync();
         }
 
         public async Task<T> AttachEntityToUser<T>(string userId) where T : class, new()
