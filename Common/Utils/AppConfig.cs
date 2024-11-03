@@ -1,4 +1,10 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Common.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace Common.Utils
 {
@@ -22,5 +28,43 @@ namespace Common.Utils
         public static string GetSetting(string key) => Configuration[key];
 
         public static IConfigurationSection GetSection(string sectionName) => Configuration.GetSection(sectionName);
+
+        public static void DocsConfig(IServiceCollection services)
+        {
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+        }
+
+        public static void GeneralAuthConfig(IServiceCollection services)
+        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new()
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(GetSetting("JwtOptions:SecretKey"!)))
+                    };
+                });
+
+            services.AddAuthorization();
+        }
+
+        public static void DbContextConfig<T>(IServiceCollection services) where T : DbContext
+        {
+            var serviceProvider = services.BuildServiceProvider();
+            var connectionString = serviceProvider
+                .GetService<IDbContextConfigurer<T>>()!
+                .GetConnectionString();
+
+            services.AddDbContext<T>(options =>
+                serviceProvider
+                    .GetService<IDbContextConfigurer<T>>()!
+                    .Configure(options, connectionString));
+        }
     }
 }

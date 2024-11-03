@@ -22,12 +22,12 @@ namespace Users.Data.Repositories
 
         public async Task<User> CreateUser(User user)
         {
-            await context.Users.AddAsync(user);
+            var res = await context.Users.AddAsync(user);
             await context.SaveChangesAsync();
-            return user;
+            return res.Entity;
         }
 
-        public async Task<User?> GetUser( 
+        public Task<User?> GetUser( 
             Expression<Func<User, bool>> predicate,
             params Expression<Func<User, object>>[] includes)
         {
@@ -35,19 +35,19 @@ namespace Users.Data.Repositories
 
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-            return await query.FirstOrDefaultAsync(predicate);
+            return query.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<User?> GetUserWithRolesAndGrants(Expression<Func<User, bool>> predicate)
+        public Task<User?> GetUserWithRolesAndGrants(Expression<Func<User, bool>> predicate)
         {
-            return await context.Users
+            return context.Users
                 .AsNoTracking()
                 .Include(user => user.Roles)
                 .ThenInclude(role => role.Grants)
                 .FirstOrDefaultAsync(predicate);       
         }
 
-        public async Task<IEnumerable<User>> GetUsers(
+        public Task<List<User>> GetUsers(
             Expression<Func<User, bool>> predicate,
             params Expression<Func<User, object>>[] includes)
         {
@@ -55,7 +55,7 @@ namespace Users.Data.Repositories
 
             query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-            return await query.Where(predicate).ToListAsync();
+            return query.Where(predicate).ToListAsync();
         }
 
         public async Task<T> AttachEntityToUser<T>(string userId) where T : class, new()
@@ -83,9 +83,9 @@ namespace Users.Data.Repositories
             await context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<Rating>> GetRatingsForUser(string userId)
+        public Task<List<Rating>> GetRatingsForUser(string userId)
         {
-            return await context.Ratings
+            return context.Ratings
                 .AsNoTracking()
                 .Where(r => r.TargetUserId == Guid.Parse(userId))
                 .ToListAsync();

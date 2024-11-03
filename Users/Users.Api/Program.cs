@@ -1,9 +1,6 @@
 using Common.Interfaces;
 using Common.Models;
 using Common.Utils;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Users.Core.Interfaces;
@@ -21,8 +18,8 @@ namespace Users.Api
             var builder = WebApplication.CreateBuilder(args);
 
             ServicesConfig(builder.Services);
-            AuthConfig(builder.Services);
-            DocsConfig(builder.Services);
+            AppConfig.GeneralAuthConfig(builder.Services);
+            AppConfig.DocsConfig(builder.Services);
 
             var app = builder.Build();
 
@@ -39,31 +36,6 @@ namespace Users.Api
             app.Run();
         }
 
-        private static void DocsConfig(IServiceCollection services)
-        {
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-        }
-
-        private static void AuthConfig(IServiceCollection services)
-        {
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-                {
-                    options.TokenValidationParameters = new()
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateLifetime = true,
-                        ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(AppConfig.GetSetting("JwtOptions:SecretKey"!)))
-                    };
-                });
-
-            services.AddAuthorization();
-        }
-
         private static void ServicesConfig(IServiceCollection services)
         {
             services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
@@ -75,7 +47,7 @@ namespace Users.Api
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
             });
 
-            DbContextConfig(services);
+            AppConfig.DbContextConfig<UsersDbContext>(services);
         }
 
         private static void DIConfig(IServiceCollection services)
@@ -87,19 +59,6 @@ namespace Users.Api
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IJwtProvider, JwtProvider>();
-        }
-
-        private static void DbContextConfig(IServiceCollection services)
-        {
-            var serviceProvider = services.BuildServiceProvider();
-            var connectionString = serviceProvider
-                .GetService<IDbContextConfigurer<UsersDbContext>>()!
-                .GetConnectionString();
-
-            services.AddDbContext<UsersDbContext>(options =>
-                serviceProvider
-                    .GetService<IDbContextConfigurer<UsersDbContext>>()!
-                    .Configure(options, connectionString));
         }
     }
 }

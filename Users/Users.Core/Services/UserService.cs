@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using System.Linq.Expressions;
 using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
@@ -105,7 +104,7 @@ namespace Users.Core.Services
         public async Task<double> GetUserAverageRating(string userId)
         {
             var ratings = await userRepository.GetRatingsForUser(userId);
-            return ratings.Any() ? ratings.Average(r => r.RatingValue) : 0;
+            return ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0;
         }
 
         private static UserType DetermineUserType(User user)
