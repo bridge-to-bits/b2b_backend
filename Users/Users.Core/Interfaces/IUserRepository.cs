@@ -8,7 +8,7 @@ namespace Users.Core.Interfaces
         public Task<User?> GetUser(
             Expression<Func<User, bool>> predicate,
             params Expression<Func<User, object>>[] includes);
-        public Task<IEnumerable<User>> GetUsers(
+        public Task<List<User>> GetUsers(
             Expression<Func<User, bool>> predicate,
             params Expression<Func<User, object>>[] includes);
         public Task<User?> GetUserWithRolesAndGrants(Expression<Func<User, bool>> predicate);
@@ -17,6 +17,6 @@ namespace Users.Core.Interfaces
         public Task<User> CreateUser(User user);
         public Task<T> AttachEntityToUser<T>(string userId) where T : class, new();
         public Task AddRating(Rating rating);
-        public Task<IEnumerable<Rating>> GetRatingsForUser(string userId);
+        public Task<List<Rating>> GetRatingsForUser(string userId);
     }
 }

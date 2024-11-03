@@ -1,5 +1,4 @@
-﻿using Users.Core.Includes;
-using Users.Core.Interfaces;
+﻿using Users.Core.Interfaces;
 using Users.Core.Models;
 
 namespace Users.Core.Services
