@@ -14,6 +14,7 @@ public static class DtoToDomainMapper
             LastName = registrationDTO.LastName,
             City = registrationDTO.City,
             Avatar = registrationDTO.Avatar,
+            AboutMe = registrationDTO.AboutMe,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
         };
