@@ -14,6 +14,7 @@ public static class DomainToDtoMapper
             LastName = user.LastName,
             City = user.City,
             Avatar = user.Avatar,
+            AboutMe = user.AboutMe,
         };
     }
 }

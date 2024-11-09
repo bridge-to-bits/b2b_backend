@@ -26,6 +26,9 @@ public class User
     [MaxLength(100)]
     public string City { get; set; }
     public string Avatar { get; set; }
+
+    [MaxLength(512)]
+    public string? AboutMe { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 

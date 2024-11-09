@@ -38,6 +38,9 @@ public class RegistrationDTO
     [Required (ErrorMessage = "Avatar cannot be empty")]
     public string Avatar { get; set; }
 
+    [MaxLength(512, ErrorMessage = "AboutMe length must be less than 512")]
+    public string? AboutMe { get; set; }
+
     [Required(ErrorMessage = "Role cannot be empty")]
     public RoleType Role { get; set; }
 
