@@ -15,6 +15,16 @@ public static class DomainToDtoMapper
             City = user.City,
             Avatar = user.Avatar,
             AboutMe = user.AboutMe,
+            Socials = user.Socials.Select(ToSocialResponse).ToList(),
+        };
+    }
+
+    public static SocialResponse ToSocialResponse(this Social social) 
+    {
+        return new SocialResponse
+        {
+            Name = social.Name,
+            Link = social.Link,
         };
     }
 }

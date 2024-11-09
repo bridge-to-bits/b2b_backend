@@ -10,4 +10,9 @@ public static class UserIncludes
         user => user.Performer,
         user => user.Producer
     ];
+
+    public static readonly Expression<Func<User, object>>[] Socials =
+    [
+        user => user.Socials,
+    ];
 }

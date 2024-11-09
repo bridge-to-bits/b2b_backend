@@ -37,4 +37,5 @@ public class User
     public Performer Performer { get; set; }
     public ICollection<Rating> ReceivedRatings { get; set; }
     public ICollection<Rating> GivenRatings { get; set; }
+    public ICollection<Social> Socials { get; set; }
 }

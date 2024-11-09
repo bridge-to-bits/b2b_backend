@@ -46,4 +46,6 @@ public class RegistrationDTO
 
     [Required(ErrorMessage = "IsAdmin cannot be empty")]
     public bool IsAdmin { get; set; }
+
+    public IEnumerable<AddSocialDTO>? Socials { get; set; }
 }

@@ -53,6 +53,7 @@ public class Program
     {
         services.AddSingleton<IDbContextConfigurer<UsersDbContext>, UsersDbContextConfigurer>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<ISocialRepository, SocialsRepository>();
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthService, AuthService>();
