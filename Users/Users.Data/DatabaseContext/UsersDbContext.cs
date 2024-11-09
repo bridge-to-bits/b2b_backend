@@ -11,6 +11,7 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContex
     public DbSet<Producer> Producers { get; set; }
     public DbSet<Performer> Performers { get; set; }
     public DbSet<Rating> Ratings { get; set; }
+    public DbSet<Social> Socials { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -50,5 +51,11 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContex
             .WithMany(u => u.GivenRatings)
             .HasForeignKey(r => r.InitiatorUserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Social>()
+            .HasOne(s => s.User)
+            .WithMany(u => u.Socials)
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

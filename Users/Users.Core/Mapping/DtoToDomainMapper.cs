@@ -19,4 +19,12 @@ public static class DtoToDomainMapper
             UpdatedAt = DateTime.Now,
         };
     }
+    public static Social ToSocial(this AddSocialDTO addSocialDTO)
+    {
+        return new Social
+        {
+            Name = addSocialDTO.Name,
+            Link = addSocialDTO.Link,
+        };
+    }
 }

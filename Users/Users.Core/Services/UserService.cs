@@ -1,4 +1,5 @@
-﻿using Users.Core.DTOs;
+﻿using System.Linq.Expressions;
+using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
 using Users.Core.Mapping;
@@ -9,6 +10,7 @@ namespace Users.Core.Services;
 
 public class UserService(
     IUserRepository userRepository,
+    ISocialRepository socialRepository,
     IPasswordHasher passwordHasher,
     IAuthService authService
     ) : IUserService
@@ -29,6 +31,13 @@ public class UserService(
         };
 
         string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
+        if(registrationDTO.Socials != null)
+        {
+            foreach (var social in registrationDTO.Socials)
+            {
+                await socialRepository.AddSocial(DtoToDomainMapper.ToSocial(social));
+            }
+        }
 
         var user = registrationDTO.ToUser();
         user.Password = hashPasword;
@@ -52,7 +61,8 @@ public class UserService(
     public async Task<UserInfoResponse> GetUser(string id)
     {
         var user = await userRepository.GetUser(
-            user => user.Id.ToString() == id, UserIncludes.ProducerAndPerformer)
+            user => user.Id.ToString() == id, 
+            [..UserIncludes.ProducerAndPerformer, ..UserIncludes.Socials])
             ?? throw new Exception("User do not exist");
 
         var rating = await GetUserAverageRating(id);
