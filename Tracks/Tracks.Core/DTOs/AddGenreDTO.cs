@@ -1,7 +1,6 @@
-﻿namespace Tracks.Core.DTOs
+﻿namespace Tracks.Core.DTOs;
+
+public class AddGenreDTO
 {
-    public class AddGenreDTO
-    {
-        public string Name { get; set; }
-    }
+    public string Name { get; set; }
 }

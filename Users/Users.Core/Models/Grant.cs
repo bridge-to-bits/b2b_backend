@@ -1,18 +1,17 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Users.Core.Models
+namespace Users.Core.Models;
+
+public class Grant
 {
-    public class Grant
-    {
-        [Key]
-        public Guid Id { get; set; }
+    [Key]
+    public Guid Id { get; set; }
 
-        public string Permission {  get; set; }
+    public string Permission {  get; set; }
 
-        public Guid RoleId { get; set; }
+    public Guid RoleId { get; set; }
 
-        [ForeignKey("RoleId")]
-        public Role Role { get; set; }
-    }
+    [ForeignKey("RoleId")]
+    public Role Role { get; set; }
 }

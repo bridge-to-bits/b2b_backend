@@ -1,7 +1,6 @@
-﻿namespace Users.Core.Interfaces
+﻿namespace Users.Core.Interfaces;
+
+public interface IJwtProvider
 {
-    public interface IJwtProvider
-    {
-        string GenerateToken(string userId);
-    }
+    string GenerateToken(string userId);
 }

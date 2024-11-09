@@ -5,56 +5,52 @@ using Tracks.Core.Interfaces;
 using Tracks.Data.Repositories;
 using Tracks.Core.Services;
 using Tracks.Data.DatabaseContext;
-using Tracks.Core.Profiles;
 
-namespace Tracks.Api
+namespace Tracks.Api;
+
+public class Program
 {
-    public class Program
+    public static void Main(string[] args)
     {
-        public static void Main(string[] args)
+        var builder = WebApplication.CreateBuilder(args);
+
+        ServicesConfig(builder.Services);
+        AppConfig.GeneralAuthConfig(builder.Services);
+
+        AppConfig.DocsConfig(builder.Services);
+
+        var app = builder.Build();
+
+        if (app.Environment.IsDevelopment())
         {
-            var builder = WebApplication.CreateBuilder(args);
-
-            ServicesConfig(builder.Services);
-            AppConfig.GeneralAuthConfig(builder.Services);
-
-            AppConfig.DocsConfig(builder.Services);
-
-            var app = builder.Build();
-
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.MapControllers();
-            app.Run();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
-        private static void ServicesConfig(IServiceCollection services)
-        {
-            services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
+        app.UseAuthentication();
+        app.UseAuthorization();
 
-            services.AddControllers();
+        app.MapControllers();
+        app.Run();
+    }
 
-            DIConfig(services);
+    private static void ServicesConfig(IServiceCollection services)
+    {
+        services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
 
-            AppConfig.DbContextConfig<TracksDbContext>(services);
-        }
+        services.AddControllers();
 
-        private static void DIConfig(IServiceCollection services)
-        {
-            services.AddAutoMapper(typeof(TrackMappingProfile).Assembly);
-            services.AddAutoMapper(typeof(GenreMappingProfile).Assembly);
-            services.AddSingleton<IDbContextConfigurer<TracksDbContext>, TracksDbContextConfigurer>();
-            services.AddScoped<ITrackRepository, TrackRepository>();
-            services.AddScoped<IGenreRepository, GenreRepository>();
-            services.AddScoped<ITrackService, TrackService>();
-            services.AddScoped<IGenreService, GenreService>();
-        }
+        DIConfig(services);
+
+        AppConfig.DbContextConfig<TracksDbContext>(services);
+    }
+
+    private static void DIConfig(IServiceCollection services)
+    {
+        services.AddSingleton<IDbContextConfigurer<TracksDbContext>, TracksDbContextConfigurer>();
+        services.AddScoped<ITrackRepository, TrackRepository>();
+        services.AddScoped<IGenreRepository, GenreRepository>();
+        services.AddScoped<ITrackService, TrackService>();
+        services.AddScoped<IGenreService, GenreService>();
     }
 }
