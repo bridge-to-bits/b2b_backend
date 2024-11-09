@@ -1,14 +1,13 @@
 ﻿using Tracks.Core.Models;
 
-namespace Tracks.Core.Responses
+namespace Tracks.Core.Responses;
+
+public class TrackResponse
 {
-    public class TrackResponse
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public string? Description { get; set; }
-        public string Content { get; set; }
-        public Guid PerformerId { get; set; }
-        public IEnumerable<Genre> Genres { get; set; }
-    }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    public string Content { get; set; }
+    public Guid PerformerId { get; set; }
+    public IEnumerable<Genre> Genres { get; set; }
 }

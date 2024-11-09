@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Tracks.Core.Responses;
 
-namespace Tracks.Core.Responses
+public class GenreResponse
 {
-    public class GenreResponse
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-    }
+    public Guid Id { get; set; }
+    public string Name { get; set; }
 }

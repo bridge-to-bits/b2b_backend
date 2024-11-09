@@ -1,10 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Users.Core.Models
+namespace Users.Core.DTOs;
+
+public class SetPermissionsDTO
 {
-    public class SetPermissionsDTO
-    {
-        [Required]
-        public IEnumerable<string> Permissions { get; set; }
-    }
+    [Required]
+    public IEnumerable<string> Permissions { get; set; }
 }

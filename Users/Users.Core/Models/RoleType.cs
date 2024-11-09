@@ -1,8 +1,7 @@
-﻿namespace Users.Core.Models
+﻿namespace Users.Core.Models;
+
+public enum RoleType
 {
-    public enum RoleType
-    {
-        Producer,
-        Performer
-    }
+    Producer,
+    Performer
 }
