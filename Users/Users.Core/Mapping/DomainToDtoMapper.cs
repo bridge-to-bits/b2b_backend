@@ -16,6 +16,7 @@ public static class DomainToDtoMapper
             Avatar = user.Avatar,
             AboutMe = user.AboutMe,
             Socials = user.Socials.Select(ToSocialResponse).ToList(),
+            Genres = user.Genres.Select(ToGenreResponse).ToList(),
         };
     }
 
@@ -25,6 +26,15 @@ public static class DomainToDtoMapper
         {
             Name = social.Name,
             Link = social.Link,
+        };
+    }
+
+    public static GenreResponse ToGenreResponse(this Genre genre)
+    {
+        return new GenreResponse
+        {
+            Id = genre.Id.ToString(),
+            Name = genre.Name,
         };
     }
 }

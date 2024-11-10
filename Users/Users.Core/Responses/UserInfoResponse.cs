@@ -19,6 +19,7 @@ public class UserInfoResponse
     public string? AboutMe { get; set; }
     public double Rating { get; set; }
     public IEnumerable<SocialResponse> Socials { get; set; }
+    public IEnumerable<GenreResponse> Genres { get; set; }
 
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public UserType UserType { get; set; }

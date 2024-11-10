@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Users.Core.DTOs;
+﻿using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
 using Users.Core.Mapping;
@@ -11,6 +10,7 @@ namespace Users.Core.Services;
 public class UserService(
     IUserRepository userRepository,
     ISocialRepository socialRepository,
+    IGenreRepository genreRepository,
     IPasswordHasher passwordHasher,
     IAuthService authService
     ) : IUserService
@@ -38,8 +38,11 @@ public class UserService(
                 await socialRepository.AddSocial(DtoToDomainMapper.ToSocial(social));
             }
         }
+        var userGenres = await genreRepository.GetGenres(
+            genre => registrationDTO.GenreIds.Contains(genre.Id.ToString()));
 
         var user = registrationDTO.ToUser();
+        user.Genres = userGenres;
         user.Password = hashPasword;
         await userRepository.CreateUser(user);
 
@@ -61,8 +64,7 @@ public class UserService(
     public async Task<UserInfoResponse> GetUser(string id)
     {
         var user = await userRepository.GetUser(
-            user => user.Id.ToString() == id, 
-            [..UserIncludes.ProducerAndPerformer, ..UserIncludes.Socials])
+            user => user.Id.ToString() == id, UserIncludes.AllRelations)
             ?? throw new Exception("User do not exist");
 
         var rating = await GetUserAverageRating(id);
@@ -123,5 +125,11 @@ public class UserService(
         if (user.Producer != null) return UserType.Producer;
 
         throw new Exception("User type not found");
+    }
+
+    public async Task<IEnumerable<GenreResponse>> GetAvailableGenres()
+    {
+        var genres = await genreRepository.GetGenres(genre => true);
+        return genres.Select(DomainToDtoMapper.ToGenreResponse).ToList();
     }
 }
