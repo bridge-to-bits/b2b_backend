@@ -48,4 +48,6 @@ public class RegistrationDTO
     public bool IsAdmin { get; set; }
 
     public IEnumerable<AddSocialDTO>? Socials { get; set; }
+
+    public IEnumerable<string> GenreIds { get; set; }
 }
