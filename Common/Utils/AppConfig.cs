@@ -13,11 +13,13 @@ namespace Common.Utils
         private static readonly Lazy<IConfigurationRoot> _configuration = new(() =>
         {
             var baseDirectory = AppContext.BaseDirectory;
+            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
             var solutionDirectory = Directory.GetParent(baseDirectory).Parent.Parent.Parent.Parent.Parent.FullName;
 
             return new ConfigurationBuilder()
                 .SetBasePath(solutionDirectory)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                //.AddJsonFile($"appsettings{environment}.json", optional: true)
                 .Build();
         });
 

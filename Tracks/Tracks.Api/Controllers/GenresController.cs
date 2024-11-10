@@ -5,15 +5,15 @@ using Tracks.Core.Models;
 
 namespace Tracks.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/genres")]
 [ApiController]
 public class GenresController(IGenreService genreService) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> GetAllGenres()
     {
-        var result = await genreService.GetAllGenres();
-        return Ok(result);
+        //var result = await genreService.GetAllGenres();
+        return Ok("This is result");
     }
 
     [HttpPost]

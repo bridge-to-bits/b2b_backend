@@ -2,28 +2,27 @@
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 
-namespace ApiGateway
+namespace ApiGateway;
+
+public class Program
 {
-    public class Program
+    public static async Task Main(string[] args)
     {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+        var builder = WebApplication.CreateBuilder(args);
 
-            builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-            builder.Services.AddOcelot(builder.Configuration);
+        builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
+        builder.Services.AddOcelot(builder.Configuration);
 
-            builder.Services.AddControllers();
+        builder.Services.AddControllers();
 
-            var app = builder.Build();
+        var app = builder.Build();
 
-            app.UseAuthorization();
+        app.UseAuthorization();
 
-            app.MapControllers();
+        app.MapControllers();
 
-            await app.UseOcelot();
+        await app.UseOcelot();
 
-            app.Run();
-        }
+        app.Run();
     }
 }
