@@ -42,7 +42,7 @@ public class RegistrationDTO
     public string? AboutMe { get; set; }
 
     [Required(ErrorMessage = "Role cannot be empty")]
-    public RoleType Role { get; set; }
+    public UserType Type { get; set; }
 
     [Required(ErrorMessage = "IsAdmin cannot be empty")]
     public bool IsAdmin { get; set; }

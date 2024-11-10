@@ -1,6 +1,6 @@
 ﻿namespace Users.Core.Models;
 
-public enum RoleType
+public enum UserType
 {
     Producer,
     Performer
