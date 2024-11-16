@@ -12,8 +12,8 @@ public class GenresController(IGenreService genreService) : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllGenres()
     {
-        //var result = await genreService.GetAllGenres();
-        return Ok("This is result");
+        var result = await genreService.GetAllGenres();
+        return Ok(result);
     }
 
     [HttpPost]

@@ -369,3 +369,7 @@ FodyWeavers.xsd
 
 ./Migrations
 /appsettings.json
+/Tracks/Tracks.Api/appsettings.Release.json
+/Users/Users.Api/appsettings.Release.json
+/Tracks/Tracks.Api/appsettings.Development.json
+/Users/Users.Api/appsettings.Development.json

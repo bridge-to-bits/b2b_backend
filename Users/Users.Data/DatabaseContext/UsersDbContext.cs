@@ -12,7 +12,7 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContex
     public DbSet<Performer> Performers { get; set; }
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<Social> Socials { get; set; }
-    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Genre> Genre { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

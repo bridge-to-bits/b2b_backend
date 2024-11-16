@@ -31,7 +31,7 @@ namespace Users.Data.Migrations
 
                     b.HasIndex("UsersId");
 
-                    b.ToTable("GenreUser");
+                    b.ToTable("GenreUser", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Genre", b =>
@@ -46,7 +46,7 @@ namespace Users.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Genre");
+                    b.ToTable("Genre", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Grant", b =>
@@ -66,7 +66,7 @@ namespace Users.Data.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Grants");
+                    b.ToTable("Grants", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Performer", b =>
@@ -83,7 +83,7 @@ namespace Users.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Performers");
+                    b.ToTable("Performers", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Producer", b =>
@@ -100,7 +100,7 @@ namespace Users.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Producers");
+                    b.ToTable("Producers", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Rating", b =>
@@ -127,7 +127,7 @@ namespace Users.Data.Migrations
 
                     b.HasIndex("TargetUserId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Ratings", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Role", b =>
@@ -147,7 +147,7 @@ namespace Users.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.Social", b =>
@@ -171,7 +171,7 @@ namespace Users.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Socials");
+                    b.ToTable("Socials", (string)null);
                 });
 
             modelBuilder.Entity("Users.Core.Models.User", b =>
@@ -231,7 +231,7 @@ namespace Users.Data.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("GenreUser", b =>

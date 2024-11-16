@@ -10,7 +10,7 @@ public class GenresRepository(UsersDbContext context) : IGenreRepository
 {
     public Task<List<Genre>> GetGenres(Expression<Func<Genre, bool>> predicate)
     {
-        return context.Genres
+        return context.Genre
             .AsNoTracking()
             .Where(predicate)
             .ToListAsync();

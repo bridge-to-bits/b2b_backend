@@ -1,12 +1,12 @@
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER app
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 7000
 
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["ApiGateway/ApiGateway.csproj", "ApiGateway/"]
+COPY ["Common/Common.csproj", "Common/"]
 RUN dotnet restore "./ApiGateway/ApiGateway.csproj"
 COPY . .
 WORKDIR "/src/ApiGateway"
@@ -19,4 +19,7 @@ RUN dotnet publish "./ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY ["ApiGateway/ocelot.Release.json", "./ocelot.Release.json"]
+COPY ["ApiGateway/ocelot.Release.tracks.json", "./ocelot.Release.tracks.json"]
+COPY ["ApiGateway/ocelot.Release.users.json", "./ocelot.Release.users.json"]
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]
