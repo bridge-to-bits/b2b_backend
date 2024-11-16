@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Linq.Expressions;
 using Users.Core.Interfaces;
 using Users.Core.Models;
@@ -89,5 +90,36 @@ public class UserRepository(UsersDbContext context) : IUserRepository
             .AsNoTracking()
             .Where(r => r.TargetUserId == Guid.Parse(userId))
             .ToListAsync();
+    }
+
+    public Task<List<User>> GetPaginationUsers(
+        Expression<Func<User, bool>> predicate, 
+        IEnumerable<Expression<Func<User, object>>> includes = null, 
+        string sortBy = null, 
+        bool sortDescending = false,
+        int skip = 0,
+        int take = 10)
+    {
+        IQueryable<User> query = context.Users.AsNoTracking().Where(predicate);
+
+        if (includes != null)
+        {
+            query = includes.Aggregate(query, (current, include) => current.Include(include));
+        }
+
+        if (!string.IsNullOrEmpty(sortBy))
+        {
+            query = sortDescending
+                ? query.OrderByDescending(e => EF.Property<object>(e, sortBy))
+                : query.OrderBy(e => EF.Property<object>(e, sortBy));
+        }
+
+        query = query.Skip(skip).Take(take);
+        return query.ToListAsync();
+    }
+
+    public Task<int> Count(Expression<Func<User, bool>> predicate)
+    {
+        return context.Users.CountAsync(predicate);
     }
 }

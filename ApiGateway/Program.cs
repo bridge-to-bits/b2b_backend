@@ -8,7 +8,6 @@ public class Program
     public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
         CombineOcelotConfigurations(builder.Configuration, builder.Environment);
         builder.Services.AddOcelot(builder.Configuration);
 

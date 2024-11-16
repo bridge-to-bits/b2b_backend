@@ -1,4 +1,5 @@
-﻿using Users.Core.DTOs;
+﻿using System.Linq.Expressions;
+using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
 using Users.Core.Mapping;
@@ -18,7 +19,7 @@ public class UserService(
 
     public async Task<User> Register(RegistrationDTO registrationDTO)
     {
-        Dictionary<string, Func<string, Task>> _roleActions = new()
+        Dictionary<string, Func<string, Task>> _typeActions = new()
         {
             { "Producer", AttachProducer },
             { "Performer", AttachPerformer }
@@ -31,7 +32,7 @@ public class UserService(
         };
 
         string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
-        if(registrationDTO.Socials != null)
+        if (registrationDTO.Socials != null)
         {
             foreach (var social in registrationDTO.Socials)
             {
@@ -49,13 +50,13 @@ public class UserService(
         var securityRole = registrationDTO.IsAdmin ? "Admin" : "User";
         await authService.CreateUserRole(user.Id.ToString(), securityRole);
         await authService.SetPermissions(
-            user.Id.ToString(), 
+            user.Id.ToString(),
             _rolePermissions.GetValueOrDefault(securityRole)!
         );
 
-        if (_roleActions.TryGetValue(registrationDTO.Role.ToString(), out var attachRoleMethod))
+        if (_typeActions.TryGetValue(registrationDTO.Type.ToString(), out var attachTypeMethod))
         {
-            await attachRoleMethod(user.Id.ToString());
+            await attachTypeMethod(user.Id.ToString());
         }
 
         return user;
@@ -70,8 +71,41 @@ public class UserService(
         var rating = await GetUserAverageRating(id);
 
         var response = user.ToUserInfoResponse();
-        response.UserType = DetermineUserType(user);
         response.Rating = rating;
+        return response;
+    }
+
+    public async Task<UsersResponse> GetUsers(QueryAllUsersDTO queryAllUsersDTO)
+    {
+        Expression<Func<User, bool>> predicate = user =>
+            (queryAllUsersDTO.GenreIds == null || 
+                user.Genres.Any(genre => queryAllUsersDTO.GenreIds.Contains(genre.Id.ToString())))
+            &&
+            (queryAllUsersDTO.UserType == user.UserType);
+
+        var users = await userRepository.GetPaginationUsers(
+            predicate,
+            UserIncludes.AllRelations,
+            queryAllUsersDTO.SortBy,
+            queryAllUsersDTO.SortDirection?.ToLower() == "desc",
+            queryAllUsersDTO.Skip,
+            queryAllUsersDTO.PageSize);
+
+        int totalRecords = await userRepository.Count(predicate);
+        int totalPages = (int)Math.Ceiling((double)totalRecords / queryAllUsersDTO.PageSize);
+
+        var userResponses = users.Select(DomainToDtoMapper.ToUserInfoResponse).ToList();
+
+        var response = new UsersResponse
+        {
+            TotalRecords = totalRecords,
+            CurrentPage = queryAllUsersDTO.PageNumber,
+            TotalPages = totalPages,
+            NextPage = queryAllUsersDTO.PageNumber < totalPages ? queryAllUsersDTO.PageNumber + 1 : null,
+            PrevPage = queryAllUsersDTO.PageNumber > 1 ? queryAllUsersDTO.PageNumber - 1 : null,
+            Data = userResponses
+        };
+
         return response;
     }
 
@@ -116,15 +150,6 @@ public class UserService(
     {
         var ratings = await userRepository.GetRatingsForUser(userId);
         return ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0;
-    }
-
-    private static UserType DetermineUserType(User user)
-    {
-        if (user.Performer != null) return UserType.Performer;
-
-        if (user.Producer != null) return UserType.Producer;
-
-        throw new Exception("User type not found");
     }
 
     public async Task<IEnumerable<GenreResponse>> GetAvailableGenres()

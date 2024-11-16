@@ -29,6 +29,7 @@ public class User
 
     [MaxLength(512)]
     public string? AboutMe { get; set; }
+    public UserType UserType { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
@@ -37,6 +38,6 @@ public class User
     public Performer Performer { get; set; }
     public ICollection<Rating> ReceivedRatings { get; set; }
     public ICollection<Rating> GivenRatings { get; set; }
-    public ICollection<Social> Socials { get; set; }
-    public ICollection<Genre> Genres { get; set; }
+    public ICollection<Social>? Socials { get; set; }
+    public ICollection<Genre>? Genres { get; set; }
 }

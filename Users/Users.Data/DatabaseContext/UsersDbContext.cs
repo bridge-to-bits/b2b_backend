@@ -39,6 +39,10 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContex
             .HasForeignKey<Performer>(p => p.UserId);
 
         modelBuilder.Entity<User>()
+            .Property(u => u.UserType)
+            .HasConversion<string>();
+
+        modelBuilder.Entity<User>()
             .HasIndex(u => u.Email).IsUnique();
 
         modelBuilder.Entity<Rating>()
