@@ -5,6 +5,8 @@ using Tracks.Core.Interfaces;
 using Tracks.Data.Repositories;
 using Tracks.Core.Services;
 using Tracks.Data.DatabaseContext;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 namespace Tracks.Api;
 
@@ -21,11 +23,8 @@ public class Program
 
         var app = builder.Build();
 
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
         app.UseAuthentication();
         app.UseAuthorization();
@@ -36,9 +35,10 @@ public class Program
 
     private static void ServicesConfig(IServiceCollection services)
     {
-        services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
-
-        services.AddControllers();
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        });
 
         DIConfig(services);
 

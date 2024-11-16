@@ -12,7 +12,7 @@
     },
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
@@ -23,7 +23,8 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
-        "ASPNETCORE_HTTP_PORTS": "8080"
+        "ASPNETCORE_ENVIRONMENT": "Release",
+        "ASPNETCORE_HTTP_PORTS": "7001"
       },
       "publishAllPorts": true
     }
