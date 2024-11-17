@@ -373,3 +373,5 @@ FodyWeavers.xsd
 /Users/Users.Api/appsettings.Release.json
 /Tracks/Tracks.Api/appsettings.Development.json
 /Users/Users.Api/appsettings.Development.json
+/Users/Users.Data/appsettings.json
+/Tracks/Tracks.Data/appsettings.json
