@@ -26,5 +26,6 @@ public static class UserIncludes
         user => user.Performer,
         user => user.Producer,
         user => user.Socials,
+        user => user.Genres,
     ];
 }

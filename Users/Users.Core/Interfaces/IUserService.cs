@@ -12,4 +12,5 @@ public interface IUserService
     public Task<UsersResponse> GetUsers(QueryAllUsersDTO queryAllUsersDTO);
     public Task AddRating(AddRatingDTO addRatingDTO, string targetUserId);
     public Task<IEnumerable<GenreResponse>> GetAvailableGenres();
+    public Task<GenreResponse> AddAvailableGenre(AddGenreDTO addGenreDTO);
 }

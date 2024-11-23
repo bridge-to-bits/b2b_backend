@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
@@ -156,5 +157,12 @@ public class UserService(
     {
         var genres = await genreRepository.GetGenres(genre => true);
         return genres.Select(DomainToDtoMapper.ToGenreResponse).ToList();
+    }
+
+    public async Task<GenreResponse> AddAvailableGenre(AddGenreDTO addGenreDTO)
+    {
+        var genre = addGenreDTO.ToGenre();
+        var result = await genreRepository.AddGenre(genre);
+        return result.ToGenreResponse();
     }
 }

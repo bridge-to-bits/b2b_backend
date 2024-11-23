@@ -17,6 +17,7 @@ public static class DtoToDomainMapper
             AboutMe = registrationDTO.AboutMe,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
+            UserType = registrationDTO.Type,
         };
     }
     public static Social ToSocial(this AddSocialDTO addSocialDTO)
@@ -24,7 +25,15 @@ public static class DtoToDomainMapper
         return new Social
         {
             Name = addSocialDTO.Name,
-            Link = addSocialDTO.Link,
+            Link = addSocialDTO.Link
+        };
+    }
+
+    public static Genre ToGenre(this AddGenreDTO addGenreDTO)
+    {
+        return new Genre
+        {
+            Name = addGenreDTO.Name,
         };
     }
 }

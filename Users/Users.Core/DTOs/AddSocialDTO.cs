@@ -9,7 +9,4 @@ public class AddSocialDTO
 
     [Required(ErrorMessage = "Link cannot be empty")]
     public string Link { get; set; }
-
-    [Required(ErrorMessage = "UserId cannot be empty")]
-    public string UserId { get; set; }
 }

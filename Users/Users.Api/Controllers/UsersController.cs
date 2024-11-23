@@ -24,6 +24,13 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(genres);
     }
 
+    [HttpPost("register/availableGenres")]
+    public async Task<IActionResult> AddAvailableGenre([FromBody] AddGenreDTO addGenreDTO)
+    {
+        var result = await userService.AddAvailableGenre(addGenreDTO);
+        return Ok(result);
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
     {

@@ -19,7 +19,7 @@ RUN dotnet publish "./ApiGateway.csproj" -c $BUILD_CONFIGURATION -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-COPY ["ApiGateway/ocelot.Release.json", "./ocelot.Release.json"]
-COPY ["ApiGateway/ocelot.Release.tracks.json", "./ocelot.Release.tracks.json"]
-COPY ["ApiGateway/ocelot.Release.users.json", "./ocelot.Release.users.json"]
+COPY ["ApiGateway/ocelot.json", "./ocelot.json"]
+COPY ["ApiGateway/ocelot.tracks.json", "./ocelot.tracks.json"]
+COPY ["ApiGateway/ocelot.users.json", "./ocelot.users.json"]
 ENTRYPOINT ["dotnet", "ApiGateway.dll"]
