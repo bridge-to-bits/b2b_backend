@@ -76,13 +76,23 @@ public class UserService(
         return response;
     }
 
-    public async Task<UsersResponse> GetUsers(QueryAllUsersDTO queryAllUsersDTO)
+    public async Task<UsersResponse> GetPerformers(QueryAllUsersDTO queryAllUsersDTO)
+    {
+        return await GetUsersByType(queryAllUsersDTO, UserType.Performer);
+    }
+
+    public async Task<UsersResponse> GetProducers(QueryAllUsersDTO queryAllUsersDTO)
+    {
+        return await GetUsersByType(queryAllUsersDTO, UserType.Producer);
+    }
+
+    private async Task<UsersResponse> GetUsersByType(QueryAllUsersDTO queryAllUsersDTO, UserType userType)
     {
         Expression<Func<User, bool>> predicate = user =>
-            (queryAllUsersDTO.GenreIds == null || 
+            (queryAllUsersDTO.GenreIds == null ||
                 user.Genres.Any(genre => queryAllUsersDTO.GenreIds.Contains(genre.Id.ToString())))
             &&
-            (queryAllUsersDTO.UserType == user.UserType);
+            (user.UserType == userType);
 
         var users = await userRepository.GetPaginationUsers(
             predicate,
@@ -109,6 +119,7 @@ public class UserService(
 
         return response;
     }
+
 
     public async Task<string> Login(LoginDTO loginDTO)
     {

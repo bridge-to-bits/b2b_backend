@@ -1,7 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Users.Core.Models;
-
-namespace Users.Core.Responses;
+﻿namespace Users.Core.Responses;
 
 public class UserInfoResponse
 {
@@ -15,7 +12,4 @@ public class UserInfoResponse
     public double Rating { get; set; }
     public IEnumerable<SocialResponse>? Socials { get; set; }
     public IEnumerable<GenreResponse>? Genres { get; set; }
-
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public UserType UserType { get; set; }
 }
