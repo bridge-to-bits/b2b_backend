@@ -64,11 +64,4 @@ public class UsersController (IUserService userService, IAuthService authService
         await userService.AddRating(addRatingDTO, targetUserId);
         return Ok();
     }
-
-    [HttpGet]
-    public async Task<ActionResult<UsersResponse>> GetUsers([FromQuery] QueryAllUsersDTO queryAllUsersDTO)
-    {
-        var users = await userService.GetUsers(queryAllUsersDTO);
-        return Ok(users);
-    }
 }

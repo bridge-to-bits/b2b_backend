@@ -15,7 +15,6 @@ public static class DomainToDtoMapper
             City = user.City,
             Avatar = user.Avatar,
             AboutMe = user.AboutMe,
-            UserType = user.UserType,
             Socials = user.Socials?.Select(ToSocialResponse).ToList(),
             Genres = user.Genres?.Select(ToGenreResponse).ToList(),
         };
