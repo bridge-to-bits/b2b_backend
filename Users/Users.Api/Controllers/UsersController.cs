@@ -2,7 +2,6 @@
 using Users.Core.DTOs;
 using Users.Core.Filters;
 using Users.Core.Interfaces;
-using Users.Core.Responses;
 
 namespace Users.Api.Controllers;
 
@@ -10,8 +9,15 @@ namespace Users.Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegistrationDTO registrationDTO)
+    [HttpPost("register/main")]
+    public async Task<IActionResult> RegisterMainInfo([FromBody] RegistrationDTO registrationDTO)
+    {
+        var createdUser = await userService.Register(registrationDTO);
+        return Ok(createdUser.Id.ToString());
+    }
+
+    [HttpPost("register/additional")]
+    public async Task<IActionResult> FullyRegister([FromBody] RegistrationDTO registrationDTO)
     {
         var createdUser = await userService.Register(registrationDTO);
         return Ok(createdUser.Id.ToString());
