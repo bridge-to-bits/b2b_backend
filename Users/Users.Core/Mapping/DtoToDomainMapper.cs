@@ -8,12 +8,12 @@ public static class DtoToDomainMapper
     {
         return new User
         {
-            Username = registrationDTO.Username,
             Email = registrationDTO.Email,
             FirstName = registrationDTO.FirstName,
             LastName = registrationDTO.LastName,
             City = registrationDTO.City,
             Avatar = registrationDTO.Avatar,
+            ProfileBackground = registrationDTO.ProfileBackground,
             AboutMe = registrationDTO.AboutMe,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
