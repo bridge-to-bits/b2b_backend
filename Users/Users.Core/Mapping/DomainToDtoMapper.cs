@@ -8,12 +8,12 @@ public static class DomainToDtoMapper
     {
         return new UserInfoResponse
         {
-            Username = user.Username,
             Email = user.Email,
             FirstName = user.FirstName,
             LastName = user.LastName,
             City = user.City,
             Avatar = user.Avatar,
+            ProfileBackground = user.ProfileBackground,
             AboutMe = user.AboutMe,
             Socials = user.Socials?.Select(ToSocialResponse).ToList(),
             Genres = user.Genres?.Select(ToGenreResponse).ToList(),

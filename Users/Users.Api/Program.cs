@@ -7,6 +7,7 @@ using Users.Core.Interfaces;
 using Users.Core.Services;
 using Users.Data.DatabaseContext;
 using Users.Data.Repositories;
+using Microsoft.AspNetCore.Cors;
 
 namespace Users.Api;
 
@@ -20,10 +21,22 @@ public class Program
         AppConfig.GeneralAuthConfig(builder.Services);
         AppConfig.DocsConfig(builder.Services);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowFrontend", policy =>
+            {
+                policy.WithOrigins("http://localhost:3000")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
         var app = builder.Build();
 
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        app.UseCors("AllowFrontend");
 
         app.UseAuthentication();
         app.UseAuthorization();
