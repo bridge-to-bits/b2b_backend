@@ -128,4 +128,20 @@ public class UserRepository(UsersDbContext context) : IUserRepository
     {
         return context.Users.CountAsync(predicate);
     }
+
+    //TODO remove this method and add asNoTracking boolean parameter. Look for Include(string_param) usage
+    public Task<User?> GetUserForUpdate(
+        Expression<Func<User, bool>> predicate,
+        params Expression<Func<User, object>>[] includes)
+    {
+        IQueryable<User> query = context.Users;
+
+        query = includes.Aggregate(query, (current, include) => current.Include(include));
+
+        return query.FirstOrDefaultAsync(predicate);
+    }
+    public async Task SaveAsync()
+    {
+        await context.SaveChangesAsync();
+    }
 }

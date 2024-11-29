@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using Users.Core.DTOs;
 using Users.Core.Includes;
@@ -18,7 +19,7 @@ public class UserService(
     ) : IUserService
 {
 
-    public async Task<User> Register(RegistrationDTO registrationDTO)
+    public async Task<User> Register(MainRegistrationDTO registrationDTO)
     {
         Dictionary<string, Func<string, Task>> _typeActions = new()
         {
@@ -32,35 +33,35 @@ public class UserService(
             { "Admin", ["setPermissions"] }
         };
 
-        string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
-        if (registrationDTO.Socials != null)
-        {
-            foreach (var social in registrationDTO.Socials)
-            {
-                await socialRepository.AddSocial(DtoToDomainMapper.ToSocial(social));
-            }
-        }
-        var userGenres = await genreRepository.GetGenres(
-            genre => registrationDTO.GenreIds.Contains(genre.Id.ToString()));
+        //string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
+        //if (registrationDTO.Socials != null)
+        //{
+        //    foreach (var social in registrationDTO.Socials)
+        //    {
+        //        await socialRepository.AddSocial(DtoToDomainMapper.ToSocial(social));
+        //    }
+        //}
+        //var userGenres = await genreRepository.GetGenres(
+        //    genre => registrationDTO.GenreIds.Contains(genre.Id.ToString()));
 
-        var user = registrationDTO.ToUser();
-        user.Genres = userGenres;
-        user.Password = hashPasword;
-        await userRepository.CreateUser(user);
+        //var user = registrationDTO.ToUser();
+        //user.Genres = userGenres;
+        //user.Password = hashPasword;
+        //await userRepository.CreateUser(user);
 
-        var securityRole = registrationDTO.IsAdmin ? "Admin" : "User";
-        await authService.CreateUserRole(user.Id.ToString(), securityRole);
-        await authService.SetPermissions(
-            user.Id.ToString(),
-            _rolePermissions.GetValueOrDefault(securityRole)!
-        );
+        //var securityRole = "User";
+        //await authService.CreateUserRole(user.Id.ToString(), securityRole);
+        //await authService.SetPermissions(
+        //    user.Id.ToString(),
+        //    _rolePermissions.GetValueOrDefault(securityRole)!
+        //);
 
-        if (_typeActions.TryGetValue(registrationDTO.Type.ToString(), out var attachTypeMethod))
-        {
-            await attachTypeMethod(user.Id.ToString());
-        }
+        //if (_typeActions.TryGetValue(registrationDTO.Type.ToString(), out var attachTypeMethod))
+        //{
+        //    await attachTypeMethod(user.Id.ToString());
+        //}
 
-        return user;
+        return new User();
     }
 
     public async Task<UserInfoResponse> GetUser(string id)
@@ -105,7 +106,7 @@ public class UserService(
         int totalRecords = await userRepository.Count(predicate);
         int totalPages = (int)Math.Ceiling((double)totalRecords / queryAllUsersDTO.PageSize);
 
-        var userResponses = users.Select(DomainToDtoMapper.ToUserInfoResponse).ToList();
+        var userResponses = users.Select(DomainToResponseMapper.ToUserInfoResponse).ToList();
 
         var response = new UsersResponse
         {
@@ -119,7 +120,6 @@ public class UserService(
 
         return response;
     }
-
 
     public async Task<string> Login(LoginDTO loginDTO)
     {
@@ -167,7 +167,7 @@ public class UserService(
     public async Task<IEnumerable<GenreResponse>> GetAvailableGenres()
     {
         var genres = await genreRepository.GetGenres(genre => true);
-        return genres.Select(DomainToDtoMapper.ToGenreResponse).ToList();
+        return genres.Select(DomainToResponseMapper.ToGenreResponse).ToList();
     }
 
     public async Task<GenreResponse> AddAvailableGenre(AddGenreDTO addGenreDTO)
@@ -175,5 +175,99 @@ public class UserService(
         var genre = addGenreDTO.ToGenre();
         var result = await genreRepository.AddGenre(genre);
         return result.ToGenreResponse();
+    }
+
+    public async Task<ProfileResponse> GetUserProfile(string userId)
+    {
+        var user = await userRepository.GetUser(user => user.Id == Guid.Parse(userId), UserIncludes.Genres);
+        var rating = await GetUserAverageRating(userId);
+        return user.ToProfileResponse(rating);
+    }
+
+    public async Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO)
+    {
+        var user = await userRepository.GetUserForUpdate(
+            user => user.Id == Guid.Parse(userId), 
+            [..UserIncludes.Genres, ..UserIncludes.Socials]
+        ) ?? throw new NullReferenceException();
+
+        user.UpdateUser(updateProfileDTO);
+
+        if (updateProfileDTO.Socials != null)
+        {
+            UpdateUserSocials(user, updateProfileDTO.Socials);
+        }
+
+        if (updateProfileDTO.GenreIds != null)
+        {
+            await UpdateUserGenres(user, updateProfileDTO.GenreIds);
+        }
+
+        await userRepository.SaveAsync();
+
+        var rating = await GetUserAverageRating(userId);
+
+        return user.ToProfileResponse(rating);
+    }
+
+    private async Task UpdateUserGenres(User user, IEnumerable<string> genreIds)
+    {
+        if (user.Genres == null)
+            user.Genres = new List<Genre>();
+
+        var existingGenres = user.Genres;
+
+        var genresToRemove = existingGenres
+            .Where(existingGenre => !genreIds.Contains(existingGenre.Id.ToString()))
+            .ToList();
+
+        foreach (var genre in genresToRemove)
+        {
+            user.Genres.Remove(genre);
+        }
+
+        var existingGenreIds = existingGenres.Select(genre => genre.Id.ToString());
+        var genreIdsToAdd = genreIds.Except(existingGenreIds).ToList();
+
+        var genresToAdd = await genreRepository.GetGenres(genre => genreIdsToAdd.Contains(genre.Id.ToString()));
+
+        foreach (var genre in genresToAdd)
+        {
+            user.Genres.Add(genre);
+        }
+    }
+
+    private void UpdateUserSocials(User user, IEnumerable<AddSocialDTO> updatedSocials)
+    {
+        var updatedSocialsMap = updatedSocials.ToDictionary(s => s.Name, s => s.Link);
+
+        var existingSocials = user.Socials ?? [];
+        var socialsToRemove = existingSocials
+            .Where(existingSocial => !updatedSocialsMap.ContainsKey(existingSocial.Name))
+            .ToList();
+
+        foreach (var social in socialsToRemove)
+        {
+            user.Socials?.Remove(social);
+        }
+
+        foreach (var updatedSocial in updatedSocials)
+        {
+            var existingSocial = existingSocials.FirstOrDefault(s => s.Name == updatedSocial.Name);
+            if (existingSocial != null && existingSocial.Link != updatedSocial.Link)
+            {
+                existingSocial.Link = updatedSocial.Link;
+            }
+            else
+            {
+                user.Socials?.Add(new Social
+                {
+                    Id = Guid.NewGuid(),
+                    Name = updatedSocial.Name,
+                    Link = updatedSocial.Link,
+                    UserId = user.Id
+                });
+            }
+        }
     }
 }

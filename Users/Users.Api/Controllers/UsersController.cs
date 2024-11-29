@@ -9,18 +9,29 @@ namespace Users.Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
-    [HttpPost("register/main")]
-    public async Task<IActionResult> RegisterMainInfo([FromBody] RegistrationDTO registrationDTO)
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterMainInfo([FromBody] MainRegistrationDTO registrationDTO)
     {
         var createdUser = await userService.Register(registrationDTO);
         return Ok(createdUser.Id.ToString());
     }
 
-    [HttpPost("register/additional")]
-    public async Task<IActionResult> FullyRegister([FromBody] RegistrationDTO registrationDTO)
+    [HttpPatch("{userId}/profile")]
+    public async Task<IActionResult> UpdateUserProfile(
+        [FromRoute] string userId,
+        [FromBody] UpdateProfileDTO updateProfileDTO)
     {
-        var createdUser = await userService.Register(registrationDTO);
-        return Ok(createdUser.Id.ToString());
+        //var createdUser = await userService.Register(registrationDTO);
+        //return Ok(createdUser.Id.ToString());
+        return Ok();
+    }
+
+    [HttpGet("{userId}/profile")]
+    public async Task<IActionResult> GetUserProfile([FromRoute] string userId)
+    {
+        //var createdUser = await userService.Register(registrationDTO);
+        //return Ok(createdUser.Id.ToString());
+        return Ok();
     }
 
     [HttpGet("register/availableGenres")]
@@ -44,8 +55,8 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(token);
     }
 
-    [HttpPost("{userId}/setPermissions")]
     [AuthorizePermission("setPermissions")]
+    [HttpPost("{userId}/setPermissions")]
     public async Task<IActionResult> SetPermissions(
         [FromBody] SetPermissionsDTO permissionsDTO,
         string userId)
@@ -61,8 +72,8 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(await userService.GetUser(userId));
     }
 
-    [HttpPost("{targetUserId}/addRating")]
     [AuthorizePermission("addRating")]
+    [HttpPost("{targetUserId}/addRating")]
     public async Task<IActionResult> AddRating(
         [FromBody] AddRatingDTO addRatingDTO, 
         string targetUserId)

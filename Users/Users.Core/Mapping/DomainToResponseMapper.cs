@@ -2,7 +2,7 @@
 using Users.Core.Responses;
 
 namespace Users.Core.Mapping;
-public static class DomainToDtoMapper
+public static class DomainToResponseMapper
 {
     public static UserInfoResponse ToUserInfoResponse(this User user)
     {
@@ -35,6 +35,20 @@ public static class DomainToDtoMapper
         {
             Id = genre.Id.ToString(),
             Name = genre.Name,
+        };
+    }
+
+    public static ProfileResponse ToProfileResponse(this User user, double rating)
+    {
+        return new ProfileResponse
+        {
+            Banner = "/banner.png",
+            Avatar = user.Avatar,
+            Name = user.FirstName,
+            Desciption = user.AboutMe,
+            Location = user.City,
+            Genres = user.Genres.Select(ToGenreResponse).ToList(),
+            Rating = rating,
         };
     }
 }
