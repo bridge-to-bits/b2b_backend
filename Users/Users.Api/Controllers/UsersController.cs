@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Users.Core.DTOs;
 using Users.Core.Filters;
 using Users.Core.Interfaces;
+using Users.Core.Mapping;
 
 namespace Users.Api.Controllers;
 
@@ -9,6 +11,23 @@ namespace Users.Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
+    {
+        var userId = User.FindFirst("userId")?.Value;
+
+        if (userId == null)
+            return Unauthorized(new { message = "Invalid token" });
+
+        var user = await userService.GetMe(userId);
+
+        if (user == null)
+            return NotFound(new { message = "User not found" });
+
+        return Ok(user.ToGetMeResponse());
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> RegisterMainInfo([FromBody] MainRegistrationDTO registrationDTO)
     {

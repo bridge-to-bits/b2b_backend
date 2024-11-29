@@ -51,4 +51,14 @@ public static class DomainToResponseMapper
             Rating = rating,
         };
     }
+
+    public static GetMeResponse ToGetMeResponse(this User user) 
+    {
+        return new GetMeResponse
+        {
+            Id = user.Id.ToString(),
+            FirstName = user.FirstName,
+            Email = user.Email,
+        };
+    }
 }

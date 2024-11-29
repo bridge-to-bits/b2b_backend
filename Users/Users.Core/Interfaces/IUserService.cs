@@ -21,4 +21,6 @@ public interface IUserService
 
     public Task<ProfileResponse> GetUserProfile(string userId);
     public Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO);
+
+    public Task<User?> GetMe (string userId);
 }
