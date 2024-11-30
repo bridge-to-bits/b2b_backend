@@ -19,6 +19,12 @@ public class UserService(
 
     public async Task<User> Register(MainRegistrationDTO registrationDTO)
     {
+        var existingUser = await userRepository.GetUser(user => user.Email == registrationDTO.Email);
+        if (existingUser != null)
+        {
+            throw new InvalidOperationException("Email is already in use");
+        }
+
         Dictionary<string, Func<string, Task>> _typeActions = new()
         {
             { "Producer", AttachProducer },

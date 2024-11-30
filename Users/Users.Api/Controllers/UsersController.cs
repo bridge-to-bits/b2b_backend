@@ -34,9 +34,16 @@ public class UsersController (IUserService userService, IAuthService authService
     [HttpPost("register")]
     public async Task<IActionResult> RegisterMainInfo([FromBody] MainRegistrationDTO registrationDTO)
     {
-        var createdUser = await userService.Register(registrationDTO);
-        var token = authService.GenerateToken(createdUser.Id.ToString());
-        return Ok(token);
+        try
+        {
+            var createdUser = await userService.Register(registrationDTO);
+            var token = authService.GenerateToken(createdUser.Id.ToString());
+            return Ok(token);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
     }
 
     [HttpPatch("{userId}/profile")]
