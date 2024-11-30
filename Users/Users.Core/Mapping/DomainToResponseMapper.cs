@@ -59,6 +59,7 @@ public static class DomainToResponseMapper
             Id = user.Id.ToString(),
             Username = user.Username,
             Email = user.Email,
+            Avatar = user.Avatar ?? "",
         };
     }
 }

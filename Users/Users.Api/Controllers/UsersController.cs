@@ -11,12 +11,15 @@ namespace Users.Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
-    [Authorize]
     [HttpGet("me")]
     public async Task<IActionResult> GetMe()
     {
-        var userId = User.FindFirst("userId")?.Value;
+        var token = HttpContext.Request.Cookies["access_token"];
 
+        if (string.IsNullOrEmpty(token))
+            return Unauthorized(new { message = "Token not found in cookies" });
+
+        var userId = authService.ValidateToken(token)?.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (userId == null)
             return Unauthorized(new { message = "Invalid token" });
 
