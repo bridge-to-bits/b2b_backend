@@ -1,5 +1,4 @@
-﻿using System.Linq.Expressions;
-using Users.Core.DTOs;
+﻿using Users.Core.DTOs;
 using Users.Core.Models;
 using Users.Core.Responses;
 

@@ -6,8 +6,8 @@ public static class UpdateFromDtoMapper
 {
     public static void UpdateUser(this User user, UpdateProfileDTO updateProfileDTO)
     {
-        if (!string.IsNullOrWhiteSpace(updateProfileDTO.Name))
-            user.FirstName = updateProfileDTO.Name;
+        if (!string.IsNullOrWhiteSpace(updateProfileDTO.Username))
+            user.Username = updateProfileDTO.Username;
 
         if (!string.IsNullOrWhiteSpace(updateProfileDTO.City))
             user.City = updateProfileDTO.City;

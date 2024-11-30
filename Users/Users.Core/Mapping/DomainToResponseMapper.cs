@@ -9,7 +9,7 @@ public static class DomainToResponseMapper
         return new UserInfoResponse
         {
             Email = user.Email,
-            FirstName = user.FirstName,
+            Username = user.Username,
             LastName = user.LastName,
             City = user.City,
             Avatar = user.Avatar,
@@ -44,7 +44,7 @@ public static class DomainToResponseMapper
         {
             Banner = "/banner.png",
             Avatar = user.Avatar,
-            Name = user.FirstName,
+            Username = user.Username,
             Desciption = user.AboutMe,
             Location = user.City,
             Genres = user.Genres.Select(ToGenreResponse).ToList(),
@@ -57,7 +57,7 @@ public static class DomainToResponseMapper
         return new GetMeResponse
         {
             Id = user.Id.ToString(),
-            FirstName = user.FirstName,
+            Username = user.Username,
             Email = user.Email,
         };
     }

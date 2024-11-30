@@ -24,12 +24,6 @@ public class UserRepository(UsersDbContext context) : IUserRepository
     public async Task<User> CreateUser(User user)
     {
         var res = await context.Users.AddAsync(user);
-
-        foreach (var genre in user.Genres)
-        {
-            context.Entry(genre).State = EntityState.Unchanged;
-        }
-
         await context.SaveChangesAsync();
         return res.Entity;
     }

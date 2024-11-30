@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
@@ -33,35 +31,25 @@ public class UserService(
             { "Admin", ["setPermissions"] }
         };
 
-        //string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
-        //if (registrationDTO.Socials != null)
-        //{
-        //    foreach (var social in registrationDTO.Socials)
-        //    {
-        //        await socialRepository.AddSocial(DtoToDomainMapper.ToSocial(social));
-        //    }
-        //}
-        //var userGenres = await genreRepository.GetGenres(
-        //    genre => registrationDTO.GenreIds.Contains(genre.Id.ToString()));
+        string hashPasword = passwordHasher.HashPassword(registrationDTO.Password);
 
-        //var user = registrationDTO.ToUser();
-        //user.Genres = userGenres;
-        //user.Password = hashPasword;
-        //await userRepository.CreateUser(user);
+        var user = registrationDTO.ToUser();
+        user.Password = hashPasword;
+        await userRepository.CreateUser(user);
 
-        //var securityRole = "User";
-        //await authService.CreateUserRole(user.Id.ToString(), securityRole);
-        //await authService.SetPermissions(
-        //    user.Id.ToString(),
-        //    _rolePermissions.GetValueOrDefault(securityRole)!
-        //);
+        var securityRole = "User";
+        await authService.CreateUserRole(user.Id.ToString(), securityRole);
+        await authService.SetPermissions(
+            user.Id.ToString(),
+            _rolePermissions.GetValueOrDefault(securityRole)!
+        );
 
-        //if (_typeActions.TryGetValue(registrationDTO.Type.ToString(), out var attachTypeMethod))
-        //{
-        //    await attachTypeMethod(user.Id.ToString());
-        //}
+        if (_typeActions.TryGetValue(registrationDTO.UserType.ToString(), out var attachTypeMethod))
+        {
+            await attachTypeMethod(user.Id.ToString());
+        }
 
-        return new User();
+        return user;
     }
 
     public async Task<UserInfoResponse> GetUser(string id)
@@ -269,5 +257,9 @@ public class UserService(
                 });
             }
         }
+    }
+    public Task<User?> GetMe(string userId)
+    {
+        return userRepository.GetUserForUpdate(user => user.Id == Guid.Parse(userId));
     }
 }

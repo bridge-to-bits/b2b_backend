@@ -13,15 +13,15 @@ public class User
     public string Password { get; set; }
 
     [MaxLength(100)]
-    public string LastName { get; set; }
+    public string? LastName { get; set; }
 
     [MaxLength(100)]
-    public string FirstName { get; set; }
+    public string Username { get; set; }
 
     [MaxLength(100)]
-    public string City { get; set; }
-    public string Avatar { get; set; }
-    public string ProfileBackground { get; set; }
+    public string? City { get; set; }
+    public string? Avatar { get; set; }
+    public string? ProfileBackground { get; set; }
 
     [MaxLength(512)]
     public string? AboutMe { get; set; }

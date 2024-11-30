@@ -32,7 +32,8 @@ public class UsersController (IUserService userService, IAuthService authService
     public async Task<IActionResult> RegisterMainInfo([FromBody] MainRegistrationDTO registrationDTO)
     {
         var createdUser = await userService.Register(registrationDTO);
-        return Ok(createdUser.Id.ToString());
+        var token = authService.GenerateToken(createdUser.Id.ToString());
+        return Ok(token);
     }
 
     [HttpPatch("{userId}/profile")]
@@ -40,17 +41,15 @@ public class UsersController (IUserService userService, IAuthService authService
         [FromRoute] string userId,
         [FromBody] UpdateProfileDTO updateProfileDTO)
     {
-        //var createdUser = await userService.Register(registrationDTO);
-        //return Ok(createdUser.Id.ToString());
+        await userService.UpdateUserProfile(userId, updateProfileDTO);
         return Ok();
     }
 
     [HttpGet("{userId}/profile")]
     public async Task<IActionResult> GetUserProfile([FromRoute] string userId)
     {
-        //var createdUser = await userService.Register(registrationDTO);
-        //return Ok(createdUser.Id.ToString());
-        return Ok();
+        var profile = await userService.GetUserProfile(userId);
+        return Ok(profile);
     }
 
     [HttpGet("register/availableGenres")]

@@ -9,8 +9,9 @@ public static class DtoToDomainMapper
         return new User
         {
             Email = registrationDTO.Email,
-            FirstName = registrationDTO.FirstName,
-            LastName = registrationDTO.LastName,
+            Username = registrationDTO.Username,
+            LastName = registrationDTO.LastName ?? "",
+            UserType = registrationDTO.UserType,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
         };

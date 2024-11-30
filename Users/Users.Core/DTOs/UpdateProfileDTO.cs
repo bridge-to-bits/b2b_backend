@@ -6,7 +6,7 @@ namespace Users.Core.DTOs;
 public class UpdateProfileDTO
 {
     [StringLength(100, ErrorMessage = "Name is too long (max:100)")]
-    public string? Name { get; set; }
+    public string? Username { get; set; }
 
     [StringLength(100, ErrorMessage = "City name is too long (max:100)")]
     public string? City { get; set; }
