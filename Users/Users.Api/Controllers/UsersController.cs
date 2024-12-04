@@ -19,9 +19,9 @@ public class UsersController (IUserService userService, IAuthService authService
         if (string.IsNullOrEmpty(token))
             return Unauthorized(new { message = "Token not found in cookies" });
 
-        var userId = authService.ValidateToken(token)?.Claims.FirstOrDefault(c => c.Type == "userId")?.Value;
+        var userId = authService.ValidateToken(token)?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (userId == null)
-            return Unauthorized(new { message = "Invalid token" });
+            return Unauthorized(new { message = "userId not found in token" });
 
         var user = await userService.GetMe(userId);
 

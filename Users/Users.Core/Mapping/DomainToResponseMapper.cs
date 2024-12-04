@@ -8,6 +8,7 @@ public static class DomainToResponseMapper
     {
         return new UserInfoResponse
         {
+            Id = user.Id.ToString(),
             Email = user.Email,
             Username = user.Username,
             LastName = user.LastName,
