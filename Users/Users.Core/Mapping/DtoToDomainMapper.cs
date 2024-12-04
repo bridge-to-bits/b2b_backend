@@ -4,20 +4,16 @@ using Users.Core.Models;
 namespace Users.Core.Mapping;
 public static class DtoToDomainMapper
 {
-    public static User ToUser(this RegistrationDTO registrationDTO)
+    public static User ToUser(this MainRegistrationDTO registrationDTO)
     {
         return new User
         {
             Email = registrationDTO.Email,
-            FirstName = registrationDTO.FirstName,
-            LastName = registrationDTO.LastName,
-            City = registrationDTO.City,
-            Avatar = registrationDTO.Avatar,
-            ProfileBackground = registrationDTO.ProfileBackground,
-            AboutMe = registrationDTO.AboutMe,
+            Username = registrationDTO.Username,
+            LastName = registrationDTO.LastName ?? "",
+            UserType = registrationDTO.UserType,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now,
-            UserType = registrationDTO.Type,
         };
     }
     public static Social ToSocial(this AddSocialDTO addSocialDTO)

@@ -2,14 +2,15 @@
 using Users.Core.Responses;
 
 namespace Users.Core.Mapping;
-public static class DomainToDtoMapper
+public static class DomainToResponseMapper
 {
     public static UserInfoResponse ToUserInfoResponse(this User user)
     {
         return new UserInfoResponse
         {
+            Id = user.Id.ToString(),
             Email = user.Email,
-            FirstName = user.FirstName,
+            Username = user.Username,
             LastName = user.LastName,
             City = user.City,
             Avatar = user.Avatar,
@@ -35,6 +36,31 @@ public static class DomainToDtoMapper
         {
             Id = genre.Id.ToString(),
             Name = genre.Name,
+        };
+    }
+
+    public static ProfileResponse ToProfileResponse(this User user, double rating)
+    {
+        return new ProfileResponse
+        {
+            Banner = "/banner.png",
+            Avatar = user.Avatar,
+            Username = user.Username,
+            Desciption = user.AboutMe,
+            Location = user.City,
+            Genres = user.Genres.Select(ToGenreResponse).ToList(),
+            Rating = rating,
+        };
+    }
+
+    public static GetMeResponse ToGetMeResponse(this User user) 
+    {
+        return new GetMeResponse
+        {
+            Id = user.Id.ToString(),
+            Username = user.Username,
+            Email = user.Email,
+            Avatar = user.Avatar ?? "",
         };
     }
 }

@@ -25,11 +25,13 @@ public class Program
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins("http://localhost:3000")
-                      .AllowAnyHeader()
-                      .AllowAnyMethod();
+                policy.WithOrigins("http://localhost:3000") // Only allow this origin
+                      .AllowAnyHeader()                     // Allow any headers
+                      .AllowAnyMethod()                     // Allow any HTTP methods (GET, POST, etc.)
+                      .AllowCredentials();                  // Allow credentials (cookies, Authorization headers, etc.)
             });
         });
+
 
         var app = builder.Build();
 

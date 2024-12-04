@@ -1,4 +1,5 @@
-﻿using Users.Core.Interfaces;
+﻿using System.Security.Claims;
+using Users.Core.Interfaces;
 using Users.Core.Models;
 
 namespace Users.Core.Services;
@@ -70,5 +71,10 @@ public class AuthService (
             .SelectMany(role => role.Grants)
             .Select(grant => grant.Permission)
             .Contains(permission);
+    }
+
+    public ClaimsPrincipal? ValidateToken(string token)
+    {
+        return jwtProvider.ValidateToken(token);
     }
 }

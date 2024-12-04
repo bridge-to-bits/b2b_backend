@@ -27,4 +27,8 @@ public interface IUserRepository
     public Task AddRating(Rating rating);
     public Task<List<Rating>> GetRatingsForUser(string userId);
     public Task<int> Count(Expression<Func<User, bool>> predicate);
+    public Task SaveAsync();
+    public Task<User?> GetUserForUpdate(
+        Expression<Func<User, bool>> predicate,
+        params Expression<Func<User, object>>[] includes);
 }

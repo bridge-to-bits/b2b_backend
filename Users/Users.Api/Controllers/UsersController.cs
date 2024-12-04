@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Users.Core.DTOs;
 using Users.Core.Filters;
 using Users.Core.Interfaces;
-using Users.Core.Responses;
+using Users.Core.Mapping;
 
 namespace Users.Api.Controllers;
 
@@ -10,11 +11,55 @@ namespace Users.Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] RegistrationDTO registrationDTO)
+    [HttpGet("me")]
+    public async Task<IActionResult> GetMe()
     {
-        var createdUser = await userService.Register(registrationDTO);
-        return Ok(createdUser.Id.ToString());
+        var token = HttpContext.Request.Cookies["access_token"];
+
+        if (string.IsNullOrEmpty(token))
+            return Unauthorized(new { message = "Token not found in cookies" });
+
+        var userId = authService.ValidateToken(token)?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (userId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        var user = await userService.GetMe(userId);
+
+        if (user == null)
+            return NotFound(new { message = "User not found" });
+
+        return Ok(user.ToGetMeResponse());
+    }
+
+    [HttpPost("register")]
+    public async Task<IActionResult> RegisterMainInfo([FromBody] MainRegistrationDTO registrationDTO)
+    {
+        try
+        {
+            var createdUser = await userService.Register(registrationDTO);
+            var token = authService.GenerateToken(createdUser.Id.ToString());
+            return Ok(token);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    [HttpPatch("{userId}/profile")]
+    public async Task<IActionResult> UpdateUserProfile(
+        [FromRoute] string userId,
+        [FromBody] UpdateProfileDTO updateProfileDTO)
+    {
+        await userService.UpdateUserProfile(userId, updateProfileDTO);
+        return Ok();
+    }
+
+    [HttpGet("{userId}/profile")]
+    public async Task<IActionResult> GetUserProfile([FromRoute] string userId)
+    {
+        var profile = await userService.GetUserProfile(userId);
+        return Ok(profile);
     }
 
     [HttpGet("register/availableGenres")]
@@ -38,8 +83,8 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(token);
     }
 
-    [HttpPost("{userId}/setPermissions")]
     [AuthorizePermission("setPermissions")]
+    [HttpPost("{userId}/setPermissions")]
     public async Task<IActionResult> SetPermissions(
         [FromBody] SetPermissionsDTO permissionsDTO,
         string userId)
@@ -55,8 +100,8 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(await userService.GetUser(userId));
     }
 
-    [HttpPost("{targetUserId}/addRating")]
     [AuthorizePermission("addRating")]
+    [HttpPost("{targetUserId}/addRating")]
     public async Task<IActionResult> AddRating(
         [FromBody] AddRatingDTO addRatingDTO, 
         string targetUserId)
