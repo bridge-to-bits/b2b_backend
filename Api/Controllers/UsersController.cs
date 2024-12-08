@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Core.DTOs;
 using Core.Filters;
 using Core.Interfaces;
 using Core.Mapping;
 using Core.Responses;
+using Core.DTOs.Users;
 
 namespace Api.Controllers;
 

@@ -12,7 +12,8 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
     public DbSet<Performer> Performers { get; set; }
     public DbSet<Rating> Ratings { get; set; }
     public DbSet<Social> Socials { get; set; }
-    public DbSet<Genre> Genre { get; set; }
+    public DbSet<Genre> Genres { get; set; }
+    public DbSet<Track> Tracks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,5 +67,14 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
         modelBuilder.Entity<Genre>()
             .HasMany(g => g.Users)
             .WithMany(u => u.Genres);
+
+
+        modelBuilder.Entity<Track>()
+            .HasMany(track => track.Genres)
+            .WithMany(genre => genre.Tracks)
+            .UsingEntity<Dictionary<string, object>>(
+                "GenresTracks",
+                j => j.HasOne<Genre>().WithMany().HasForeignKey("GenreId"),
+                j => j.HasOne<Track>().WithMany().HasForeignKey("TrackId"));
     }
 }

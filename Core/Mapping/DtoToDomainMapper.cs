@@ -1,4 +1,5 @@
-﻿using Core.DTOs;
+﻿using Core.DTOs.Tracks;
+using Core.DTOs.Users;
 using Core.Models;
 
 namespace Core.Mapping;
@@ -30,6 +31,16 @@ public static class DtoToDomainMapper
         return new Genre
         {
             Name = addGenreDTO.Name,
+        };
+    }
+
+    public static Track ToTrack(this UploadTracksDTO dto)
+    {
+        return new Track
+        {
+            Name = dto.Name,
+            Description = dto.Description,
+            PerformerId = Guid.Parse(dto.PerformerId)
         };
     }
 }

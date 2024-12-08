@@ -1,6 +1,5 @@
 ﻿using Common.Interfaces;
 using Common.Utils;
-using Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.DatabaseContext;
@@ -18,6 +17,6 @@ public class B2BDbContextConfigurer : IDbContextConfigurer<B2BDbContext>
 
     public string GetConnectionString()
     {
-        return AppConfig.GetConnectionString("UsersDbConnectionString") ?? "";
+        return AppConfig.GetConnectionString("DbConnectionString") ?? "";
     }
 }

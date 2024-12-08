@@ -1,6 +1,6 @@
 ﻿using Common.Models;
 using Common.Services;
-using Core.DTOs;
+using Core.DTOs.Users;
 using Core.Includes;
 using Core.Interfaces;
 using Core.Mapping;

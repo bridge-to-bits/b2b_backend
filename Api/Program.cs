@@ -70,6 +70,11 @@ public class Program
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IJwtProvider, JwtProvider>();
+        services.AddScoped<IJwtProvider, JwtProvider>(); 
+        
+        services.AddScoped<ITrackRepository, TrackRepository>();
+        services.AddScoped<IGenreRepository, GenresRepository>();
+        services.AddScoped<ITrackService, TrackService>();
+        services.AddScoped<IGenreService, GenresService>();
     }
 }

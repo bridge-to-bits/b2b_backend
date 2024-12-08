@@ -1,7 +1,6 @@
-﻿using Core.DTOs;
-using Microsoft.AspNetCore.Http;
-using Core.Models;
+﻿using Core.Models;
 using Core.Responses;
+using Core.DTOs.Users;
 
 namespace Core.Interfaces;
 

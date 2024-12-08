@@ -1,4 +1,4 @@
-﻿using Core.DTOs;
+﻿using Core.DTOs.Users;
 using Core.Models;
 
 namespace Core.Mapping;

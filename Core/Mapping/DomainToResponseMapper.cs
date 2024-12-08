@@ -63,4 +63,22 @@ public static class DomainToResponseMapper
             Avatar = user.Avatar ?? "",
         };
     }
+
+    public static TrackResponse ToTrackResponse(this Track track)
+    {
+        return new TrackResponse
+        {
+            Id = track.Id,
+            Name = track.Name,
+            Description = track.Description,
+            Genres = track.Genres,
+            PerformerId = track.PerformerId,
+            Url = track.Url,
+        };
+    }
+
+    public static List<TrackResponse> ToTracksResponse(this List<Track> tracks)
+    {
+        return tracks.Select(ToTrackResponse).ToList();
+    }
 }
