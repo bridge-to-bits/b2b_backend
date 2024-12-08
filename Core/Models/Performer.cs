@@ -11,4 +11,5 @@ public class Performer
 
     [ForeignKey("UserId")]
     public User User { get; set; }
+    public IEnumerable<Track> Tracks { get; set; }
 }

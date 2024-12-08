@@ -71,10 +71,10 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
 
         modelBuilder.Entity<Track>()
             .HasMany(track => track.Genres)
-            .WithMany(genre => genre.Tracks)
-            .UsingEntity<Dictionary<string, object>>(
-                "GenresTracks",
-                j => j.HasOne<Genre>().WithMany().HasForeignKey("GenreId"),
-                j => j.HasOne<Track>().WithMany().HasForeignKey("TrackId"));
+            .WithMany(genre => genre.Tracks);
+
+        modelBuilder.Entity<Performer>()
+            .HasMany(performer => performer.Tracks)
+            .WithOne(track => track.Performer);
     }
 }

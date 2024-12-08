@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
-using Data.DatabaseContext;
 
 namespace Data.DatabaseContext;
 

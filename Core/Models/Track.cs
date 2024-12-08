@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Models;
 
@@ -19,4 +20,7 @@ public class Track
     [Required]
     public Guid PerformerId { get; set; }
     public IEnumerable<Genre> Genres { get; set; }
+
+    [ForeignKey(nameof(PerformerId))]
+    public Performer Performer { get; set; }
 }
