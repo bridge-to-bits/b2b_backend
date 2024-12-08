@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Tracks.Data.DatabaseContext;
 
@@ -10,9 +11,11 @@ using Tracks.Data.DatabaseContext;
 namespace Tracks.Data.Migrations
 {
     [DbContext(typeof(TracksDbContext))]
-    partial class TracksDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241208080918_change_track_content")]
+    partial class change_track_content
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

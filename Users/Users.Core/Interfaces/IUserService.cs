@@ -1,4 +1,5 @@
-﻿using Users.Core.DTOs;
+﻿using Microsoft.AspNetCore.Http;
+using Users.Core.DTOs;
 using Users.Core.Models;
 using Users.Core.Responses;
 

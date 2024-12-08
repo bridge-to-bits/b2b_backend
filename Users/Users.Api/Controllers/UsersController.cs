@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Users.Core.DTOs;
 using Users.Core.Filters;
 using Users.Core.Interfaces;
 using Users.Core.Mapping;
+using Users.Core.Responses;
 
 namespace Users.Api.Controllers;
 
@@ -46,13 +46,16 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
+    [Consumes("multipart/form-data")]
+    [ProducesResponseType(typeof(ProfileResponse), 200)]
+    [ProducesResponseType(400)]
     [HttpPatch("{userId}/profile")]
     public async Task<IActionResult> UpdateUserProfile(
         [FromRoute] string userId,
-        [FromBody] UpdateProfileDTO updateProfileDTO)
+        [FromForm] UpdateProfileDTO updateProfileDTO)
     {
-        await userService.UpdateUserProfile(userId, updateProfileDTO);
-        return Ok();
+        var response = await userService.UpdateUserProfile(userId, updateProfileDTO);
+        return Ok(response);
     }
 
     [HttpGet("{userId}/profile")]

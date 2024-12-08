@@ -1,4 +1,7 @@
-﻿using System.Linq.Expressions;
+﻿using Common.Models;
+using Common.Services;
+using Microsoft.Extensions.Options;
+using System.Linq.Expressions;
 using Tracks.Core.DTOs;
 using Tracks.Core.Interfaces;
 using Tracks.Core.Mapping;
@@ -7,19 +10,44 @@ using Tracks.Core.Responses;
 
 namespace Tracks.Core.Services;
 
-public class TrackService(ITrackRepository trackRepository): ITrackService
+public class TrackService(
+    ITrackRepository trackRepository,
+    IOptions<GoogleDriveOptions> googleDriveOptions) : ITrackService
 {
-    public async Task<TrackResponse> UploadTrack(UploadTrackDTO uploadTrackDTO)
+    private readonly FileService fileService = new(
+        googleDriveOptions.Value.ServiceFilePath,
+        googleDriveOptions.Value.FolderId
+    );
+
+    public async Task<List<TrackResponse>> UploadTracks(UploadTracksDTO uploadTrackDTO)
     {
         var trackGenreIds = uploadTrackDTO.Genres;
         var genres = await trackRepository.GetGenres(trackGenreIds);
+        var createdTracks = new List<Track>();
 
-        var trackToCreate = uploadTrackDTO.ToTrack();
-        trackToCreate.Genres = genres;
+        if (uploadTrackDTO.MusicTracks == null || uploadTrackDTO.MusicTracks.Count == 0)
+        {
+            return null;
+        }
 
-        var result = await trackRepository.CreateTrack(trackToCreate);
-        var mappedResult = result.ToTrackResponse();
-        mappedResult.Genres = genres;   
+        foreach (var track in uploadTrackDTO.MusicTracks)
+        {
+            var originalFileName = Path.GetFileNameWithoutExtension(track.FileName);
+
+            var musicTrackUrl = await fileService.UploadFileAsync(
+                track,
+                $"{uploadTrackDTO.PerformerId}_{originalFileName}"
+            );
+
+            var trackToCreate = uploadTrackDTO.ToTrack();
+            trackToCreate.Url = musicTrackUrl;
+            trackToCreate.Genres = genres;
+
+            var result = await trackRepository.CreateTrack(trackToCreate);
+            createdTracks.Add(result);
+        }
+
+        var mappedResult = createdTracks.ToTracksResponse();
         return mappedResult;
     }
 

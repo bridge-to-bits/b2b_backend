@@ -23,9 +23,9 @@ public class TracksController(ITrackService trackService) : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> UploadTrack([FromBody] UploadTrackDTO uploadTrackDTO)
+    public async Task<IActionResult> UploadTracks([FromBody] UploadTracksDTO uploadTrackDTO)
     {
-        var response = await trackService.UploadTrack(uploadTrackDTO);
+        var response = await trackService.UploadTracks(uploadTrackDTO);
         return Ok(response);
     }
 

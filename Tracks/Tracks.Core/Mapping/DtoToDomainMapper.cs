@@ -13,14 +13,13 @@ public static class DtoToDomainMapper
         };
     }
 
-    public static Track ToTrack(this UploadTrackDTO dto)
+    public static Track ToTrack(this UploadTracksDTO dto)
     {
         return new Track
         {
             Name = dto.Name,
             Description = dto.Description,
-            PerformerId = Guid.Parse(dto.PerformerId),
-            Content = Convert.FromBase64String(dto.Content)
+            PerformerId = Guid.Parse(dto.PerformerId)
         };
     }
 }

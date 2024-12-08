@@ -1,4 +1,8 @@
-﻿using System.Linq.Expressions;
+﻿using Common.Models;
+using Common.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
+using System.Linq.Expressions;
 using Users.Core.DTOs;
 using Users.Core.Includes;
 using Users.Core.Interfaces;
@@ -13,9 +17,14 @@ public class UserService(
     ISocialRepository socialRepository,
     IGenreRepository genreRepository,
     IPasswordHasher passwordHasher,
-    IAuthService authService
-    ) : IUserService
+    IAuthService authService,
+    IOptions<GoogleDriveOptions> googleDriveOptions
+) : IUserService
 {
+    private readonly FileService fileService = new(
+        googleDriveOptions.Value.ServiceFilePath,
+        googleDriveOptions.Value.FolderId
+    );
 
     public async Task<User> Register(MainRegistrationDTO registrationDTO)
     {
@@ -184,6 +193,21 @@ public class UserService(
             user => user.Id == Guid.Parse(userId), 
             [..UserIncludes.Genres, ..UserIncludes.Socials]
         ) ?? throw new NullReferenceException();
+
+        if (updateProfileDTO.avatarFile != null)
+        {
+            var avatarUrl = await fileService.UploadFileAsync(updateProfileDTO.avatarFile, $"{userId}_avatar");
+            user.Avatar = avatarUrl;
+        }
+
+        if (updateProfileDTO.profileBackgroundFile != null)
+        {
+            var backgroundUrl = await fileService.UploadFileAsync(
+                updateProfileDTO.profileBackgroundFile,
+                $"{userId}_profile_background");
+
+            user.ProfileBackground = backgroundUrl;
+        }
 
         user.UpdateUser(updateProfileDTO);
 
