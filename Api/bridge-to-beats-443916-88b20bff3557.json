@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "bridge-to-beats-443916",
+  "private_key_id": "88b20bff35576c3e18cb31746b023fab1458e696",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDszmInS6L7ArDE\ne9V/F8liyfgQZ1Ibufl2hrBS5C/56ejlMFQtpTjV6pOFD2SHuXNLqhhjWPQoKW2e\ndZM2SPf11Ue3vSZlW7UJQ6k5TJwqaxuonbmujDXrv0UVnzx6ANhzAPuHG5bvEvua\naYjRTlb/Vw3+YJFdA0mB0vwVVn3RT8jPalpJvnTzgi9A/v/OGkalTm1vHGCMsGuE\n2V/7BceRQsqvRHUTZlnKHhgrnEyWZxPoTVvTiUhygYHSggWxs2MnyG3mp5dP/7nq\nmAyVRO5N1D79EznIDMrLoLLknXJV2J0Luue8zHCsfZBsrl95Gkw+oUtZZLi2kOSY\nCqv9UVWVAgMBAAECggEAIbFBlN61myooVWRbHYCYZiZfVZIlxA0jWcJTHxAZZWDr\nAoTsTSxHWGRORe3JO2he56KVYrk6z+YJEzUeU2hxYzhLwnA2oNA6A03tq1njlEN2\nBXkffJ61Y0vs++USmTc6lK5Mm04JHQ3h33fpgAI57Y2Iz6sUs5uunzqSJEUQlLGT\nwx8/i2fPtVSx5gWk4Br9J2yh3Cll0CHOSGAwv66jPULGlEZlOvd4cPt8vfCtMRHu\n4Uk7IeNYsW2kpN3VM1w9+AB79OKJmIuAllDIeMNUtbeRNmAd8i6pbiatjNnRtCFb\nA8/2VjoOEQiZM7nKt8mgg5vWxNOfnH4bJ5RMQOZn5wKBgQD+DgrLK8sJpWeSUtJ6\n7pcyTkPF0xc3oc3h7gjVu6XuT9TndA8bH/J3eMpgV3YwC9WNqILYai5p2NKQ2BwU\nCemuW3NnnSx1AcUewemhfrzR3ApO6t0Kq3Tb17zh7jfjaOAClNYUVJhTFbPYkLfx\nvDmYY29/LvpeyYyCTypIPttoiwKBgQDunoh9PWds3bitIuYybxbfucms+4OFJnjF\naFk4F+JXobZDIO9iH1xYI+RGHSqfx/CPShjidLjDCslyW4FwF5IaCztXitm3KXNr\nbyWhv69DFeCI6YdYN3fyHXeEKFcTFF3kmdERcvuCjPtukvmPXhFUfIH+4ihyxN9i\nhtQ7WlfeXwKBgEzAQ0SD82/zl2meOdZHtEfPWywtjIsTB9bkiajAau2nEoPmDRY9\nvYuYY1NduOfk+1wzd2wYD/OMPHjjwP/QytcQ67l2w1KJ+VpEbOeMGVExL7ANxj+N\n8tzjvT1oMVwzd9Fv04kK0YXwPYgEmH2gRqoiCDIdKChwrVFEx1pSGwjnAoGBAKoF\n6gka/JvUrGcpa87Z2vmU3v/TwtXYIMvAW3odgpigUEcqq4dGAz2GbXwMAjgRdfYT\nfQG224OWJw3F58ff86l9AU6SUCkzbttJOg4zkAUEDJZhl5+i/mNU3bkcKVcd9v0R\nIKgHPvC51dnm/c1K4JxLjzD3Io0MfIMuwQB9kgiPAoGBAL/mO9oNcLFxmC2NIlSe\nmi5xzL4J/txEUdJZII0MFHq5gFiZXRhCMew56cIGwa56I8335svx47rjPZH5WIzl\nRaM1PfqlgdZNpH7VpPxCfD9WAKVVZtw1kaqRr/u4Hp+7YYyP+DtT59DidV9Zt/dQ\nHgrCbW0tOxTlYsb1aeUWQJ/c\n-----END PRIVATE KEY-----\n",
+  "client_email": "b2b-api-service@bridge-to-beats-443916.iam.gserviceaccount.com",
+  "client_id": "108309053604480950271",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/b2b-api-service%40bridge-to-beats-443916.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
