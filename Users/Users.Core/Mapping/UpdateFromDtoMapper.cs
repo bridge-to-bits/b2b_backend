@@ -12,12 +12,6 @@ public static class UpdateFromDtoMapper
         if (!string.IsNullOrWhiteSpace(updateProfileDTO.City))
             user.City = updateProfileDTO.City;
 
-        if (!string.IsNullOrWhiteSpace(updateProfileDTO.Avatar))
-            user.Avatar = updateProfileDTO.Avatar;
-
-        if (!string.IsNullOrWhiteSpace(updateProfileDTO.ProfileBackground))
-            user.ProfileBackground = updateProfileDTO.ProfileBackground;
-
         if (!string.IsNullOrWhiteSpace(updateProfileDTO.AboutMe))
             user.AboutMe = updateProfileDTO.AboutMe;
 

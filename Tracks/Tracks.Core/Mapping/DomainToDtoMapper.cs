@@ -23,7 +23,12 @@ public static class DomainToDtoMapper
             Description = track.Description,
             Genres = track.Genres,
             PerformerId = track.PerformerId,
-            Content = Convert.ToBase64String(track.Content)
+            Url = track.Url,
         };
+    }
+
+    public static List<TrackResponse> ToTracksResponse(this List<Track> tracks)
+    {
+        return tracks.Select(ToTrackResponse).ToList();
     }
 }

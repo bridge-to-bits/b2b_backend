@@ -1,10 +1,12 @@
-﻿namespace Tracks.Core.DTOs;
+﻿using Microsoft.AspNetCore.Http;
 
-public class UploadTrackDTO
+namespace Tracks.Core.DTOs;
+
+public class UploadTracksDTO
 {
     public string Name { get; set; }
     public string? Description { get; set; }
     public string PerformerId { get; set; }
     public IEnumerable<string> Genres { get; set; }
-    public string Content { get; set; }
+    public List<IFormFile>? MusicTracks { get; set; }
 }

@@ -7,7 +7,6 @@ using Users.Core.Interfaces;
 using Users.Core.Services;
 using Users.Data.DatabaseContext;
 using Users.Data.Repositories;
-using Microsoft.AspNetCore.Cors;
 
 namespace Users.Api;
 
@@ -25,10 +24,10 @@ public class Program
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins("http://localhost:3000") // Only allow this origin
-                      .AllowAnyHeader()                     // Allow any headers
-                      .AllowAnyMethod()                     // Allow any HTTP methods (GET, POST, etc.)
-                      .AllowCredentials();                  // Allow credentials (cookies, Authorization headers, etc.)
+                policy.WithOrigins("http://localhost:3000")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
             });
         });
 
@@ -49,6 +48,7 @@ public class Program
 
     private static void ServicesConfig(IServiceCollection services)
     {
+        services.Configure<GoogleDriveOptions>(AppConfig.GetSection(nameof(GoogleDriveOptions)));
         services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
 
         DIConfig(services);

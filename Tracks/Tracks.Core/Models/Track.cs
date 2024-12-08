@@ -14,7 +14,7 @@ public class Track
     public string? Description { get; set; }
 
     [Required]
-    public byte[] Content { get; set; }
+    public string Url { get; set; }
 
     [Required]
     public Guid PerformerId { get; set; }
