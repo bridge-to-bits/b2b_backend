@@ -46,10 +46,11 @@ public static class DomainToResponseMapper
             Banner = "/banner.png",
             Avatar = user.Avatar,
             Username = user.Username,
-            Desciption = user.AboutMe,
+            Description = user.AboutMe,
             Location = user.City,
-            Genres = user.Genres.Select(ToGenreResponse).ToList(),
             Rating = rating,
+            Genres = user.Genres.Select(ToGenreResponse).ToList(),
+            Socials = user.Socials.Select(ToSocialResponse).ToList(),
         };
     }
 

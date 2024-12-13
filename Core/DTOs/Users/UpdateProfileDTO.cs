@@ -18,6 +18,6 @@ public class UpdateProfileDTO
 
     public IEnumerable<string> GenreIds { get; set; }
 
-    public IFormFile? avatarFile { get; set; }
-    public IFormFile? profileBackgroundFile { get; set; }
+    public IFormFile? AvatarFile { get; set; }
+    public IFormFile? ProfileBackgroundFile { get; set; }
 }

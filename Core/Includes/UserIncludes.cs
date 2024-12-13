@@ -11,6 +11,12 @@ public static class UserIncludes
         user => user.Producer,
     ];
 
+    public static readonly Expression<Func<User, object>>[] SocialsAndGenres =
+    [
+        user => user.Socials,
+        user => user.Genres,
+    ];
+
     public static readonly Expression<Func<User, object>>[] Socials =
     [
         user => user.Socials,

@@ -182,7 +182,10 @@ public class UserService(
 
     public async Task<ProfileResponse> GetUserProfile(string userId)
     {
-        var user = await userRepository.GetUser(user => user.Id == Guid.Parse(userId), UserIncludes.Genres);
+        var user = await userRepository.GetUser(
+            user => user.Id == Guid.Parse(userId), 
+            UserIncludes.SocialsAndGenres
+        );
         var rating = await GetUserAverageRating(userId);
         return user.ToProfileResponse(rating);
     }
@@ -194,16 +197,16 @@ public class UserService(
             [..UserIncludes.Genres, ..UserIncludes.Socials]
         ) ?? throw new NullReferenceException();
 
-        if (updateProfileDTO.avatarFile != null)
+        if (updateProfileDTO.AvatarFile != null)
         {
-            var avatarUrl = await fileService.UploadFileAsync(updateProfileDTO.avatarFile, $"{userId}_avatar");
+            var avatarUrl = await fileService.UploadFileAsync(updateProfileDTO.AvatarFile, $"{userId}_avatar");
             user.Avatar = avatarUrl;
         }
 
-        if (updateProfileDTO.profileBackgroundFile != null)
+        if (updateProfileDTO.ProfileBackgroundFile != null)
         {
             var backgroundUrl = await fileService.UploadFileAsync(
-                updateProfileDTO.profileBackgroundFile,
+                updateProfileDTO.ProfileBackgroundFile,
                 $"{userId}_profile_background");
 
             user.ProfileBackground = backgroundUrl;
