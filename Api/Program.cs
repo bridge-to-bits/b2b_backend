@@ -30,6 +30,14 @@ public class Program
                       .AllowAnyMethod()
                       .AllowCredentials();
             });
+
+            options.AddPolicy("AllowLocal", policy =>
+            {
+                policy.WithOrigins(AppConfig.GetSetting("LOCAL_URL"))
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials();
+            });
         });
 
         var app = builder.Build();
