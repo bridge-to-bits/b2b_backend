@@ -23,17 +23,12 @@ public class Program
 
         builder.Services.AddCors(options =>
         {
-            options.AddPolicy("AllowFrontend", policy =>
+            options.AddPolicy("AllowAll", policy =>
             {
-                policy.WithOrigins(AppConfig.GetSetting("FRONT_URL"))
-                      .AllowAnyHeader()
-                      .AllowAnyMethod()
-                      .AllowCredentials();
-            });
+                var frontendUrl = AppConfig.GetSetting("FRONT_URL");
+                var localUrl = AppConfig.GetSetting("LOCAL_URL");
 
-            options.AddPolicy("AllowLocal", policy =>
-            {
-                policy.WithOrigins(AppConfig.GetSetting("LOCAL_URL"))
+                policy.WithOrigins(frontendUrl, localUrl)
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();
@@ -45,7 +40,7 @@ public class Program
         app.UseSwagger();
         app.UseSwaggerUI();
 
-        app.UseCors("AllowFrontend");
+        app.UseCors("AllowAll");
 
         app.UseAuthentication();
         app.UseAuthorization();
