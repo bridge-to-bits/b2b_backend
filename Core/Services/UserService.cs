@@ -1,12 +1,11 @@
-﻿using Common.Models;
-using Common.Services;
-using Core.DTOs.Users;
+﻿using Core.DTOs.Users;
 using Core.Includes;
-using Core.Interfaces;
+using Core.Interfaces.Auth;
+using Core.Interfaces.Repositories;
+using Core.Interfaces.Services;
 using Core.Mapping;
 using Core.Models;
 using Core.Responses;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 
@@ -14,7 +13,7 @@ namespace Core.Services;
 
 public class UserService(
     IUserRepository userRepository,
-    ISocialRepository socialRepository,
+    IPerformerRepository performerRepository,
     IGenreRepository genreRepository,
     IPasswordHasher passwordHasher,
     IAuthService authService,
@@ -294,5 +293,44 @@ public class UserService(
     public Task<User?> GetMe(string userId)
     {
         return userRepository.GetUserForUpdate(user => user.Id == Guid.Parse(userId));
+    }
+    
+
+    public async Task AddFavoritePerformer(Guid userId, Guid performerId)
+    {
+        var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.Favorites)
+            ?? throw new Exception("User not found");
+
+        var perfomrmerExist = await performerRepository.Exist(performerId);
+        if(!perfomrmerExist) throw new Exception("Performer not found");
+
+        if (user.FavoritePerformers.Any(fp => fp.PerformerId == performerId))
+        {
+            throw new Exception("Performer is already in favorites");
+        }
+
+        var favoritePerformer = new FavoritePerformer
+        {
+            UserId = userId,
+            PerformerId = performerId
+        };
+
+        user.FavoritePerformers.Add(favoritePerformer);
+        await userRepository.SaveAsync();
+    }
+
+    public async Task RemoveFavoritePerformer(Guid userId, Guid performerId)
+    {
+        var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.Favorites)
+            ?? throw new Exception("User not found");
+
+        var perfomrmerExist = await performerRepository.Exist(performerId);
+        if (!perfomrmerExist) throw new Exception("Performer not found");
+
+        var favoritePerformer = user.FavoritePerformers.First(fp => fp.PerformerId == performerId) 
+            ?? throw new Exception();
+
+        user.FavoritePerformers.Remove(favoritePerformer);
+        await userRepository.SaveAsync();
     }
 }

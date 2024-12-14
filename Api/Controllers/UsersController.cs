@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Filters;
-using Core.Interfaces;
 using Core.Mapping;
 using Core.Responses;
 using Core.DTOs.Users;
+using Core.Interfaces.Services;
 
 namespace Api.Controllers;
 
@@ -111,5 +111,33 @@ public class UsersController (IUserService userService, IAuthService authService
     {
         await userService.AddRating(addRatingDTO, targetUserId);
         return Ok();
+    }
+
+    [HttpPost("{userId}/favorites/performers/{performerId}")]
+    public async Task<IActionResult> AddFavoritePerformer(Guid userId, Guid performerId)
+    {
+        try
+        {
+            await userService.AddFavoritePerformer(userId, performerId);
+            return Ok("Performer added to favorites");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{userId}/favorites/performers/{performerId}")]
+    public async Task<IActionResult> RemoveFavoritePerformer(Guid userId, Guid performerId)
+    {
+        try
+        {
+            await userService.RemoveFavoritePerformer(userId, performerId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 }

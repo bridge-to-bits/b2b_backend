@@ -27,6 +27,11 @@ public static class UserIncludes
         user => user.Genres,
     ];
 
+    public static readonly Expression<Func<User, object>>[] Favorites =
+    [
+        user => user.FavoritePerformers,
+    ];
+
     public static readonly Expression<Func<User, object>>[] AllRelations =
     [
         user => user.Performer,

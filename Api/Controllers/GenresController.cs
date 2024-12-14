@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Core.Interfaces;
 using Core.Models;
 using Core.DTOs.Users;
+using Core.Interfaces.Services;
 
 namespace Api.Controllers;
 
