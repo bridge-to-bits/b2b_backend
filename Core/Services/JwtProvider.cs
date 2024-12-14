@@ -1,5 +1,4 @@
-﻿using Common.Models;
-using Core.Interfaces;
+﻿using Core.Interfaces.Auth;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

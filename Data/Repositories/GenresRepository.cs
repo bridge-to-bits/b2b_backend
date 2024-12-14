@@ -1,8 +1,8 @@
 ﻿using Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Core.Interfaces;
 using Core.Models;
+using Core.Interfaces.Repositories;
 
 namespace Data.Repositories;
 

@@ -1,8 +1,8 @@
 ﻿using Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
-using Core.Interfaces;
 using Core.Models;
+using Core.Interfaces.Repositories;
 
 namespace Data.Repositories;
 
@@ -122,7 +122,6 @@ public class UserRepository(B2BDbContext context) : IUserRepository
         return context.Users.CountAsync(predicate);
     }
 
-    //TODO remove this method and add asNoTracking boolean parameter. Look for Include(string_param) usage
     public Task<User?> GetUserForUpdate(
         Expression<Func<User, bool>> predicate,
         params Expression<Func<User, object>>[] includes)

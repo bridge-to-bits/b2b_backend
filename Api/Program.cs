@@ -1,12 +1,11 @@
-using Common.Interfaces;
-using Common.Models;
-using Common.Utils;
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Data.DatabaseContext;
-using Core.Interfaces;
+using Core.Interfaces.Repositories;
 using Data.Repositories;
 using Core.Services;
+using Core.Interfaces.Services;
+using Core.Interfaces.Auth;
 
 namespace Api;
 
@@ -66,11 +65,13 @@ public class Program
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISocialRepository, SocialsRepository>();
         services.AddScoped<IGenreRepository, GenresRepository>();
-        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IPerformerRepository, PerformerRepository>();
+
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<IJwtProvider, JwtProvider>(); 
-        
+        services.AddScoped<IJwtProvider, JwtProvider>();
+
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<ITrackRepository, TrackRepository>();
         services.AddScoped<IGenreRepository, GenresRepository>();
         services.AddScoped<ITrackService, TrackService>();

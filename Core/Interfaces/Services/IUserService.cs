@@ -22,4 +22,6 @@ public interface IUserService
     public Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO);
 
     public Task<User?> GetMe(string userId);
+    public Task AddFavoritePerformer(Guid userId, Guid performerId); 
+    public Task RemoveFavoritePerformer(Guid userId, Guid performerId);
 }
