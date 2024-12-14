@@ -383,3 +383,4 @@ FodyWeavers.xsd
 /Api/appsettings.Release.json
 /.idea
 /Api/bridge-to-beats-443916-88b20bff3557.json
+/Api/.env

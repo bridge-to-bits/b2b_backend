@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces.Repositories;
+using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,13 +13,10 @@ namespace Core.Interfaces.Services
     {
         private static readonly Lazy<IConfigurationRoot> _configuration = new(() =>
         {
-            var baseDirectory = AppContext.BaseDirectory;
-            var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+            Env.Load();
 
             return new ConfigurationBuilder()
-                .SetBasePath(baseDirectory)
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{environment}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
                 .Build();
         });
 
