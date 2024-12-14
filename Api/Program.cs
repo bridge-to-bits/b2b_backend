@@ -15,6 +15,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Configuration.AddEnvironmentVariables();
+
         ServicesConfig(builder.Services);
         AppConfig.GeneralAuthConfig(builder.Services);
         AppConfig.DocsConfig(builder.Services);
