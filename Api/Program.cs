@@ -25,7 +25,7 @@ public class Program
         {
             options.AddPolicy("AllowFrontend", policy =>
             {
-                policy.WithOrigins("http://localhost:3000")
+                policy.WithOrigins(AppConfig.GetSetting("FRONT_URL"))
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();
