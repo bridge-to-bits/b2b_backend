@@ -13,8 +13,28 @@ public class FileService
     public FileService(string serviceFilePath, string folderId)
     {
         _folderId = folderId;
-        var credential = GoogleCredential.FromFile(serviceFilePath)
-            .CreateScoped(DriveService.Scope.Drive);
+        GoogleCredential credential;
+
+        if (File.Exists(serviceFilePath))
+        {
+            credential = GoogleCredential.FromFile(serviceFilePath)
+                .CreateScoped(DriveService.Scope.Drive);
+        }
+        else
+        {
+            var encodedCredential = Environment.GetEnvironmentVariable("GOOGLE_SERVICE_CREDENTIAL");
+
+            if (string.IsNullOrEmpty(encodedCredential))
+            {
+                throw new InvalidOperationException("Google service credential not found in environment variables.");
+            }
+
+            var jsonCredential = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedCredential));
+
+            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(jsonCredential));
+            credential = GoogleCredential.FromStream(stream)
+                .CreateScoped(DriveService.Scope.Drive);
+        }
 
         _driveService = new DriveService(new BaseClientService.Initializer
         {
