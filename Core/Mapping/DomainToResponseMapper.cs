@@ -43,7 +43,7 @@ public static class DomainToResponseMapper
     {
         return new ProfileResponse
         {
-            Banner = "/banner.png",
+            Banner = user.ProfileBackground,
             Avatar = user.Avatar,
             Username = user.Username,
             Description = user.AboutMe,
