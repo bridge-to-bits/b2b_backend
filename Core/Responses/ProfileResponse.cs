@@ -1,4 +1,6 @@
-﻿namespace Core.Responses;
+﻿using Core.Models;
+
+namespace Core.Responses;
 
 public class ProfileResponse
 {
@@ -8,6 +10,7 @@ public class ProfileResponse
     public double Rating { get; set; }
     public string Location { get; set; }
     public string Description { get; set; }
+    public UserType UserType { get; set; }
     public IEnumerable<GenreResponse> Genres { get; set; }
     public IEnumerable<SocialResponse> Socials { get; set; }
 }

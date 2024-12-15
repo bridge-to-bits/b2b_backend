@@ -49,6 +49,7 @@ public static class DomainToResponseMapper
             Description = user.AboutMe,
             Location = user.City,
             Rating = rating,
+            UserType = user.UserType,
             Genres = user.Genres.Select(ToGenreResponse).ToList(),
             Socials = user.Socials.Select(ToSocialResponse).ToList(),
         };
