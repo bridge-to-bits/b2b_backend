@@ -6,6 +6,7 @@ using Data.Repositories;
 using Core.Services;
 using Core.Interfaces.Services;
 using Core.Interfaces.Auth;
+using Api.Middleware;
 
 namespace Api;
 
@@ -36,6 +37,8 @@ public class Program
         });
 
         var app = builder.Build();
+
+        app.UseMiddleware<TokenMiddleware>();
 
         app.UseSwagger();
         app.UseSwaggerUI();

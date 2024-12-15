@@ -14,12 +14,7 @@ public class UsersController (IUserService userService, IAuthService authService
     [HttpGet("me")]
     public async Task<IActionResult> GetMe()
     {
-        var token = HttpContext.Request.Cookies["access_token"];
-
-        if (string.IsNullOrEmpty(token))
-            return Unauthorized(new { message = "Token not found in cookies" });
-
-        var userId = authService.ValidateToken(token)?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (userId == null)
             return Unauthorized(new { message = "userId not found in token" });
 
