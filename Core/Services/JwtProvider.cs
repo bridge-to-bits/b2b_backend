@@ -13,7 +13,7 @@ public class JwtProvider (IOptions<JwtOptions> options) : IJwtProvider
 
     public string GenerateToken(string userId)
     {
-        Claim[] claims = [new("userId", userId)];
+        Claim[] claims = [new("userId", userId)];   
 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),

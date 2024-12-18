@@ -38,7 +38,7 @@ public class Program
 
         var app = builder.Build();
 
-        app.UseMiddleware<TokenMiddleware>();
+        //app.UseMiddleware<TokenMiddleware>();
 
         app.UseSwagger();
         app.UseSwaggerUI();

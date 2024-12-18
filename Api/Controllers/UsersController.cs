@@ -4,7 +4,6 @@ using Core.Mapping;
 using Core.Responses;
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
-using Core.Models;
 
 namespace Api.Controllers;
 
@@ -13,6 +12,7 @@ namespace Api.Controllers;
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
     [HttpGet("me")]
+    [TokenAuthorize]
     public async Task<IActionResult> GetMe()
     {
         var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;

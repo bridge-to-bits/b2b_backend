@@ -23,6 +23,7 @@ public class TokenMiddleware(RequestDelegate next, IServiceScopeFactory serviceS
                 }
                 else
                 {
+                    Console.WriteLine("Unauthorized: Invalid token.");
                     context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                     await context.Response.WriteAsync("Unauthorized: Invalid token.");
                     return;
@@ -30,6 +31,7 @@ public class TokenMiddleware(RequestDelegate next, IServiceScopeFactory serviceS
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Unauthorized: {ex.Message}");
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsync($"Unauthorized: {ex.Message}");
                 return;
