@@ -232,8 +232,7 @@ public class UserService(
 
     private async Task UpdateUserGenres(User user, IEnumerable<string> genreIds)
     {
-        if (user.Genres == null)
-            user.Genres = new List<Genre>();
+        user.Genres ??= [];
 
         var existingGenres = user.Genres;
 
