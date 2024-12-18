@@ -21,5 +21,5 @@ public interface ITrackRepository
     public Task<Track> CreateTrack(Track track);
     public Task RemoveTrack(Track track);
     public Task<List<Genre>> GetGenres(IEnumerable<string> trackIds);
-    public Task<bool> Exist(object trackId);
+    public Task<bool> Exist(string trackId);
 }
