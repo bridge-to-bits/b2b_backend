@@ -21,6 +21,16 @@ public static class DomainToResponseMapper
         };
     }
 
+    public static FavoritePerformerResponse ToFavoritePerformerResponse(this User user)
+    {
+        return new FavoritePerformerResponse()
+        {
+            UserId = user.Id.ToString(),
+            Avatar = user.Avatar,
+            Socials = user.Socials?.Select(ToSocialResponse).ToList(),
+        };
+    }
+
     public static SocialResponse ToSocialResponse(this Social social) 
     {
         return new SocialResponse
@@ -82,5 +92,20 @@ public static class DomainToResponseMapper
     public static List<TrackResponse> ToTracksResponse(this List<Track> tracks)
     {
         return tracks.Select(ToTrackResponse).ToList();
+    }
+
+    public static FavoriteTrackResponse ToFavoriteTrackResponse(this Track track)
+    {
+        return new FavoriteTrackResponse
+        {
+            Id = track.Id.ToString(),
+            Url = track.Url,
+            Name = track.Name,
+        };
+    }
+
+    public static List<FavoriteTrackResponse> ToFavoriteTracksResponse(this List<Track> tracks)
+    {
+        return tracks.Select(DomainToResponseMapper.ToFavoriteTrackResponse).ToList();
     }
 }

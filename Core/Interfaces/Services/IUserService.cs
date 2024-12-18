@@ -22,6 +22,15 @@ public interface IUserService
     public Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO);
 
     public Task<User?> GetMe(string userId);
+
+    // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
+    public Task<IEnumerable<FavoritePerformerResponse>> GetFavoritePerformers(Guid userId);
     public Task AddFavoritePerformer(Guid userId, Guid performerId); 
     public Task RemoveFavoritePerformer(Guid userId, Guid performerId);
+
+
+    // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
+    public Task<IEnumerable<FavoriteTrackResponse>> GetFavoriteTracks(Guid userId);
+    public Task AddFavoriteTrack(Guid userId, Guid trackId);
+    public Task RemoveFavoriteTrack(Guid userId, Guid trackId);
 }

@@ -15,6 +15,7 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
     public DbSet<Genre> Genres { get; set; }
     public DbSet<Track> Tracks { get; set; }
     public DbSet<FavoritePerformer> FavoritePerformers { get; set; }
+    public DbSet<FavoriteTrack> FavoriteTracks { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -91,6 +92,21 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
             .HasOne(fp => fp.Performer)
             .WithMany()
             .HasForeignKey(fp => fp.PerformerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FavoriteTrack>()
+            .HasKey(fp => new { fp.UserId, fp.TrackId });
+
+        modelBuilder.Entity<FavoriteTrack>()
+            .HasOne(fp => fp.User)
+            .WithMany(u => u.FavoriteTracks)
+            .HasForeignKey(fp => fp.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<FavoriteTrack>()
+            .HasOne(fp => fp.Track)
+            .WithMany()
+            .HasForeignKey(fp => fp.TrackId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

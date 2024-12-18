@@ -38,4 +38,5 @@ public class User
     public ICollection<Social>? Socials { get; set; }
     public ICollection<Genre>? Genres { get; set; }
     public ICollection<FavoritePerformer> FavoritePerformers { get; set; }
+    public ICollection<FavoriteTrack> FavoriteTracks { get; set; }
 }
