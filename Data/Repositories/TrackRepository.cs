@@ -91,8 +91,8 @@ public class TrackRepository(B2BDbContext context) : ITrackRepository
         return await query.ToListAsync();
     }
 
-    public Task<bool> Exist(string trackId)
+    public Task<bool> Exist(Guid trackId)
     {
-        return context.Tracks.AnyAsync(t => t.Id == Guid.Parse(trackId));
+        return context.Tracks.AnyAsync(t => t.Id == trackId);
     }
 }
