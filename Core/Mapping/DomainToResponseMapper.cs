@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Core.Responses;
+using Core.Responses.News;
 
 namespace Core.Mapping;
 public static class DomainToResponseMapper
@@ -131,7 +132,7 @@ public static class DomainToResponseMapper
 
     public static PerformerResponse ToPerformerRespponse(this Performer performer)
     {
-        var ratings = performer.User.ReceivedRatings;
+        
         return new PerformerResponse()
         {
             UserId = performer.User.Id.ToString(),
@@ -139,7 +140,133 @@ public static class DomainToResponseMapper
             Genres = performer.User.Genres?.Select(ToGenreResponse),
             Socials = performer.User.Socials?.Select(ToSocialResponse),
             Username = performer.User.Username,
-            Rating = ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0
+            Rating = performer.User.GetAvgRating(),
+        };
+    }
+
+    private static double GetAvgRating(this User user)
+    {
+        var ratings = user.ReceivedRatings;
+        return ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0;
+    } 
+
+    public static WeeklyArticleResponse ToWeeklyArticleResponse(this Article article)
+    {
+        return new WeeklyArticleResponse()
+        {
+            Id = article.Id,
+            Title = article.Title,
+            Content = article.Content,
+            ContentPreview = article.ContentPreview,
+            BackgroundPhotoUrl = article.BackgroundPhotoUrl,
+        };
+    }
+
+    public static WeeklyArticlesResponse ToWeeklyArticlesResponse(this IEnumerable<Article> articles)
+    {
+        return new WeeklyArticlesResponse()
+        {
+            Data = articles.Select(ToWeeklyArticleResponse),
+        };
+    }
+
+    public static ArticleResponse ToArticleResponse(this Article article)
+    {
+        var ratings = article.Ratings;
+        var rating = ratings.Count != 0 ? ratings.Average(r => r.Value) : 0;
+
+        return new ArticleResponse()
+        {
+            Id = article.Id,
+            Title = article.Title,
+            Content = article.Content,
+            ContentPreview = article.ContentPreview,
+            BackgroundPhotoUrl = article.BackgroundPhotoUrl,
+            Author = article.Author.ToNewsAuthorResponse(),
+            Rating = rating,
+            CreatedAt = article.CreatedAt,
+            Comments = article.Comments.Select(ToArticleCommentResponse),
+        };
+    }
+
+    private static NewsAuthorResponse ToNewsAuthorResponse(this User user) 
+    {
+        return new NewsAuthorResponse()
+        {
+            AvatarUrl = user.Avatar,
+            Rating = user.GetAvgRating(),
+            Username = user.Username,
+        };
+    }
+
+    private static NewsComentatorResponse ToNewsComentatorResponse(this User user)
+    {
+        return new NewsComentatorResponse()
+        {
+            AvatarUrl = user.Avatar,
+            Username = user.Username,
+        };
+    }
+
+    private static NewsCommentResponse ToArticleCommentResponse(this ArticleComment comment)
+    {
+        return new NewsCommentResponse()
+        {
+            Text = comment.Text,
+            CreatedAt = comment.CreatedAt,
+            Id = comment.Id,
+            Comentator = comment.User.ToNewsComentatorResponse(),
+        };
+    }
+
+    public static WeeklyInterviewResponse ToWeeklyInterviewResponse(this Interview interview)
+    {
+        return new WeeklyInterviewResponse()
+        {
+            Id = interview.Id,
+            Title = interview.Title,
+            Content = interview.Content,
+            ContentPreview = interview.ContentPreview,
+            BackgroundPhotoUrl = interview.BackgroundPhotoUrl,
+        };
+    }
+
+    public static WeeklyInterviewsResponse ToWeeklyInterviewsResponse(this IEnumerable<Interview> interviews)
+    {
+        return new WeeklyInterviewsResponse()
+        {
+            Data = interviews.Select(ToWeeklyInterviewResponse),
+        };
+    }
+
+    public static InterviewResponse ToInterviewResponse(this Interview interview)
+    {
+        var ratings = interview.Ratings;
+        var rating = ratings.Count != 0 ? ratings.Average(r => r.Value) : 0;
+
+        return new InterviewResponse()
+        {
+            Id = interview.Id,
+            Title = interview.Title,
+            Content = interview.Content,
+            ContentPreview = interview.ContentPreview,
+            BackgroundPhotoUrl = interview.BackgroundPhotoUrl,
+            Author = interview.Author.ToNewsAuthorResponse(),
+            Respondent = interview.Respondent.ToNewsAuthorResponse(),
+            Rating = rating,
+            CreatedAt = interview.CreatedAt,
+            Comments = interview.Comments.Select(ToInterviewCommentResponse),
+        };
+    }
+
+    private static NewsCommentResponse ToInterviewCommentResponse(this InterviewComment comment)
+    {
+        return new NewsCommentResponse()
+        {
+            Text = comment.Text,
+            CreatedAt = comment.CreatedAt,
+            Id = comment.Id,
+            Comentator = comment.User.ToNewsComentatorResponse(),
         };
     }
 }

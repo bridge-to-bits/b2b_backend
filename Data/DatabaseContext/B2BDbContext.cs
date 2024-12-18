@@ -16,6 +16,13 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
     public DbSet<Track> Tracks { get; set; }
     public DbSet<FavoritePerformer> FavoritePerformers { get; set; }
     public DbSet<FavoriteTrack> FavoriteTracks { get; set; }
+    public DbSet<Article> Articles { get; set; }
+    public DbSet<ArticleComment> ArticleComments { get; set; }
+    public DbSet<ArticleRating> ArticleRatings { get; set; }
+    public DbSet<Interview> Interviews { get; set; }
+    public DbSet<InterviewComment> InterviewComments { get; set; }
+    public DbSet<InterviewRating> InterviewRatings { get; set; }
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -113,5 +120,78 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
             .WithMany()
             .HasForeignKey(fp => fp.TrackId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Article>(entity =>
+        {
+            entity.HasOne(a => a.Author)
+                .WithMany(u => u.AuthoredArticles)
+                .HasForeignKey(a => a.SenderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(a => a.Comments)
+                .WithOne(c => c.Article)
+                .HasForeignKey(c => c.ArticleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(a => a.Ratings)
+                .WithOne(r => r.Article)
+                .HasForeignKey(r => r.ArticleId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ArticleComment>(entity =>
+        {
+            entity.HasOne(ac => ac.User)
+                .WithMany(u => u.ArticleComments)
+                .HasForeignKey(ac => ac.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<ArticleRating>(entity =>
+        {
+            entity.HasOne(ar => ar.User)
+                .WithMany(u => u.ArticleRatings)
+                .HasForeignKey(ar => ar.InitiatorId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<Interview>(entity =>
+        {
+            entity.HasOne(a => a.Author)
+                .WithMany(u => u.AuthoredInterviews)
+                .HasForeignKey(a => a.SenderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            entity.HasOne(a => a.Respondent)
+                .WithMany(u => u.RespondentedInterviews)
+                .HasForeignKey(a => a.RespondentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(a => a.Comments)
+                .WithOne(c => c.Interview)
+                .HasForeignKey(c => c.InterviewId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasMany(a => a.Ratings)
+                .WithOne(r => r.Interview)
+                .HasForeignKey(r => r.InterviewId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<InterviewComment>(entity =>
+        {
+            entity.HasOne(ac => ac.User)
+                .WithMany(u => u.InterviewComments)
+                .HasForeignKey(ac => ac.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<InterviewRating>(entity =>
+        {
+            entity.HasOne(ar => ar.User)
+                .WithMany(u => u.InterviewRatings)
+                .HasForeignKey(ar => ar.InitiatorId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }
