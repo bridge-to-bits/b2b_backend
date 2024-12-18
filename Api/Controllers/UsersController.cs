@@ -4,6 +4,7 @@ using Core.Mapping;
 using Core.Responses;
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
+using Core.Models;
 
 namespace Api.Controllers;
 
@@ -108,6 +109,22 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok();
     }
 
+    // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
+
+    [HttpGet("{userId}/favorites/performers")]
+    public async Task<IActionResult> GetFavoritePerformers(Guid userId)
+    {
+        try
+        {
+            var res = await userService.GetFavoritePerformers(userId);
+            return Ok(res);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpPost("{userId}/favorites/performers/{performerId}")]
     public async Task<IActionResult> AddFavoritePerformer(Guid userId, Guid performerId)
     {
@@ -128,6 +145,51 @@ public class UsersController (IUserService userService, IAuthService authService
         try
         {
             await userService.RemoveFavoritePerformer(userId, performerId);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+
+    // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
+
+    [HttpGet("{userId}/favorites/tracks")]
+    public async Task<IActionResult> GetFavoriteTracks(Guid userId)
+    {
+        try
+        {
+            var res = await userService.GetFavoriteTracks(userId);
+            return Ok(res);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("{userId}/favorites/Tracks/{trackId}")]
+    public async Task<IActionResult> AddFavoriteTrack(Guid userId, Guid trackId)
+    {
+        try
+        {
+            await userService.AddFavoriteTrack(userId, trackId);
+            return Ok("Track added to favorites");
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{userId}/favorites/Tracks/{trackId}")]
+    public async Task<IActionResult> RemoveFavoriteTrack(Guid userId, Guid trackId)
+    {
+        try
+        {
+            await userService.RemoveFavoriteTrack(userId, trackId);
             return Ok();
         }
         catch (Exception ex)
