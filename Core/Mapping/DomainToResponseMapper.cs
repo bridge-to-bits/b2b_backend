@@ -106,6 +106,16 @@ public static class DomainToResponseMapper
 
     public static List<FavoriteTrackResponse> ToFavoriteTracksResponse(this List<Track> tracks)
     {
-        return tracks.Select(DomainToResponseMapper.ToFavoriteTrackResponse).ToList();
+        return tracks.Select(ToFavoriteTrackResponse).ToList();
+    }
+
+    public static ProducerRelatedPerformerResponse ToProducerRelatedPerformerResponse (this Performer performer)
+    {
+        return new ProducerRelatedPerformerResponse
+        {
+            BackgroundPhoto = performer.User?.ProfileBackground,
+            Username = performer.User?.Username,
+            Genres = performer.User?.Genres.Select(ToGenreResponse),
+        };
     }
 }

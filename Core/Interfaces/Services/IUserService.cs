@@ -17,6 +17,7 @@ public interface IUserService
     public Task<UsersResponse> GetProducers(QueryAllUsersDTO queryAllUsersDTO);
 
     public Task AddRating(AddRatingDTO addRatingDTO, string targetUserId);
+    public Task<double> GetUserAverageRating(string userId);
 
     public Task<ProfileResponse> GetUserProfile(string userId);
     public Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO);

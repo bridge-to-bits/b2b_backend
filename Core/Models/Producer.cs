@@ -11,4 +11,6 @@ public class Producer
 
     [ForeignKey("UserId")]
     public User User { get; set; }
+
+    public ICollection<Performer> RelatedPerformers { get; set; } = [];
 }

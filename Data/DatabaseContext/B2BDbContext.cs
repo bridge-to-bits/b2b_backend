@@ -79,6 +79,11 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
             .HasMany(performer => performer.Tracks)
             .WithOne(track => track.Performer);
 
+        modelBuilder.Entity<Producer>()
+            .HasMany(p => p.RelatedPerformers)
+            .WithMany(pf => pf.RelatedProducers)
+            .UsingEntity(j => j.ToTable("ProducersPerformers"));
+
         modelBuilder.Entity<FavoritePerformer>()
             .HasKey(fp => new { fp.UserId, fp.PerformerId });
 
