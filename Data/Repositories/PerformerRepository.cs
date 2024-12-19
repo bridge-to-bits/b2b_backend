@@ -14,6 +14,8 @@ public class PerformerRepository (B2BDbContext context): IPerformerRepository
 
     public Task<Performer> GetPerfomer (Guid perfomerId)
     {
-        return context.Performers.FirstAsync(perfomer => perfomer.Id == perfomerId);
+        return context.Performers.AsNoTracking()
+            .Include(p => p.User)
+            .FirstAsync(perfomer => perfomer.Id == perfomerId);
     }
 }

@@ -6,7 +6,6 @@ using Data.Repositories;
 using Core.Services;
 using Core.Interfaces.Services;
 using Core.Interfaces.Auth;
-using Api.Middleware;
 
 namespace Api;
 
@@ -56,6 +55,7 @@ public class Program
     {
         services.Configure<GoogleDriveOptions>(AppConfig.GetSection(nameof(GoogleDriveOptions)));
         services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
+        services.Configure<MailerOptions>(AppConfig.GetSection(nameof(MailerOptions)));
 
         DIConfig(services);
 
@@ -74,6 +74,7 @@ public class Program
         services.AddScoped<ISocialRepository, SocialsRepository>();
         services.AddScoped<IGenreRepository, GenresRepository>();
         services.AddScoped<IPerformerRepository, PerformerRepository>();
+        services.AddScoped<IProducerRepository, ProducerRepository>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthService, AuthService>();
@@ -84,5 +85,9 @@ public class Program
         services.AddScoped<IGenreRepository, GenresRepository>();
         services.AddScoped<ITrackService, TrackService>();
         services.AddScoped<IGenreService, GenresService>();
+        services.AddScoped<IPerformerService, PerformerService>();
+        services.AddScoped<IProducerService, ProducerService>();
+        services.AddScoped<IMailService, MailService>();
+
     }
 }
