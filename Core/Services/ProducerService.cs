@@ -23,9 +23,9 @@ public class ProducerService (IProducerRepository producerRepository, IUserServi
         return producerRepository.GetProducer(producerId);
     }
 
-    public async Task<IEnumerable<ProducerRelatedPerformerResponse>> GetProducerRelatedPerformers(Guid producerId)
+    public async Task<IEnumerable<ProducerRelatedPerformerResponse>> GetProducerRelatedPerformers(Guid userId)
     {
-        var relatedPerformers = await producerRepository.GetProducerRelatedPerformers(producerId);
+        var relatedPerformers = await producerRepository.GetProducerRelatedPerformers(userId);
         List<ProducerRelatedPerformerResponse> result = [];
 
         foreach (var relatedPerformer in relatedPerformers)

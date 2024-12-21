@@ -24,14 +24,14 @@ public class ProducerRepository(B2BDbContext context) : IProducerRepository
         return context.Producers.AsNoTracking().Include(p => p.User).FirstAsync(p => p.Id == producerId);
     }
 
-    public async Task<IEnumerable<Performer>> GetProducerRelatedPerformers(Guid producerId)
+    public async Task<IEnumerable<Performer>> GetProducerRelatedPerformers(Guid userId)
     {
         var producer = await context.Producers
             .AsNoTracking()
             .Include(producer => producer.RelatedPerformers)
             .ThenInclude(performer => performer.User)
             .ThenInclude(user => user.Genres)
-            .FirstAsync(producer => producer.Id == producerId);
+            .FirstAsync(producer => producer.UserId == userId);
 
         return [.. producer.RelatedPerformers];
     }

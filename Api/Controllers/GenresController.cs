@@ -2,6 +2,8 @@
 using Core.Models;
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
+using Data.Repositories;
+using Core.Responses;
 
 namespace Api.Controllers;
 
@@ -9,6 +11,7 @@ namespace Api.Controllers;
 [ApiController]
 public class GenresController(IGenreService genreService) : ControllerBase
 {
+    [ProducesResponseType(typeof(IEnumerable<GenreResponse>), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<IActionResult> GetAllGenres()
     {
@@ -16,6 +19,7 @@ public class GenresController(IGenreService genreService) : ControllerBase
         return Ok(result);
     }
 
+    [ProducesResponseType(typeof(IEnumerable<Genre>), StatusCodes.Status200OK)]
     [HttpPost]
     public async Task<ActionResult<Genre>> PostGenre(AddGenreDTO addGenreDTO)
     {

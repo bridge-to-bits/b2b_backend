@@ -2,6 +2,8 @@
 using Core.Responses;
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
+using Core.DTOs;
+using Core.Models;
 
 namespace Api.Controllers;
 
@@ -23,28 +25,34 @@ public class ProducersController(
     }
 
     [ProducesResponseType(typeof(ProducerRelatedPerformerResponse), StatusCodes.Status200OK)]
-    [HttpGet("{producerId}/performers")]
-    public async Task<IActionResult> GetRelatedPerformers(Guid producerId)
+    [HttpGet("{userId}/performers")]
+    public async Task<IActionResult> GetRelatedPerformers(Guid userId)
     {
-        var res = await producerService.GetProducerRelatedPerformers(producerId);
+        var res = await producerService.GetProducerRelatedPerformers(userId);
         return Ok(res);
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    [HttpPost("{producerId}/send-agreement/{performerId}")]
-    public async Task<IActionResult> SendAgreementEmail(string producerId, string performerId)
+    [HttpPost("{producerId}/send-agreement")]
+    public async Task<IActionResult> SendAgreementEmail(string producerId, [FromBody] SendAgreementDto sendAgreementDto)
     {
-        var performer = await performerService.GetPerformer(Guid.Parse(performerId));
         var producer = await producerService.GetProducer(Guid.Parse(producerId));
 
-        if (producer == null || performer == null)
+        if (producer == null)
         {
-            return NotFound("perfomer or producer was not found");
+            return NotFound("Producer was not found");
         }
 
-        await mailService.SendAgreementEmailAsync(producerId, producer.User.Username, performerId, performer.User.Email);
-
+        foreach (var performerId in sendAgreementDto.PerformerIds)
+        {
+            var performer = await performerService.GetPerformer(Guid.Parse(performerId));
+            if (performer == null)
+            {
+                return NotFound("Performer was not found");
+            }
+            await mailService.SendAgreementEmailAsync(producerId, producer.User.Username, performerId, performer.User.Email);
+        }
         return Ok("Agreement email sent successfully.");
     }
 
