@@ -11,6 +11,6 @@ public class FavoriteTrack
     [ForeignKey("UserId")]
     public User User { get; set; }
 
-    [ForeignKey("PerformerId")]
+    [ForeignKey("TrackId")]
     public Track Track { get; set; }
 }
