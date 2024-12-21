@@ -49,7 +49,7 @@ public class TrackRepository(B2BDbContext context) : ITrackRepository
 
         query = includes.Aggregate(query, (current, include) => current.Include(include));
 
-        return query.Where(predicate).ToListAsync();
+        return query.Where(predicate).OrderByDescending(track => track.WeeklyListeningsAmount).ToListAsync();
     }
 
     public Task RemoveTrack(Track track)
@@ -88,11 +88,22 @@ public class TrackRepository(B2BDbContext context) : ITrackRepository
                 : query.OrderBy(e => EF.Property<object>(e, sortBy));
         }
 
-        return await query.ToListAsync();
+        return await query.OrderByDescending(track => track.WeeklyListeningsAmount).ToListAsync();
     }
 
     public Task<bool> Exist(Guid trackId)
     {
         return context.Tracks.AnyAsync(t => t.Id == trackId);
+    }
+
+    public async Task IncrementTrackListenings(Guid trackId)
+    {
+        var track = await context.Tracks.FindAsync(trackId);
+        if (track == null) return;
+
+        track.TotalListenings++;
+        track.WeeklyListeningsAmount++;
+
+        await context.SaveChangesAsync();
     }
 }

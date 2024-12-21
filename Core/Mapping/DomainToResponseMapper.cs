@@ -84,7 +84,7 @@ public static class DomainToResponseMapper
             Id = track.Id,
             Name = track.Name,
             Description = track.Description,
-            Genres = track.Genres,
+            Genres = track.Genres.Select(ToGenreResponse),
             PerformerId = track.PerformerId,
             Url = track.Url,
         };

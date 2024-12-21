@@ -2,11 +2,11 @@
 
 namespace Core.DTOs.Tracks;
 
-public class UploadTracksDTO
+public class UploadTrackDTO
 {
+    public string PerformerId { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
-    public string PerformerId { get; set; }
-    public IEnumerable<string> Genres { get; set; }
-    public List<IFormFile>? MusicTracks { get; set; }
+    public IEnumerable<string> GenreIds { get; set; }
+    public IFormFile Track { get; set; }
 }

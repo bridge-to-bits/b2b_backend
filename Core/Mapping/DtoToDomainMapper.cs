@@ -33,14 +33,4 @@ public static class DtoToDomainMapper
             Name = addGenreDTO.Name,
         };
     }
-
-    public static Track ToTrack(this UploadTracksDTO dto)
-    {
-        return new Track
-        {
-            Name = dto.Name,
-            Description = dto.Description,
-            PerformerId = Guid.Parse(dto.PerformerId)
-        };
-    }
 }
