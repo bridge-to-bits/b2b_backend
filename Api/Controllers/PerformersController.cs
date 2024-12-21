@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Responses;
 using Core.Interfaces.Services;
-using Core.DTOs.Performers;
+using Core.DTOs.Users;
 
 namespace Api.Controllers;
 
@@ -9,8 +9,9 @@ namespace Api.Controllers;
 [ApiController]
 public class PerformersController(IPerformerService performerService) : ControllerBase
 {
+    [ProducesResponseType(typeof(PerformersResponse) ,StatusCodes.Status200OK)]
     [HttpGet]
-    public async Task<ActionResult<SendInvitationPerformersResponse>> GetPerformers([FromQuery] QueryAllPerformersDTO queryAllperformersDTO)
+    public async Task<IActionResult> GetPerformers([FromQuery] QueryAllUsersDTO queryAllperformersDTO)
     {
         var performers = await performerService.GetPerformers(queryAllperformersDTO);
         return Ok(performers);

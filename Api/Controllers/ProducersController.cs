@@ -14,6 +14,7 @@ public class ProducersController(
     IMailService mailService
     ) : ControllerBase
 {
+    [ProducesResponseType(typeof(UsersResponse),StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<UsersResponse>> GetProducers([FromQuery] QueryAllUsersDTO queryAllUsersDTO)
     {
@@ -21,6 +22,7 @@ public class ProducersController(
         return Ok(producers);
     }
 
+    [ProducesResponseType(typeof(ProducerRelatedPerformerResponse), StatusCodes.Status200OK)]
     [HttpGet("{producerId}/performers")]
     public async Task<IActionResult> GetRelatedPerformers(Guid producerId)
     {
@@ -28,6 +30,8 @@ public class ProducersController(
         return Ok(res);
     }
 
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [HttpPost("{producerId}/send-agreement/{performerId}")]
     public async Task<IActionResult> SendAgreementEmail(string producerId, string performerId)
     {
@@ -44,6 +48,7 @@ public class ProducersController(
         return Ok("Agreement email sent successfully.");
     }
 
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [HttpGet("{producerId}/approve-agreement/{performerId}")]
     public async Task<IActionResult> ApproveAgreement(string producerId, string performerId)
     {

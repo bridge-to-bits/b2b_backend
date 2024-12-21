@@ -11,6 +11,8 @@ namespace Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
+    [ProducesResponseType(typeof(GetMeResponse), 200)]
+    [ProducesResponseType(404)]
     [HttpGet("me")]
     [TokenAuthorize]
     public async Task<IActionResult> GetMe()
@@ -27,6 +29,8 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(user.ToGetMeResponse());
     }
 
+    [ProducesResponseType(typeof(string), 200)]
+    [ProducesResponseType(400)]
     [HttpPost("register")]
     public async Task<IActionResult> RegisterMainInfo([FromBody] MainRegistrationDTO registrationDTO)
     {
@@ -54,6 +58,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(response);
     }
 
+    [ProducesResponseType(typeof(ProfileResponse), 200)]
     [HttpGet("{userId}/profile")]
     public async Task<IActionResult> GetUserProfile([FromRoute] string userId)
     {
@@ -61,20 +66,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(profile);
     }
 
-    [HttpGet("register/availableGenres")]
-    public async Task<IActionResult> GetAvailableGenres()
-    {
-        var genres = await userService.GetAvailableGenres();
-        return Ok(genres);
-    }
-
-    [HttpPost("register/availableGenres")]
-    public async Task<IActionResult> AddAvailableGenre([FromBody] AddGenreDTO addGenreDTO)
-    {
-        var result = await userService.AddAvailableGenre(addGenreDTO);
-        return Ok(result);
-    }
-
+    [ProducesResponseType(typeof(string), 200)]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
     {
@@ -82,6 +74,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(token);
     }
 
+    [ProducesResponseType(200)]
     [AuthorizePermission("setPermissions")]
     [HttpPost("{userId}/setPermissions")]
     public async Task<IActionResult> SetPermissions(
@@ -93,12 +86,14 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok();
     }
 
+    [ProducesResponseType(typeof(UserInfoResponse),200)]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser(string userId)
     {
         return Ok(await userService.GetUser(userId));
     }
 
+    [ProducesResponseType(200)]
     [AuthorizePermission("addRating")]
     [HttpPost("{targetUserId}/addRating")]
     public async Task<IActionResult> AddRating(
@@ -111,6 +106,7 @@ public class UsersController (IUserService userService, IAuthService authService
 
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
 
+    [ProducesResponseType(typeof(IEnumerable<FavoritePerformerResponse>), 200)]
     [HttpGet("{userId}/favorites/performers")]
     public async Task<IActionResult> GetFavoritePerformers(Guid userId)
     {
@@ -125,6 +121,7 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
+    [ProducesResponseType(typeof(string), 200)]
     [HttpPost("{userId}/favorites/performers/{performerId}")]
     public async Task<IActionResult> AddFavoritePerformer(Guid userId, Guid performerId)
     {
@@ -139,6 +136,7 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
+    [ProducesResponseType(200)]
     [HttpDelete("{userId}/favorites/performers/{performerId}")]
     public async Task<IActionResult> RemoveFavoritePerformer(Guid userId, Guid performerId)
     {
@@ -156,6 +154,7 @@ public class UsersController (IUserService userService, IAuthService authService
 
     // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
 
+    [ProducesResponseType(typeof(IEnumerable<FavoriteTrackResponse>), 200)]
     [HttpGet("{userId}/favorites/tracks")]
     public async Task<IActionResult> GetFavoriteTracks(Guid userId)
     {

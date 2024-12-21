@@ -121,22 +121,23 @@ public static class DomainToResponseMapper
         };
     }
 
-    public static SendInvitationPerformersResponse ToSendInvitationPerformersResponse(this List<Performer> performers)
+    public static PerformersResponse ToSendInvitationPerformersResponse(this List<Performer> performers)
     {
         return new()
         {
-            Data = performers.Select(performer => performer.ToSendInvitationPerformerResponse())
+            Data = performers.Select(performer => performer.ToPerformerRespponse())
         };
     }
 
-    public static SendInvitationPerformerResponse ToSendInvitationPerformerResponse(this Performer performer)
+    public static PerformerResponse ToPerformerRespponse(this Performer performer)
     {
         var ratings = performer.User.ReceivedRatings;
-        return new SendInvitationPerformerResponse()
+        return new PerformerResponse()
         {
             UserId = performer.User.Id.ToString(),
             Avatar = performer.User.Avatar,
-            Genres = performer.User.Genres?.Select(ToGenreResponse).ToList(),
+            Genres = performer.User.Genres?.Select(ToGenreResponse),
+            Socials = performer.User.Socials?.Select(ToSocialResponse),
             Username = performer.User.Username,
             Rating = ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0
         };

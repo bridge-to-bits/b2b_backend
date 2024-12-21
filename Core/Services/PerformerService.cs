@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Performers;
+﻿using Core.DTOs.Users;
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Mapping;
@@ -15,7 +15,7 @@ public class PerformerService (IPerformerRepository performerRepository) : IPerf
        return performerRepository.GetPerfomer(performerId);
     }
 
-    public async Task<SendInvitationPerformersResponse> GetPerformers(QueryAllPerformersDTO queryAllUsersDTO)
+    public async Task<PerformersResponse> GetPerformers(QueryAllUsersDTO queryAllUsersDTO)
     {
         Expression<Func<Performer, bool>> predicate = performer =>
             String.IsNullOrWhiteSpace(queryAllUsersDTO.Search)

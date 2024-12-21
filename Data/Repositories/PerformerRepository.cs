@@ -21,6 +21,8 @@ public class PerformerRepository(B2BDbContext context) : IPerformerRepository
                 .Include(performer => performer.User)
                     .ThenInclude(user => user.Genres)
                 .Include(performer => performer.User)
+                    .ThenInclude(user => user.Socials)
+                .Include(performer => performer.User)
                     .ThenInclude(user => user.ReceivedRatings)
                 .ToListAsync();
     }
