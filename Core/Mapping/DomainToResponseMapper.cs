@@ -28,6 +28,7 @@ public static class DomainToResponseMapper
             UserId = user.Id.ToString(),
             Avatar = user.Avatar,
             Socials = user.Socials?.Select(ToSocialResponse).ToList(),
+            Username = user.Username,
         };
     }
 

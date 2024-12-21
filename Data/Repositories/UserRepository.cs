@@ -144,6 +144,7 @@ public class UserRepository(B2BDbContext context) : IUserRepository
             .Include(user => user.FavoritePerformers)
             .ThenInclude(fp => fp.Performer)
             .ThenInclude(performer => performer.User)
+            .ThenInclude(user => user.Socials)
             .FirstAsync(user => user.Id == userId);
     }
 }
