@@ -102,6 +102,7 @@ public static class DomainToResponseMapper
             Id = track.Id.ToString(),
             Url = track.Url,
             Name = track.Name,
+            Description = track.Description,
         };
     }
 
@@ -117,6 +118,27 @@ public static class DomainToResponseMapper
             BackgroundPhoto = performer.User?.ProfileBackground,
             Username = performer.User?.Username,
             Genres = performer.User?.Genres.Select(ToGenreResponse),
+        };
+    }
+
+    public static SendInvitationPerformersResponse ToSendInvitationPerformersResponse(this List<Performer> performers)
+    {
+        return new()
+        {
+            Data = performers.Select(performer => performer.ToSendInvitationPerformerResponse())
+        };
+    }
+
+    public static SendInvitationPerformerResponse ToSendInvitationPerformerResponse(this Performer performer)
+    {
+        var ratings = performer.User.ReceivedRatings;
+        return new SendInvitationPerformerResponse()
+        {
+            UserId = performer.User.Id.ToString(),
+            Avatar = performer.User.Avatar,
+            Genres = performer.User.Genres?.Select(ToGenreResponse).ToList(),
+            Username = performer.User.Username,
+            Rating = ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0
         };
     }
 }

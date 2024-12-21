@@ -1,6 +1,4 @@
-﻿using Common.Models;
-
-namespace Core.DTOs.Users;
+﻿namespace Core.DTOs.Users;
 
 public class QueryAllUsersDTO : QueryAllDTO
 {
