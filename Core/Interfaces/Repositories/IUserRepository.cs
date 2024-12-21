@@ -31,4 +31,5 @@ public interface IUserRepository
     public Task<User?> GetUserForUpdate(
         Expression<Func<User, bool>> predicate,
         params Expression<Func<User, object>>[] includes);
+    Task<User> GetUserWithFavoritePerformers(Guid userId);
 }

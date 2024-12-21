@@ -299,21 +299,15 @@ public class UserService(
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
     public async Task<IEnumerable<FavoritePerformerResponse>> GetFavoritePerformers(Guid userId)
     {
-        var user = await userRepository.GetUser(u => u.Id == userId, UserIncludes.FavoritePerformers)
+        var user = await userRepository.GetUserWithFavoritePerformers(userId)
             ?? throw new Exception("User not found");
 
-        var performersUserIds = user.FavoritePerformers.Select(f => f.UserId).ToList();
-
         List<FavoritePerformerResponse> response = [];
-        foreach (var performersUserId in performersUserIds) 
+        foreach (var favoritePerformer in user.FavoritePerformers) 
         {
-            var performersUser = await userRepository.GetUser(
-            user => user.Id == performersUserId, UserIncludes.Socials)
-            ?? throw new Exception("User do not exist");
+            var rating = await GetUserAverageRating(favoritePerformer.User.Id.ToString());
 
-            var rating = await GetUserAverageRating(performersUserId.ToString());
-
-            var favoritePerformerResponse = user.ToFavoritePerformerResponse();
+            var favoritePerformerResponse = favoritePerformer.Performer.User.ToFavoritePerformerResponse();
             favoritePerformerResponse.Rating = rating;
             response.Add(favoritePerformerResponse);
         }
@@ -360,7 +354,7 @@ public class UserService(
     }
 
 
-    // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
+    // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
 
     public async Task<IEnumerable<FavoriteTrackResponse>> GetFavoriteTracks(Guid userId)
     {

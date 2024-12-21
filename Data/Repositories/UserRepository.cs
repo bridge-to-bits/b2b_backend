@@ -136,4 +136,14 @@ public class UserRepository(B2BDbContext context) : IUserRepository
     {
         await context.SaveChangesAsync();
     }
+
+    public Task<User> GetUserWithFavoritePerformers(Guid userId)
+    {
+        return context.Users
+            .AsNoTracking()
+            .Include(user => user.FavoritePerformers)
+            .ThenInclude(fp => fp.Performer)
+            .ThenInclude(performer => performer.User)
+            .FirstAsync(user => user.Id == userId);
+    }
 }
