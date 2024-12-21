@@ -85,7 +85,7 @@ public class FileService
         };
 
         await _driveService.Permissions.Create(permission, uploadedFile.Id).ExecuteAsync();
-        return $"https://drive.google.com/uc?id={uploadedFile.Id}";
+        return $"https://drive.google.com/uc?export=download&id={uploadedFile.Id}";
     }
 
     public static async Task<byte[]> ConvertToByteArray(IFormFile file)

@@ -1,18 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Responses;
-using Core.DTOs.Users;
 using Core.Interfaces.Services;
+using Core.DTOs.Performers;
 
 namespace Api.Controllers;
 
 [Route("api/performers")]
 [ApiController]
-public class PerformersController(IUserService userService) : ControllerBase
+public class PerformersController(IPerformerService performerService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<UsersResponse>> GetPerformers([FromQuery] QueryAllUsersDTO queryAllUsersDTO)
+    public async Task<ActionResult<SendInvitationPerformersResponse>> GetPerformers([FromQuery] QueryAllPerformersDTO queryAllperformersDTO)
     {
-        var performers = await userService.GetPerformers(queryAllUsersDTO);
+        var performers = await performerService.GetPerformers(queryAllperformersDTO);
         return Ok(performers);
     }
 }
