@@ -22,4 +22,5 @@ public interface ITrackRepository
     public Task RemoveTrack(Track track);
     public Task<List<Genre>> GetGenres(IEnumerable<string> trackIds);
     public Task<bool> Exist(Guid trackId);
+    public Task IncrementTrackListenings(Guid trackId);
 }

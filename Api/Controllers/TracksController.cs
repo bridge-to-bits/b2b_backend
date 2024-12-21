@@ -22,10 +22,17 @@ public class TracksController(ITrackService trackService) : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> UploadTracks([FromBody] UploadTracksDTO uploadTrackDTO)
+    [HttpPost("{trackId}/increment")]
+    public async Task<IActionResult> UpdateTrackListening(Guid trackId)
     {
-        var response = await trackService.UploadTracks(uploadTrackDTO);
+        await trackService.UpdateTrackListening(trackId);
+        return Ok();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> UploadTracks([FromForm] UploadTrackDTO uploadTrackDTO)
+    {
+        var response = await trackService.UploadTrack(uploadTrackDTO);
         return Ok(response);
     }
 

@@ -170,7 +170,7 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
-    [HttpPost("{userId}/favorites/Tracks/{trackId}")]
+    [HttpPost("{userId}/favorites/tracks/{trackId}")]
     public async Task<IActionResult> AddFavoriteTrack(Guid userId, Guid trackId)
     {
         try
@@ -184,7 +184,7 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
-    [HttpDelete("{userId}/favorites/Tracks/{trackId}")]
+    [HttpDelete("{userId}/favorites/tracks/{trackId}")]
     public async Task<IActionResult> RemoveFavoriteTrack(Guid userId, Guid trackId)
     {
         try

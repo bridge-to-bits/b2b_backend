@@ -12,6 +12,7 @@ namespace Core.Services;
 
 public class TrackService(
     ITrackRepository trackRepository,
+    IGenreRepository genreRepository,
     IOptions<GoogleDriveOptions> googleDriveOptions) : ITrackService
 {
     private readonly FileService fileService = new(
@@ -19,36 +20,32 @@ public class TrackService(
         googleDriveOptions.Value.FolderId
     );
 
-    public async Task<List<TrackResponse>> UploadTracks(UploadTracksDTO uploadTrackDTO)
+    public async Task<TrackResponse> UploadTrack(UploadTrackDTO uploadTrackDTO)
     {
-        var trackGenreIds = uploadTrackDTO.Genres;
-        var genres = await trackRepository.GetGenres(trackGenreIds);
-        var createdTracks = new List<Track>();
-
-        if (uploadTrackDTO.MusicTracks == null || uploadTrackDTO.MusicTracks.Count == 0)
+        if (uploadTrackDTO.Track == null)
         {
             return null;
         }
 
-        foreach (var track in uploadTrackDTO.MusicTracks)
+        var musicTrackUrl = await fileService.UploadFileAsync(
+            uploadTrackDTO.Track,
+            $"{uploadTrackDTO.PerformerId}_{Path.GetFileNameWithoutExtension(uploadTrackDTO.Track.FileName)}"
+        );
+
+        var genres = await genreRepository.GetGenres(genre => uploadTrackDTO.GenreIds.Contains(genre.Id.ToString()));
+
+        var trackToCreate = new Track
         {
-            var originalFileName = Path.GetFileNameWithoutExtension(track.FileName);
+            Name = uploadTrackDTO.Name,
+            Description = uploadTrackDTO.Description,
+            Url = musicTrackUrl,
+            PerformerId = Guid.Parse(uploadTrackDTO.PerformerId),
+            Genres = genres
+        };
 
-            var musicTrackUrl = await fileService.UploadFileAsync(
-                track,
-                $"{uploadTrackDTO.PerformerId}_{originalFileName}"
-            );
+        var result = await trackRepository.CreateTrack(trackToCreate);
 
-            var trackToCreate = uploadTrackDTO.ToTrack();
-            trackToCreate.Url = musicTrackUrl;
-            trackToCreate.Genres = genres;
-
-            var result = await trackRepository.CreateTrack(trackToCreate);
-            createdTracks.Add(result);
-        }
-
-        var mappedResult = createdTracks.ToTracksResponse();
-        return mappedResult;
+        return result.ToTrackResponse();
     }
 
     public async Task<TrackResponse> GetTrack(string trackId)
@@ -103,5 +100,10 @@ public class TrackService(
         {
             await trackRepository.RemoveTrack(track);
         }
+    }
+
+    public Task UpdateTrackListening(Guid trackId)
+    {
+        return trackRepository.IncrementTrackListenings(trackId);
     }
 }

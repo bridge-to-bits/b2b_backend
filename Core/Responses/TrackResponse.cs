@@ -9,5 +9,5 @@ public class TrackResponse
     public string? Description { get; set; }
     public string Url { get; set; }
     public Guid PerformerId { get; set; }
-    public IEnumerable<Genre> Genres { get; set; }
+    public IEnumerable<GenreResponse> Genres { get; set; }
 }

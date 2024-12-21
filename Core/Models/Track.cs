@@ -19,7 +19,14 @@ public class Track
 
     [Required]
     public Guid PerformerId { get; set; }
-    public IEnumerable<Genre> Genres { get; set; }
+
+    [Required]
+    public int WeeklyListeningsAmount { get; set; }
+
+    [Required]
+    public int TotalListenings {  get; set; }
+
+    public ICollection<Genre> Genres { get; set; }
 
     [ForeignKey(nameof(PerformerId))]
     public Performer Performer { get; set; }

@@ -3,6 +3,7 @@ using System;
 using Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(B2BDbContext))]
-    partial class B2BDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241221083941_Add_Track_Listenings_Count")]
+    partial class Add_Track_Listenings_Count
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,6 +43,9 @@ namespace Data.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<Guid>("TrackId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<Guid>("PerformerId")
                         .HasColumnType("char(36)");
 
                     b.HasKey("UserId", "TrackId");

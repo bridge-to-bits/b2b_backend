@@ -8,5 +8,5 @@ public class Genre
     public Guid Id { get; set; }
     public string Name { get; set; }
     public ICollection<User> Users { get; set; }
-    public IEnumerable<Track> Tracks { get; set; }
+    public ICollection<Track> Tracks { get; set; }
 }
