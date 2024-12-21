@@ -16,7 +16,7 @@ public interface IUserService
     public Task<UsersResponse> GetPerformers(QueryAllUsersDTO queryAllUsersDTO);
     public Task<UsersResponse> GetProducers(QueryAllUsersDTO queryAllUsersDTO);
 
-    public Task AddRating(AddRatingDTO addRatingDTO, string targetUserId);
+    public Task AddRating(AddRatingDTO addRatingDTO, string targetUserId, string initiatorUserId);
     public Task<double> GetUserAverageRating(string userId);
 
     public Task<ProfileResponse> GetUserProfile(string userId);

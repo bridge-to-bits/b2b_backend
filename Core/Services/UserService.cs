@@ -151,11 +151,11 @@ public class UserService(
         return performer.Id.ToString();
     }
 
-    public async Task AddRating(AddRatingDTO addRatingDTO, string targetUserId)
+    public async Task AddRating(AddRatingDTO addRatingDTO, string targetUserId, string initiatorUserId)
     {
         await userRepository.AddRating(new Rating()
         {
-            InitiatorUserId = Guid.Parse(addRatingDTO.InitiatorUserId),
+            InitiatorUserId = Guid.Parse(initiatorUserId),
             TargetUserId = Guid.Parse(targetUserId),
             RatingValue = addRatingDTO.Rating
         });

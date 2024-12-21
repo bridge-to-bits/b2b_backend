@@ -93,14 +93,25 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(await userService.GetUser(userId));
     }
 
-    [ProducesResponseType(200)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [AuthorizePermission("addRating")]
     [HttpPost("{targetUserId}/addRating")]
+    [TokenAuthorize]
     public async Task<IActionResult> AddRating(
         [FromBody] AddRatingDTO addRatingDTO, 
         string targetUserId)
     {
-        await userService.AddRating(addRatingDTO, targetUserId);
+        var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (initiatorUserId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        if(initiatorUserId == targetUserId)
+        {
+            return BadRequest(new { message = "You can not rate yourself :)" });
+        }
+
+        await userService.AddRating(addRatingDTO, targetUserId, initiatorUserId);
         return Ok();
     }
 
