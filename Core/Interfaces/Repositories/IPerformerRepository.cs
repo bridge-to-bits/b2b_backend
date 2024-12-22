@@ -5,7 +5,7 @@ namespace Core.Interfaces.Repositories;
 
 public interface IPerformerRepository
 {
-    public Task<Performer> GetPerfomer(Guid perfomerId);
+    public Task<Performer> GetPerfomer(Expression<Func<Performer, bool>> predicate);
     public Task<bool> Exist(Guid perfomerId);
     Task<List<Performer>> GetPerformers(Expression<Func<Performer, bool>> predicate);
 }

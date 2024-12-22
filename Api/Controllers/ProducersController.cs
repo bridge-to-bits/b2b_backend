@@ -50,7 +50,7 @@ public class ProducersController(
 
         foreach (var performerId in sendAgreementDto.PerformerIds)
         {
-            var performer = await performerService.GetPerformer(Guid.Parse(performerId));
+            var performer = await performerService.GetPerformer(performer => performer.Id == Guid.Parse(performerId));
             if (performer == null)
             {
                 return NotFound("Performer was not found");
@@ -64,7 +64,7 @@ public class ProducersController(
     [HttpGet("{producerId}/approve-agreement/{performerId}")]
     public async Task<IActionResult> ApproveAgreement(string producerId, string performerId)
     {
-        var performer = await performerService.GetPerformer(Guid.Parse(performerId));
+        var performer = await performerService.GetPerformer(performer => performer.Id == Guid.Parse(performerId));
         await producerService.AddRelatedPerformer(Guid.Parse(producerId), performer);
 
         return Ok("Agreement approved successfully.");

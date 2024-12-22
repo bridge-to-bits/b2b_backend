@@ -27,10 +27,10 @@ public class PerformerRepository(B2BDbContext context) : IPerformerRepository
                 .ToListAsync();
     }
 
-    public Task<Performer> GetPerfomer (Guid perfomerId)
+    public Task<Performer> GetPerfomer (Expression<Func<Performer, bool>> predicate)
     {
         return context.Performers.AsNoTracking()
             .Include(p => p.User)
-            .FirstAsync(perfomer => perfomer.Id == perfomerId);
+            .FirstAsync(predicate);
     }
 }

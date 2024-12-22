@@ -13,6 +13,7 @@ namespace Core.Services;
 public class TrackService(
     ITrackRepository trackRepository,
     IGenreRepository genreRepository,
+    IPerformerService performerService,
     IOptions<GoogleDriveOptions> googleDriveOptions) : ITrackService
 {
     private readonly FileService fileService = new(
@@ -22,6 +23,10 @@ public class TrackService(
 
     public async Task<TrackResponse> UploadTrack(UploadTrackDTO uploadTrackDTO)
     {
+        var performer = await performerService.GetPerformer(
+            performer => performer.UserId == Guid.Parse(uploadTrackDTO.UserId))
+            ?? throw new Exception("Performer related to such user do not exist");
+
         if (uploadTrackDTO.Track == null)
         {
             return null;
@@ -29,7 +34,7 @@ public class TrackService(
 
         var musicTrackUrl = await fileService.UploadFileAsync(
             uploadTrackDTO.Track,
-            $"{uploadTrackDTO.PerformerId}_{Path.GetFileNameWithoutExtension(uploadTrackDTO.Track.FileName)}"
+            $"{performer.Id}_{Path.GetFileNameWithoutExtension(uploadTrackDTO.Track.FileName)}"
         );
 
         var genres = await genreRepository.GetGenres(genre => uploadTrackDTO.GenreIds.Contains(genre.Id.ToString()));

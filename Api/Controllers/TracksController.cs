@@ -37,8 +37,12 @@ public class TracksController(ITrackService trackService) : ControllerBase
     [HttpPost]
     public async Task<IActionResult> UploadTracks([FromForm] UploadTrackDTO uploadTrackDTO)
     {
-        var response = await trackService.UploadTrack(uploadTrackDTO);
-        return Ok(response);
+        try
+        {
+            var response = await trackService.UploadTrack(uploadTrackDTO);
+            return Ok(response);
+        }
+        catch (Exception ex) { return BadRequest(ex.Message); }
     }
 
     [ProducesResponseType(StatusCodes.Status200OK)]

@@ -4,7 +4,7 @@ namespace Core.DTOs.Tracks;
 
 public class UploadTrackDTO
 {
-    public string PerformerId { get; set; }
+    public string UserId { get; set; }
     public string Name { get; set; }
     public string? Description { get; set; }
     public IEnumerable<string> GenreIds { get; set; }

@@ -10,9 +10,9 @@ namespace Core.Services;
 
 public class PerformerService (IPerformerRepository performerRepository) : IPerformerService
 {
-    public Task<Performer> GetPerformer(Guid performerId)
+    public Task<Performer> GetPerformer(Expression<Func<Performer, bool>> predicate)
     {
-       return performerRepository.GetPerfomer(performerId);
+       return performerRepository.GetPerfomer(predicate);
     }
 
     public async Task<PerformersResponse> GetPerformers(QueryAllUsersDTO queryAllUsersDTO)
