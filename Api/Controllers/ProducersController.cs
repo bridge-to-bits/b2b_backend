@@ -48,14 +48,14 @@ public class ProducersController(
             return NotFound("Producer was not found");
         }
 
-        foreach (var performerId in sendAgreementDto.PerformerIds)
+        foreach (var performerUserId in sendAgreementDto.PerformerIds)
         {
-            var performer = await performerService.GetPerformer(performer => performer.Id == Guid.Parse(performerId));
+            var performer = await performerService.GetPerformer(performer => performer.UserId == Guid.Parse(performerUserId));
             if (performer == null)
             {
                 return NotFound("Performer was not found");
             }
-            await mailService.SendAgreementEmailAsync(userId.ToString(), producer.User.Username, performer.UserId.ToString(), performer.User.Email);
+            await mailService.SendAgreementEmailAsync(userId.ToString(), producer.User.Username, performerUserId, performer.User.Email);
         }
         return Ok("Agreement email sent successfully.");
     }
