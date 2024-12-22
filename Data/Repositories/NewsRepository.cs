@@ -67,7 +67,7 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
     {
         return context.Article
             .AsNoTracking()
-            .Include(a => a.SenderId)
+            .Include(a => a.Author)
             .Include(a => a.Comments)
             .ThenInclude(c => c.User)
             .Include(a => a.Ratings)
@@ -79,7 +79,7 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
         return context.Interviews
             .AsNoTracking()
             .Include(a => a.Respondent)
-            .Include(a => a.SenderId)
+            .Include(a => a.Author)
             .Include(a => a.Comments)
                 .ThenInclude(c => c.User)
             .Include(a => a.Ratings)
