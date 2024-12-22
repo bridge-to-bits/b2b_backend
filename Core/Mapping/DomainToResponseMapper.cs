@@ -146,6 +146,7 @@ public static class DomainToResponseMapper
 
     private static double GetAvgRating(this User user)
     {
+        if(user.ReceivedRatings == null) return 0;
         var ratings = user.ReceivedRatings;
         return ratings.Count != 0 ? ratings.Average(r => r.RatingValue) : 0;
     } 
@@ -191,11 +192,16 @@ public static class DomainToResponseMapper
 
     private static NewsAuthorResponse ToNewsAuthorResponse(this User user) 
     {
+        if (user == null) 
+        {
+            return new();
+        }
+        var rating = user == null ? 0 : user.GetAvgRating();
         return new NewsAuthorResponse()
         {
-            AvatarUrl = user.Avatar,
-            Rating = user.GetAvgRating(),
-            Username = user.Username,
+            AvatarUrl = user?.Avatar,
+            Rating = rating,
+            Username = user?.Username,
         };
     }
 
