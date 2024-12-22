@@ -38,10 +38,10 @@ public class ProducersController(
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    [HttpPost("{producerId}/send-agreement")]
-    public async Task<IActionResult> SendAgreementEmail(string producerId, [FromBody] SendAgreementDto sendAgreementDto)
+    [HttpPost("{userid}/send-agreement")]
+    public async Task<IActionResult> SendAgreementEmail(Guid userId, [FromBody] SendAgreementDto sendAgreementDto)
     {
-        var producer = await producerService.GetProducer(Guid.Parse(producerId));
+        var producer = await producerService.GetProducer(userId);
 
         if (producer == null)
         {
@@ -55,7 +55,7 @@ public class ProducersController(
             {
                 return NotFound("Performer was not found");
             }
-            await mailService.SendAgreementEmailAsync(producerId, producer.User.Username, performerId, performer.User.Email);
+            await mailService.SendAgreementEmailAsync(userId.ToString(), producer.User.Username, performer.UserId.ToString(), performer.User.Email);
         }
         return Ok("Agreement email sent successfully.");
     }

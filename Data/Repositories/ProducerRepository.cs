@@ -19,9 +19,9 @@ public class ProducerRepository(B2BDbContext context) : IProducerRepository
         return context.Producers.AsNoTracking().AnyAsync(p => p.Id == producerId);
     }
 
-    public Task<Producer> GetProducer(Guid producerId)
+    public Task<Producer> GetProducer(Guid userId)
     {
-        return context.Producers.AsNoTracking().Include(p => p.User).FirstAsync(p => p.Id == producerId);
+        return context.Producers.AsNoTracking().Include(p => p.User).FirstAsync(p => p.UserId == userId);
     }
 
     public async Task<IEnumerable<Performer>> GetProducerRelatedPerformers(Guid userId)

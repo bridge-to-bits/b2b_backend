@@ -18,9 +18,9 @@ public class ProducerService(IProducerRepository producerRepository, IUserServic
         return producerRepository.Exist(producerId);
     }
 
-    public Task<Producer> GetProducer(Guid producerId)
+    public Task<Producer> GetProducer(Guid userId)
     {
-        return producerRepository.GetProducer(producerId);
+        return producerRepository.GetProducer(userId);
     }
 
     public async Task<IEnumerable<ProducerRelatedPerformerResponse>> GetProducerRelatedPerformers(Guid userId)

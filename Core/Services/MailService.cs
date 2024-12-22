@@ -17,9 +17,9 @@ public class MailService(IOptions<MailerOptions> options) : IMailService
 
     private readonly MailerOptions _options = options.Value;
 
-    public async Task SendAgreementEmailAsync(string producerId, string producerUsername, string performerId, string performerEmail)
+    public async Task SendAgreementEmailAsync(string producerUserId, string producerUsername, string performerUserId, string performerEmail)
     {
-        var mail = BuildAgreementEmail(producerId, producerUsername, performerEmail);
+        var mail = BuildAgreementEmail(producerUserId, producerUsername, performerUserId);
 
         var smtpClient = new SmtpClient(_options.Host)
         {
@@ -42,10 +42,10 @@ public class MailService(IOptions<MailerOptions> options) : IMailService
         await smtpClient.SendMailAsync(mailMessage);
     }
 
-    private static Mail BuildAgreementEmail(string producerId, string producerUsername, string performerId)
+    private static Mail BuildAgreementEmail(string producerUserId, string producerUsername, string performerUserId)
     {
-        var approvalLink = $"{AppConfig.GetSetting("FRONT_URL")}/mail/approove/{producerId}/{performerId}";
-        var producerProfileUrl = $"{AppConfig.GetSetting("FRONT_URL")}/profile/{producerId}";
+        var approvalLink = $"{AppConfig.GetSetting("BACK_URL")}/api/producers/{producerUserId}/approve-agreement/{performerUserId}";
+        var producerProfileUrl = $"{AppConfig.GetSetting("FRONT_URL")}/profile/{producerUserId}";
 
         var subject = "Approval Request for Collaboration Agreement";
 
