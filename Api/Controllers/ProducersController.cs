@@ -28,8 +28,12 @@ public class ProducersController(
     [HttpGet("{userId}/performers")]
     public async Task<IActionResult> GetRelatedPerformers(Guid userId)
     {
-        var res = await producerService.GetProducerRelatedPerformers(userId);
-        return Ok(res);
+        try
+        {
+            var res = await producerService.GetProducerRelatedPerformers(userId);
+            return Ok(res);
+        }
+        catch (Exception ex) { return BadRequest(ex.Message); }
     }
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]

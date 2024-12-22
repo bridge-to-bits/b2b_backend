@@ -23,6 +23,7 @@ public interface IUserService
     public Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO);
 
     public Task<User?> GetMe(string userId);
+    public Task<UserType> GetUserType(Guid userId);
 
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
     public Task<IEnumerable<FavoritePerformerResponse>> GetFavoritePerformers(Guid userId);

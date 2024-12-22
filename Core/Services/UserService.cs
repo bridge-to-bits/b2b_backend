@@ -190,6 +190,14 @@ public class UserService(
         return user.ToProfileResponse(rating);
     }
 
+    public async Task<UserType> GetUserType (Guid userId)
+    {
+        var user = await userRepository.GetUser(user => user.Id == userId) 
+            ?? throw new Exception("User Not Found");
+
+        return user.UserType;
+    }
+
     public async Task<ProfileResponse> UpdateUserProfile(string userId, UpdateProfileDTO updateProfileDTO)
     {
         var user = await userRepository.GetUserForUpdate(

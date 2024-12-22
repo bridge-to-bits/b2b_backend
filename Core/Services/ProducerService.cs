@@ -6,7 +6,7 @@ using Core.Responses;
 
 namespace Core.Services;
 
-public class ProducerService (IProducerRepository producerRepository, IUserService userService) : IProducerService
+public class ProducerService(IProducerRepository producerRepository, IUserService userService) : IProducerService
 {
     public Task AddRelatedPerformer(Guid producerId, Performer relatedPerformer)
     {
@@ -25,8 +25,18 @@ public class ProducerService (IProducerRepository producerRepository, IUserServi
 
     public async Task<IEnumerable<ProducerRelatedPerformerResponse>> GetProducerRelatedPerformers(Guid userId)
     {
+        var userType = await userService.GetUserType(userId);
+        if (userType != UserType.Producer)
+        {
+            throw new Exception("User is not a producer");
+        }
+
         var relatedPerformers = await producerRepository.GetProducerRelatedPerformers(userId);
         List<ProducerRelatedPerformerResponse> result = [];
+        if (relatedPerformers == null)
+        {
+            return null;
+        }
 
         foreach (var relatedPerformer in relatedPerformers)
         {
