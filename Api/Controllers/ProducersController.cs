@@ -38,7 +38,7 @@ public class ProducersController(
 
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
-    [HttpPost("{userid}/send-agreement")]
+    [HttpPost("{userId}/send-agreement")]
     public async Task<IActionResult> SendAgreementEmail(Guid userId, [FromBody] SendAgreementDto sendAgreementDto)
     {
         var producer = await producerService.GetProducer(userId);
