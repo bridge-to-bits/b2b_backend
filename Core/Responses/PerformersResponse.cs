@@ -12,5 +12,5 @@ public class PerformerResponse
     public IEnumerable<GenreResponse>? Genres { get; set; }
     public IEnumerable<SocialResponse>? Socials { get; set; }
     public double Rating { get; set; }
-    public string UserId { get; set; }
+    public string Id { get; set; }
 }
