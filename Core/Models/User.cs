@@ -37,6 +37,16 @@ public class User
     public ICollection<Rating> GivenRatings { get; set; }
     public ICollection<Social>? Socials { get; set; }
     public ICollection<Genre>? Genres { get; set; }
+
     public ICollection<FavoritePerformer> FavoritePerformers { get; set; }
     public ICollection<FavoriteTrack> FavoriteTracks { get; set; }
+
+    public ICollection<Article> AuthoredArticles { get; set; }
+    public ICollection<ArticleComment> ArticleComments { get; set; }
+    public ICollection<ArticleRating> ArticleRatings { get; set; }
+
+    public ICollection<Interview> AuthoredInterviews { get; set; }
+    public ICollection<Interview> RespondentedInterviews { get; set; }
+    public ICollection<InterviewComment> InterviewComments { get; set; }
+    public ICollection<InterviewRating> InterviewRatings { get; set; }
 }

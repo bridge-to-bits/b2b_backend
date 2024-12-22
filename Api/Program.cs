@@ -75,6 +75,7 @@ public class Program
         services.AddScoped<IGenreRepository, GenresRepository>();
         services.AddScoped<IPerformerRepository, PerformerRepository>();
         services.AddScoped<IProducerRepository, ProducerRepository>();
+        services.AddScoped<INewsRespository, NewsRepository>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthService, AuthService>();
@@ -88,6 +89,7 @@ public class Program
         services.AddScoped<IPerformerService, PerformerService>();
         services.AddScoped<IProducerService, ProducerService>();
         services.AddScoped<IMailService, MailService>();
+        services.AddScoped<INewsService, NewsService>();
 
     }
 }

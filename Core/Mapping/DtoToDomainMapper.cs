@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Tracks;
+﻿using Core.DTOs.News;
 using Core.DTOs.Users;
 using Core.Models;
 
@@ -31,6 +31,34 @@ public static class DtoToDomainMapper
         return new Genre
         {
             Name = addGenreDTO.Name,
+        };
+    }
+
+    public static Article ToArticle(this AddArticleDTO addArticleDTO)
+    {
+        return new Article
+        {
+            SenderId = addArticleDTO.SenderId,
+            Title = addArticleDTO.Title,
+            Content = addArticleDTO.Content,
+            BackgroundPhotoUrl = addArticleDTO.BackgroundPhotoUrl,
+            ContentPreview = addArticleDTO.ContentPreview,
+            CreatedAt = DateTime.UtcNow,
+        };
+    }
+
+    public static Interview ToInterview(this AddInterviewDTO addInterviewDTO)
+    {
+        return new Interview
+        {
+            SenderId = addInterviewDTO.SenderId,
+            RespondentId = addInterviewDTO.RespondentId,
+            VideoLink = addInterviewDTO.VideoLink,
+            Title = addInterviewDTO.Title,
+            Content = addInterviewDTO.Content,
+            BackgroundPhotoUrl = addInterviewDTO.BackgroundPhotoUrl,
+            ContentPreview = addInterviewDTO.ContentPreview,
+            CreatedAt = DateTime.UtcNow,
         };
     }
 }

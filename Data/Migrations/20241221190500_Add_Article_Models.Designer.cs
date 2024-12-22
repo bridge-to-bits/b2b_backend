@@ -3,6 +3,7 @@ using System;
 using Data.DatabaseContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(B2BDbContext))]
-    partial class B2BDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241221190500_Add_Article_Models")]
+    partial class Add_Article_Models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,7 +54,7 @@ namespace Data.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Articles");
+                    b.ToTable("Article");
                 });
 
             modelBuilder.Entity("Core.Models.ArticleComment", b =>
@@ -79,7 +82,7 @@ namespace Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ArticleComments");
+                    b.ToTable("ArticleComment");
                 });
 
             modelBuilder.Entity("Core.Models.ArticleRating", b =>
@@ -103,7 +106,7 @@ namespace Data.Migrations
 
                     b.HasIndex("InitiatorId");
 
-                    b.ToTable("ArticleRatings");
+                    b.ToTable("ArticleRating");
                 });
 
             modelBuilder.Entity("Core.Models.FavoritePerformer", b =>
@@ -169,101 +172,6 @@ namespace Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Grants");
-                });
-
-            modelBuilder.Entity("Core.Models.Interview", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("BackgroundPhotoUrl")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("ContentPreview")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("RespondentId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("SenderId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("VideoLink")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RespondentId");
-
-                    b.HasIndex("SenderId");
-
-                    b.ToTable("Interviews");
-                });
-
-            modelBuilder.Entity("Core.Models.InterviewComment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<Guid>("InterviewId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InterviewId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("InterviewComments");
-                });
-
-            modelBuilder.Entity("Core.Models.InterviewRating", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("InitiatorId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("InterviewId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("double");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("InitiatorId");
-
-                    b.HasIndex("InterviewId");
-
-                    b.ToTable("InterviewRatings");
                 });
 
             modelBuilder.Entity("Core.Models.Performer", b =>
@@ -508,13 +416,13 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Core.Models.Article", b =>
                 {
-                    b.HasOne("Core.Models.User", "Author")
+                    b.HasOne("Core.Models.User", "User")
                         .WithMany("AuthoredArticles")
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Author");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Models.ArticleComment", b =>
@@ -602,63 +510,6 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Role");
-                });
-
-            modelBuilder.Entity("Core.Models.Interview", b =>
-                {
-                    b.HasOne("Core.Models.User", "Respondent")
-                        .WithMany("RespondentedInterviews")
-                        .HasForeignKey("RespondentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.User", "Author")
-                        .WithMany("AuthoredInterviews")
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Author");
-
-                    b.Navigation("Respondent");
-                });
-
-            modelBuilder.Entity("Core.Models.InterviewComment", b =>
-                {
-                    b.HasOne("Core.Models.Interview", "Interview")
-                        .WithMany("Comments")
-                        .HasForeignKey("InterviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.User", "User")
-                        .WithMany("InterviewComments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Interview");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Core.Models.InterviewRating", b =>
-                {
-                    b.HasOne("Core.Models.User", "User")
-                        .WithMany("InterviewRatings")
-                        .HasForeignKey("InitiatorId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.Interview", "Interview")
-                        .WithMany("Ratings")
-                        .HasForeignKey("InterviewId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Interview");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Models.Performer", b =>
@@ -787,13 +638,6 @@ namespace Data.Migrations
                     b.Navigation("Ratings");
                 });
 
-            modelBuilder.Entity("Core.Models.Interview", b =>
-                {
-                    b.Navigation("Comments");
-
-                    b.Navigation("Ratings");
-                });
-
             modelBuilder.Entity("Core.Models.Performer", b =>
                 {
                     b.Navigation("Tracks");
@@ -812,17 +656,11 @@ namespace Data.Migrations
 
                     b.Navigation("AuthoredArticles");
 
-                    b.Navigation("AuthoredInterviews");
-
                     b.Navigation("FavoritePerformers");
 
                     b.Navigation("FavoriteTracks");
 
                     b.Navigation("GivenRatings");
-
-                    b.Navigation("InterviewComments");
-
-                    b.Navigation("InterviewRatings");
 
                     b.Navigation("Performer")
                         .IsRequired();
@@ -831,8 +669,6 @@ namespace Data.Migrations
                         .IsRequired();
 
                     b.Navigation("ReceivedRatings");
-
-                    b.Navigation("RespondentedInterviews");
 
                     b.Navigation("Roles");
 
