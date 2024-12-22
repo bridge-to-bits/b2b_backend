@@ -21,10 +21,10 @@ public class TrackService(
         googleDriveOptions.Value.FolderId
     );
 
-    public async Task<TrackResponse> UploadTrack(UploadTrackDTO uploadTrackDTO)
+    public async Task<TrackResponse> UploadTrack(UploadTrackDTO uploadTrackDTO, string userId)
     {
         var performer = await performerService.GetPerformer(
-            performer => performer.UserId == Guid.Parse(uploadTrackDTO.UserId))
+            performer => performer.UserId == Guid.Parse(userId))
             ?? throw new Exception("Performer related to such user do not exist");
 
         if (uploadTrackDTO.Track == null)
@@ -44,7 +44,7 @@ public class TrackService(
             Name = uploadTrackDTO.Name,
             Description = uploadTrackDTO.Description,
             Url = musicTrackUrl,
-            PerformerId = Guid.Parse(uploadTrackDTO.PerformerId),
+            PerformerId = performer.Id,
             Genres = genres
         };
 

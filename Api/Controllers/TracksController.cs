@@ -2,6 +2,7 @@
 using Core.DTOs.Tracks;
 using Core.Interfaces.Services;
 using Core.Responses;
+using Core.Filters;
 
 namespace Api.Controllers;
 
@@ -34,12 +35,17 @@ public class TracksController(ITrackService trackService) : ControllerBase
     }
 
     [ProducesResponseType(typeof(TrackResponse), StatusCodes.Status200OK)]
+    [TokenAuthorize]
     [HttpPost]
     public async Task<IActionResult> UploadTracks([FromForm] UploadTrackDTO uploadTrackDTO)
     {
+        var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (userId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
         try
         {
-            var response = await trackService.UploadTrack(uploadTrackDTO);
+            var response = await trackService.UploadTrack(uploadTrackDTO, userId);
             return Ok(response);
         }
         catch (Exception ex) { return BadRequest(ex.Message); }
