@@ -16,9 +16,9 @@ public class B2BDbContext(DbContextOptions<B2BDbContext> options) : DbContext(op
     public DbSet<Track> Tracks { get; set; }
     public DbSet<FavoritePerformer> FavoritePerformers { get; set; }
     public DbSet<FavoriteTrack> FavoriteTracks { get; set; }
-    public DbSet<Article> Articles { get; set; }
-    public DbSet<ArticleComment> ArticleComments { get; set; }
-    public DbSet<ArticleRating> ArticleRatings { get; set; }
+    public DbSet<Article> Article { get; set; }
+    public DbSet<ArticleComment> ArticleComment { get; set; }
+    public DbSet<ArticleRating> ArticleRating { get; set; }
     public DbSet<Interview> Interviews { get; set; }
     public DbSet<InterviewComment> InterviewComments { get; set; }
     public DbSet<InterviewRating> InterviewRatings { get; set; }

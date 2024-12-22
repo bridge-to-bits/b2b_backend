@@ -9,13 +9,13 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
 {
     public Task AddArticle(Article article)
     {
-        context.Articles.Add(article);
+        context.Article.Add(article);
         return context.SaveChangesAsync();
     }
 
     public Task AddArticleComment(Guid articleId, string text, string userId)
     {
-        context.ArticleComments.Add(new ArticleComment
+        context.ArticleComment.Add(new ArticleComment
         {
             ArticleId = articleId,
             CreatedAt = DateTime.Now,
@@ -47,7 +47,7 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
     {
         var oneWeekAgo = DateTime.UtcNow.AddDays(-7);
 
-        return context.Articles
+        return context.Article
             .AsNoTracking()
             .Where(a => a.CreatedAt >= oneWeekAgo)
             .ToListAsync();
@@ -65,7 +65,7 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
 
     public Task<Article?> GetArticle(Guid articleId)
     {
-        return context.Articles
+        return context.Article
             .AsNoTracking()
             .Include(a => a.SenderId)
             .Include(a => a.Comments)
