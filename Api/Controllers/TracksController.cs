@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.DTOs.Tracks;
 using Core.Interfaces.Services;
-using Core.Responses;
 using Core.Filters;
+using Core.Responses.Tracks;
 
 namespace Api.Controllers;
 

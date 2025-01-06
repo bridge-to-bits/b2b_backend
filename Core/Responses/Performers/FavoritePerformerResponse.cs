@@ -1,8 +1,8 @@
-﻿namespace Core.Responses;
+﻿namespace Core.Responses.Performers;
 
 public class FavoritePerformerResponse
 {
-    public string Avatar {  get; set; }
+    public string Avatar { get; set; }
     public string Username { get; set; }
     public IEnumerable<SocialResponse> Socials { get; set; }
     public double Rating { get; set; }

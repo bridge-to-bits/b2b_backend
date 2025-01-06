@@ -76,6 +76,7 @@ public class Program
         services.AddScoped<IPerformerRepository, PerformerRepository>();
         services.AddScoped<IProducerRepository, ProducerRepository>();
         services.AddScoped<INewsRespository, NewsRepository>();
+        services.AddScoped<IRatingRepository, RatingsRepository>();
 
         services.AddScoped<IPasswordHasher, PasswordHasher>();
         services.AddScoped<IAuthService, AuthService>();

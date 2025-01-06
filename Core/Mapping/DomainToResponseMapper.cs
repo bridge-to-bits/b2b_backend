@@ -1,6 +1,9 @@
 ﻿using Core.Models;
 using Core.Responses;
 using Core.Responses.News;
+using Core.Responses.Performers;
+using Core.Responses.Tracks;
+using Core.Responses.Users;
 
 namespace Core.Mapping;
 public static class DomainToResponseMapper
@@ -116,6 +119,7 @@ public static class DomainToResponseMapper
     {
         return new ProducerRelatedPerformerResponse
         {
+            UserId = performer.UserId.ToString(),
             BackgroundPhoto = performer.User?.ProfileBackground,
             Username = performer.User?.Username,
             Genres = performer.User?.Genres.Select(ToGenreResponse),

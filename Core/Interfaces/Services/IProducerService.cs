@@ -1,5 +1,5 @@
 ﻿using Core.Models;
-using Core.Responses;
+using Core.Responses.Performers;
 
 namespace Core.Interfaces.Services;
 

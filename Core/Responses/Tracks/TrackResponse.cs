@@ -1,6 +1,6 @@
 ﻿using Core.Models;
 
-namespace Core.Responses;
+namespace Core.Responses.Tracks;
 
 public class TrackResponse
 {

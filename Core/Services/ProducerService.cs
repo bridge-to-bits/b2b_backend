@@ -2,7 +2,7 @@
 using Core.Interfaces.Services;
 using Core.Mapping;
 using Core.Models;
-using Core.Responses;
+using Core.Responses.Performers;
 
 namespace Core.Services;
 

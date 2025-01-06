@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Core.Filters;
 using Core.Mapping;
-using Core.Responses;
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
+using Core.Responses.Users;
+using Core.Responses.Tracks;
+using Core.Responses.Performers;
 
 namespace Api.Controllers;
 
@@ -96,7 +98,7 @@ public class UsersController (IUserService userService, IAuthService authService
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [AuthorizePermission("addRating")]
-    [HttpPost("{targetUserId}/addRating")]
+    [HttpPost("{targetUserId}/rate")]
     [TokenAuthorize]
     public async Task<IActionResult> AddRating(
         [FromBody] AddRatingDTO addRatingDTO, 
@@ -113,6 +115,27 @@ public class UsersController (IUserService userService, IAuthService authService
 
         await userService.AddRating(addRatingDTO, targetUserId, initiatorUserId);
         return Ok();
+    }
+
+    [ProducesResponseType(typeof(UserRatingInfoResponse), 200)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [HttpGet("{targetUserId}/given-rate")]
+    [TokenAuthorize]
+    public async Task<IActionResult> GetGivenUserRateInfo(
+        string targetUserId
+    ){
+        var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (initiatorUserId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        if (initiatorUserId == targetUserId)
+        {
+            return BadRequest(new { message = "Invalid endpoint usage" });
+        }
+
+        var res = await userService.GetGivenUserRateInfo(targetUserId, initiatorUserId);
+        return Ok(res);
     }
 
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------

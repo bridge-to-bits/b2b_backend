@@ -3,7 +3,7 @@ using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Mapping;
 using Core.Models;
-using Core.Responses;
+using Core.Responses.Performers;
 using System.Linq.Expressions;
 
 namespace Core.Services;

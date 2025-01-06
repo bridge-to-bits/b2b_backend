@@ -1,4 +1,4 @@
-﻿namespace Core.Responses;
+﻿namespace Core.Responses.Performers;
 
 public class PerformersResponse
 {

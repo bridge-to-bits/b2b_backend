@@ -6,6 +6,9 @@ using Core.Interfaces.Services;
 using Core.Mapping;
 using Core.Models;
 using Core.Responses;
+using Core.Responses.Performers;
+using Core.Responses.Tracks;
+using Core.Responses.Users;
 using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 
@@ -14,6 +17,7 @@ namespace Core.Services;
 public class UserService(
     IUserRepository userRepository,
     IPerformerRepository performerRepository,
+    IRatingRepository ratingRepository,
     ITrackRepository trackRepository,
     IGenreRepository genreRepository,
     IPasswordHasher passwordHasher,
@@ -96,7 +100,10 @@ public class UserService(
             (queryAllUsersDTO.GenreIds == null ||
                 user.Genres.Any(genre => queryAllUsersDTO.GenreIds.Contains(genre.Id.ToString())))
             &&
-            (user.UserType == userType);
+            (user.UserType == userType)
+            &&
+            String.IsNullOrWhiteSpace(queryAllUsersDTO.Search)
+            || user.Username.Contains(queryAllUsersDTO.Search, StringComparison.CurrentCultureIgnoreCase);
 
         var users = await userRepository.GetPaginationUsers(
             predicate,
@@ -411,5 +418,24 @@ public class UserService(
 
         user.FavoriteTracks.Remove(favoriteTrack);
         await userRepository.SaveAsync();
+    }
+
+    public async Task<UserRatingInfoResponse> GetGivenUserRateInfo(string targetUserId, string initiatorUserId)
+    {
+        var initiatorUser = await userRepository.GetUser(
+            u => u.Id == Guid.Parse(initiatorUserId), 
+            UserIncludes.FavoritePerformers
+        )
+            ?? throw new Exception("Initiator user not found");
+
+        var rating = await ratingRepository.GetGivenRating(Guid.Parse(initiatorUserId), Guid.Parse(targetUserId));
+        var favoritePerformers = await performerRepository.GetPerformers(
+            performer => initiatorUser.FavoritePerformers.Any(fp => fp.PerformerId == performer.Id));
+
+        return new UserRatingInfoResponse()
+        {
+            GivenRating = rating.RatingValue,
+            IsLiked = favoritePerformers.Any(performer => performer.UserId == Guid.Parse(initiatorUserId))
+        };
     }
 }

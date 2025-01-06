@@ -1,6 +1,6 @@
 ﻿using Core.DTOs.Users;
 using Core.Models;
-using Core.Responses;
+using Core.Responses.Performers;
 using System.Linq.Expressions;
 
 namespace Core.Interfaces.Services;

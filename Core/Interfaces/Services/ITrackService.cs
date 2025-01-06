@@ -1,5 +1,5 @@
 ﻿using Core.DTOs.Tracks;
-using Core.Responses;
+using Core.Responses.Tracks;
 
 namespace Core.Interfaces.Services;
 
