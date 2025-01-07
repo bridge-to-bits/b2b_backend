@@ -429,8 +429,10 @@ public class UserService(
             ?? throw new Exception("Initiator user not found");
 
         var rating = await ratingRepository.GetGivenRating(Guid.Parse(initiatorUserId), Guid.Parse(targetUserId));
+        
+        var favoritePerformerIds = initiatorUser.FavoritePerformers.Select(fp => fp.PerformerId).ToList();
         var favoritePerformers = await performerRepository.GetPerformers(
-            performer => initiatorUser.FavoritePerformers.Any(fp => fp.PerformerId == performer.Id));
+            performer => favoritePerformerIds.Contains(performer.Id));
 
         return new UserRatingInfoResponse()
         {
