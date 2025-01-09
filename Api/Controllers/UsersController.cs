@@ -156,12 +156,17 @@ public class UsersController (IUserService userService, IAuthService authService
     }
 
     [ProducesResponseType(typeof(string), 200)]
-    [HttpPost("{userId}/favorites/performers/{performerId}")]
-    public async Task<IActionResult> AddFavoritePerformer(Guid userId, Guid performerId)
+    [HttpPost("favorites/performers/{performerId}")]
+    [TokenAuthorize]
+    public async Task<IActionResult> AddFavoritePerformer(Guid performerId)
     {
+        var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (initiatorUserId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
         try
         {
-            await userService.AddFavoritePerformer(userId, performerId);
+            await userService.AddFavoritePerformer(Guid.Parse(initiatorUserId), performerId);
             return Ok("Performer added to favorites");
         }
         catch (Exception ex)
@@ -171,12 +176,17 @@ public class UsersController (IUserService userService, IAuthService authService
     }
 
     [ProducesResponseType(200)]
-    [HttpDelete("{userId}/favorites/performers/{performerId}")]
-    public async Task<IActionResult> RemoveFavoritePerformer(Guid userId, Guid performerId)
+    [HttpDelete("favorites/performers/{performerId}")]
+    [TokenAuthorize]
+    public async Task<IActionResult> RemoveFavoritePerformer(Guid performerId)
     {
+        var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (initiatorUserId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
         try
         {
-            await userService.RemoveFavoritePerformer(userId, performerId);
+            await userService.RemoveFavoritePerformer(Guid.Parse(initiatorUserId), performerId);
             return Ok();
         }
         catch (Exception ex)
