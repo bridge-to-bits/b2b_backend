@@ -6,6 +6,7 @@ using Core.Interfaces.Services;
 using Core.Responses.Users;
 using Core.Responses.Tracks;
 using Core.Responses.Performers;
+using Core.Utils;
 
 namespace Api.Controllers;
 
@@ -156,13 +157,16 @@ public class UsersController (IUserService userService, IAuthService authService
     }
 
     [ProducesResponseType(typeof(string), 200)]
-    [HttpPost("favorites/performers/{performerId}")]
+    [HttpPost("favorites/performers/{performerUserId}")]
     [TokenAuthorize]
-    public async Task<IActionResult> AddFavoritePerformer(Guid performerId)
+    [ServiceFilter(typeof(PerformerToUserPipe))]
+    public async Task<IActionResult> AddFavoritePerformer()
     {
         var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (initiatorUserId == null)
             return Unauthorized(new { message = "userId not found in token" });
+
+        var performerId = (Guid)HttpContext.Items["ResolvedPerformerId"]!;
 
         try
         {
@@ -176,13 +180,16 @@ public class UsersController (IUserService userService, IAuthService authService
     }
 
     [ProducesResponseType(200)]
-    [HttpDelete("favorites/performers/{performerId}")]
+    [HttpDelete("favorites/performers/{performerUserId}")]
     [TokenAuthorize]
-    public async Task<IActionResult> RemoveFavoritePerformer(Guid performerId)
+    [ServiceFilter(typeof(PerformerToUserPipe))]
+    public async Task<IActionResult> RemoveFavoritePerformer()
     {
         var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (initiatorUserId == null)
             return Unauthorized(new { message = "userId not found in token" });
+
+        var performerId = (Guid)HttpContext.Items["ResolvedPerformerId"]!;
 
         try
         {
