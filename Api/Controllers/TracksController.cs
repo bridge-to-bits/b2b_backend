@@ -3,6 +3,7 @@ using Core.DTOs.Tracks;
 using Core.Interfaces.Services;
 using Core.Filters;
 using Core.Responses.Tracks;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Controllers;
 
@@ -10,6 +11,7 @@ namespace Api.Controllers;
 [ApiController]
 public class TracksController(ITrackService trackService) : ControllerBase
 {
+    [SwaggerOperation(Summary = "Get all tracks")]
     [ProducesResponseType(typeof(TracksResponse), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<IActionResult> GetAllTracks([FromQuery] QueryAllTracksDTO queryAllTracksDTO)
@@ -18,6 +20,7 @@ public class TracksController(ITrackService trackService) : ControllerBase
         return Ok(response);
     }
 
+    [SwaggerOperation(Summary = "Get specific track by id")]
     [ProducesResponseType(typeof(TrackResponse), StatusCodes.Status200OK)]
     [HttpGet("{trackId}")]
     public async Task<IActionResult> GetTrack(string trackId)
@@ -26,6 +29,7 @@ public class TracksController(ITrackService trackService) : ControllerBase
         return Ok(response);
     }
 
+    [SwaggerOperation(Summary = "Increase track listenings")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpPost("{trackId}/increment")]
     public async Task<IActionResult> UpdateTrackListening(Guid trackId)
@@ -34,6 +38,7 @@ public class TracksController(ITrackService trackService) : ControllerBase
         return Ok();
     }
 
+    [SwaggerOperation(Summary = "upload track")]
     [ProducesResponseType(typeof(TrackResponse), StatusCodes.Status200OK)]
     [TokenAuthorize]
     [HttpPost]
@@ -51,6 +56,7 @@ public class TracksController(ITrackService trackService) : ControllerBase
         catch (Exception ex) { return BadRequest(ex.Message); }
     }
 
+    [SwaggerOperation(Summary = "Delete track")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpDelete("{trackId}")]
     public async Task<IActionResult> RemoveTrack(string trackId)

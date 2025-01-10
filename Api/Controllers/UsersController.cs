@@ -7,6 +7,7 @@ using Core.Responses.Users;
 using Core.Responses.Tracks;
 using Core.Responses.Performers;
 using Core.Utils;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Controllers;
 
@@ -14,6 +15,7 @@ namespace Api.Controllers;
 [ApiController]
 public class UsersController (IUserService userService, IAuthService authService) : ControllerBase
 {
+    [SwaggerOperation(Summary = "Get user by passed token")]
     [ProducesResponseType(typeof(GetMeResponse), 200)]
     [ProducesResponseType(404)]
     [HttpGet("me")]
@@ -32,6 +34,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(user.ToGetMeResponse());
     }
 
+    [SwaggerOperation(Summary = "User registration endpoint")]
     [ProducesResponseType(typeof(string), 200)]
     [ProducesResponseType(400)]
     [HttpPost("register")]
@@ -49,6 +52,7 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
+    [SwaggerOperation(Summary = "Update user profile")]
     [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(ProfileResponse), 200)]
     [ProducesResponseType(400)]
@@ -61,6 +65,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(response);
     }
 
+    [SwaggerOperation(Summary = "Get user profile")]
     [ProducesResponseType(typeof(ProfileResponse), 200)]
     [HttpGet("{userId}/profile")]
     public async Task<IActionResult> GetUserProfile([FromRoute] string userId)
@@ -69,6 +74,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(profile);
     }
 
+    [SwaggerOperation(Summary = "Login via user creds")]
     [ProducesResponseType(typeof(string), 200)]
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
@@ -77,6 +83,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(token);
     }
 
+    [SwaggerOperation(Summary = "Set some specific permission to user")]
     [ProducesResponseType(200)]
     [AuthorizePermission("setPermissions")]
     [HttpPost("{userId}/setPermissions")]
@@ -89,6 +96,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok();
     }
 
+    [SwaggerOperation(Summary = "Get full user information")]
     [ProducesResponseType(typeof(UserInfoResponse),200)]
     [HttpGet("{userId}")]
     public async Task<IActionResult> GetUser(string userId)
@@ -96,6 +104,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(await userService.GetUser(userId));
     }
 
+    [SwaggerOperation(Summary = "Add rating to target user")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [AuthorizePermission("addRating")]
@@ -119,22 +128,16 @@ public class UsersController (IUserService userService, IAuthService authService
     }
 
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
-
+    [SwaggerOperation( Summary = "Get user favorite performers" )]
     [ProducesResponseType(typeof(IEnumerable<FavoritePerformerResponse>), 200)]
     [HttpGet("{userId}/favorites/performers")]
     public async Task<IActionResult> GetFavoritePerformers(Guid userId)
     {
-        try
-        {
-            var res = await userService.GetFavoritePerformers(userId);
-            return Ok(res);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var res = await userService.GetFavoritePerformers(userId);
+        return Ok(res);
     }
 
+    [SwaggerOperation(Summary = "Checks if a performer is marked as favorite for the specified user")]
     [ProducesResponseType(typeof(IEnumerable<IsFavoritePerformerResponse>), 200)]
     [HttpGet("{userId}/favorites/performers/{performerUserId}")]
     [ServiceFilter(typeof(PerformerToUserPipe))]
@@ -145,6 +148,7 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok(res);
     }
 
+    [SwaggerOperation(Summary = "Add performer to favorite")]
     [ProducesResponseType(typeof(string), 200)]
     [HttpPost("favorites/performers/{performerUserId}")]
     [TokenAuthorize]
@@ -157,17 +161,11 @@ public class UsersController (IUserService userService, IAuthService authService
 
         var performerId = (Guid)HttpContext.Items["ResolvedPerformerId"]!;
 
-        try
-        {
-            await userService.AddFavoritePerformer(Guid.Parse(initiatorUserId), performerId);
-            return Ok("Performer added to favorites");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        await userService.AddFavoritePerformer(Guid.Parse(initiatorUserId), performerId);
+        return Ok("Performer added to favorites");
     }
 
+    [SwaggerOperation(Summary = "Removes performer from favorites")]
     [ProducesResponseType(200)]
     [HttpDelete("favorites/performers/{performerUserId}")]
     [TokenAuthorize]
@@ -193,47 +191,28 @@ public class UsersController (IUserService userService, IAuthService authService
 
 
     // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
-
+    [SwaggerOperation(Summary = "Get favorite tracks")]
     [ProducesResponseType(typeof(IEnumerable<FavoriteTrackResponse>), 200)]
     [HttpGet("{userId}/favorites/tracks")]
     public async Task<IActionResult> GetFavoriteTracks(Guid userId)
     {
-        try
-        {
-            var res = await userService.GetFavoriteTracks(userId);
-            return Ok(res);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var res = await userService.GetFavoriteTracks(userId);
+        return Ok(res);
     }
 
+    [SwaggerOperation(Summary = "Add favorite track")]
     [HttpPost("{userId}/favorites/tracks/{trackId}")]
     public async Task<IActionResult> AddFavoriteTrack(Guid userId, Guid trackId)
     {
-        try
-        {
-            await userService.AddFavoriteTrack(userId, trackId);
-            return Ok("Track added to favorites");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        await userService.AddFavoriteTrack(userId, trackId);
+        return Ok("Track added to favorites");
     }
 
+    [SwaggerOperation(Summary = "Remove track from favorites")]
     [HttpDelete("{userId}/favorites/tracks/{trackId}")]
     public async Task<IActionResult> RemoveFavoriteTrack(Guid userId, Guid trackId)
     {
-        try
-        {
-            await userService.RemoveFavoriteTrack(userId, trackId);
-            return Ok();
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        await userService.RemoveFavoriteTrack(userId, trackId);
+        return Ok();
     }
 }

@@ -8,6 +8,7 @@ using Core.Interfaces.Services;
 using Core.Interfaces.Auth;
 using Api.Middleware;
 using Core.Utils;
+using Microsoft.OpenApi.Models;
 
 namespace Api;
 
@@ -35,6 +36,17 @@ public class Program
                       .AllowAnyMethod()
                       .AllowCredentials();
             });
+        });
+
+        builder.Services.AddSwaggerGen(c =>
+        {
+            c.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "B2B Api",
+                Version = "v1"
+            });
+
+            c.EnableAnnotations();
         });
 
         var app = builder.Build();

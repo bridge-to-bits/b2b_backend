@@ -2,9 +2,9 @@
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
 using Core.DTOs;
-using Core.Models;
 using Core.Responses.Users;
 using Core.Responses.Performers;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Controllers;
 
@@ -17,6 +17,7 @@ public class ProducersController(
     IMailService mailService
     ) : ControllerBase
 {
+    [SwaggerOperation(Summary = "Get all producers")]
     [ProducesResponseType(typeof(UsersResponse),StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<UsersResponse>> GetProducers([FromQuery] QueryAllUsersDTO queryAllUsersDTO)
@@ -25,18 +26,16 @@ public class ProducersController(
         return Ok(producers);
     }
 
+    [SwaggerOperation(Summary = "Get performers related to producer")]
     [ProducesResponseType(typeof(ProducerRelatedPerformerResponse), StatusCodes.Status200OK)]
     [HttpGet("{userId}/performers")]
     public async Task<IActionResult> GetRelatedPerformers(Guid userId)
     {
-        try
-        {
-            var res = await producerService.GetProducerRelatedPerformers(userId);
-            return Ok(res);
-        }
-        catch (Exception ex) { return BadRequest(ex.Message); }
+        var res = await producerService.GetProducerRelatedPerformers(userId);
+        return Ok(res);
     }
 
+    [SwaggerOperation(Summary = "Send agreement email to performer")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
     [HttpPost("{userId}/send-agreement")]
@@ -61,6 +60,7 @@ public class ProducersController(
         return Ok("Agreement email sent successfully.");
     }
 
+    [SwaggerOperation(Summary = "Aprooves request from producer to performer")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [HttpGet("{producerId}/approve-agreement/{performerId}")]
     public async Task<IActionResult> ApproveAgreement(string producerId, string performerId)
