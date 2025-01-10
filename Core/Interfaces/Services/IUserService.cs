@@ -34,6 +34,7 @@ public interface IUserService
     public Task<IEnumerable<FavoritePerformerResponse>> GetFavoritePerformers(Guid userId);
     public Task AddFavoritePerformer(Guid userId, Guid performerId); 
     public Task RemoveFavoritePerformer(Guid userId, Guid performerId);
+    public Task<bool> IsFavoritePerformer(Guid userId, Guid performerId);
 
 
     // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------

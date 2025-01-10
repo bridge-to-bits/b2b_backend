@@ -118,27 +118,6 @@ public class UsersController (IUserService userService, IAuthService authService
         return Ok();
     }
 
-    [ProducesResponseType(typeof(UserRatingInfoResponse), 200)]
-    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    [HttpGet("{targetUserId}/given-rate")]
-    [TokenAuthorize]
-    public async Task<IActionResult> GetGivenUserRateInfo(
-        string targetUserId
-    ){
-        var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
-        if (initiatorUserId == null)
-            return Unauthorized(new { message = "userId not found in token" });
-
-        if (initiatorUserId == targetUserId)
-        {
-            return BadRequest(new { message = "Invalid endpoint usage" });
-        }
-
-        var res = await userService.GetGivenUserRateInfo(targetUserId, initiatorUserId);
-        return Ok(res);
-    }
-
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
 
     [ProducesResponseType(typeof(IEnumerable<FavoritePerformerResponse>), 200)]
@@ -156,11 +135,21 @@ public class UsersController (IUserService userService, IAuthService authService
         }
     }
 
+    [ProducesResponseType(typeof(IEnumerable<IsFavoritePerformerResponse>), 200)]
+    [HttpGet("{userId}/favorites/performers/{performerUserId}")]
+    [ServiceFilter(typeof(PerformerToUserPipe))]
+    public async Task<IActionResult> GetIsFavoritePerformer(Guid userId, Guid performerUserId)
+    {
+        var performerId = (Guid)HttpContext.Items["ResolvedPerformerId"]!;
+        var res = await userService.IsFavoritePerformer(userId, performerId);
+        return Ok(res);
+    }
+
     [ProducesResponseType(typeof(string), 200)]
     [HttpPost("favorites/performers/{performerUserId}")]
     [TokenAuthorize]
     [ServiceFilter(typeof(PerformerToUserPipe))]
-    public async Task<IActionResult> AddFavoritePerformer()
+    public async Task<IActionResult> AddFavoritePerformer(Guid performerUserId)
     {
         var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (initiatorUserId == null)
@@ -183,7 +172,7 @@ public class UsersController (IUserService userService, IAuthService authService
     [HttpDelete("favorites/performers/{performerUserId}")]
     [TokenAuthorize]
     [ServiceFilter(typeof(PerformerToUserPipe))]
-    public async Task<IActionResult> RemoveFavoritePerformer()
+    public async Task<IActionResult> RemoveFavoritePerformer(Guid performerUserId)
     {
         var initiatorUserId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
         if (initiatorUserId == null)

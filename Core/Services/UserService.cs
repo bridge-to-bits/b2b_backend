@@ -331,6 +331,14 @@ public class UserService(
         return response;
     }
 
+    public async Task<bool> IsFavoritePerformer(Guid userId, Guid performerId)
+    {
+        var user = await userRepository.GetUserWithFavoritePerformers(userId)
+             ?? throw new Exception("User not found");
+
+        return user.FavoritePerformers.Any(favPerformer => favPerformer.PerformerId == performerId );
+    }
+
     public async Task AddFavoritePerformer(Guid userId, Guid performerId)
     {
         var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.FavoritePerformers)

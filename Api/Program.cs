@@ -7,6 +7,7 @@ using Core.Services;
 using Core.Interfaces.Services;
 using Core.Interfaces.Auth;
 using Api.Middleware;
+using Core.Utils;
 
 namespace Api;
 
@@ -72,6 +73,8 @@ public class Program
     private static void DIConfig(IServiceCollection services)
     {
         services.AddSingleton<IDbContextConfigurer<B2BDbContext>, B2BDbContextConfigurer>();
+        services.AddScoped<PerformerToUserPipe>();
+
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ISocialRepository, SocialsRepository>();
         services.AddScoped<IGenreRepository, GenresRepository>();
