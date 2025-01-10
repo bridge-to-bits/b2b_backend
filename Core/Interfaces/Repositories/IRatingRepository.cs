@@ -4,5 +4,5 @@ namespace Core.Interfaces.Repositories;
 
 public interface IRatingRepository
 {
-    public Task<Rating> GetGivenRating(Guid initiatorUserId, Guid targetUserId);
+    public Task<Rating?> GetGivenRating(Guid initiatorUserId, Guid targetUserId);
 }
