@@ -2,8 +2,8 @@
 using Core.Models;
 using Core.DTOs.Users;
 using Core.Interfaces.Services;
-using Data.Repositories;
 using Core.Responses;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Controllers;
 
@@ -11,6 +11,7 @@ namespace Api.Controllers;
 [ApiController]
 public class GenresController(IGenreService genreService) : ControllerBase
 {
+    [SwaggerOperation(Summary = "Get all genres")]
     [ProducesResponseType(typeof(IEnumerable<GenreResponse>), StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<IActionResult> GetAllGenres()
@@ -19,6 +20,7 @@ public class GenresController(IGenreService genreService) : ControllerBase
         return Ok(result);
     }
 
+    [SwaggerOperation(Summary = "Add new genre")]
     [ProducesResponseType(typeof(IEnumerable<Genre>), StatusCodes.Status200OK)]
     [HttpPost]
     public async Task<ActionResult<Genre>> PostGenre(AddGenreDTO addGenreDTO)
@@ -27,6 +29,7 @@ public class GenresController(IGenreService genreService) : ControllerBase
         return Ok(result);
     }
 
+    [SwaggerOperation(Summary = "Delete specific genre")]
     [HttpDelete("{genreId}")]
     public async Task<IActionResult> DeleteGenre(string genreId)
     {
