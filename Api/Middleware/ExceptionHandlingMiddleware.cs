@@ -31,7 +31,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
             ArgumentException => StatusCodes.Status400BadRequest,
             KeyNotFoundException => StatusCodes.Status404NotFound,
             InvalidOperationException => StatusCodes.Status400BadRequest,
-            _ => StatusCodes.Status400BadRequest,
+            _ => StatusCodes.Status500InternalServerError,
         };
 
         return context.Response.WriteAsync(System.Text.Json.JsonSerializer.Serialize(response));
