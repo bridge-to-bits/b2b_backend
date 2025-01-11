@@ -279,4 +279,28 @@ public static class DomainToResponseMapper
             Comentator = comment.User.ToNewsComentatorResponse(),
         };
     }
+
+    public static PerformersResponse ToPerformersResponse(this UsersResponse users)
+    {
+        return new PerformersResponse()
+        {
+            CurrentPage = users.CurrentPage,
+            NextPage = users.NextPage,
+            PrevPage = users.PrevPage,
+            TotalPages = users.TotalPages,
+            Data = users.Data.Select(ToPerformerResponse),
+        };
+    }
+
+    private static PerformerResponse ToPerformerResponse(this UserInfoResponse userInfoResponse)
+    {
+        return new PerformerResponse() { 
+            Avatar = userInfoResponse.Avatar,
+            Genres = userInfoResponse.Genres,
+            Socials = userInfoResponse.Socials,
+            Id = userInfoResponse.Id,
+            Rating = userInfoResponse.Rating,
+            Username = userInfoResponse.Username,
+        };
+    }
 }

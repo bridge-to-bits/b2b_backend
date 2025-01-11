@@ -103,7 +103,7 @@ public class UserService(
             &&
             (user.UserType == userType)
             &&
-            String.IsNullOrWhiteSpace(queryAllUsersDTO.Search)
+            string.IsNullOrWhiteSpace(queryAllUsersDTO.Search)
             || user.Username.Contains(queryAllUsersDTO.Search, StringComparison.CurrentCultureIgnoreCase);
 
         var users = await userRepository.GetPaginationUsers(

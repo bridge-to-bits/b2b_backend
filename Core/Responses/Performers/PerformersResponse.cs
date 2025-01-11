@@ -1,6 +1,6 @@
 ﻿namespace Core.Responses.Performers;
 
-public class PerformersResponse
+public class PerformersResponse: PaginationResponse
 {
     public IEnumerable<PerformerResponse> Data { get; set; }
 }
