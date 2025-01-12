@@ -158,4 +158,9 @@ public class UserRepository(B2BDbContext context) : IUserRepository
             .ThenInclude(user => user.Socials)
             .FirstAsync(user => user.Id == userId);
     }
+
+    public Task<bool> Exist(Expression<Func<User, bool>> predicate)
+    {
+        return context.Users.AnyAsync(predicate);
+    }
 }

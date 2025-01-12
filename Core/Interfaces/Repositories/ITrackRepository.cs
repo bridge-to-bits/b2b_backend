@@ -23,4 +23,9 @@ public interface ITrackRepository
     public Task<List<Genre>> GetGenres(IEnumerable<string> trackIds);
     public Task<bool> Exist(Guid trackId);
     public Task IncrementTrackListenings(Guid trackId);
+
+    public Task<List<FavoriteTrack>> GetFavoriteTracks(Guid userId);
+    Task AddFavoriteTrack(FavoriteTrack favoriteTrack);
+    Task RemoveFavoriteTrack(FavoriteTrack favoriteTrack);
+    Task<bool> IsFavoriteTrack(Guid userId, Guid trackId);
 }

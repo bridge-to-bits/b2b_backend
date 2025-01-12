@@ -106,4 +106,41 @@ public class TrackRepository(B2BDbContext context) : ITrackRepository
 
         await context.SaveChangesAsync();
     }
+
+    public Task<List<FavoriteTrack>> GetFavoriteTracks(Guid userId)
+    {
+        return context.FavoriteTracks
+             .AsNoTracking()
+             .Where(t => t.UserId == userId)
+             .ToListAsync();
+    }
+
+    public async Task AddFavoriteTrack(FavoriteTrack favoriteTrack)
+    {
+        var exist = await IsFavoriteTrack(favoriteTrack.UserId, favoriteTrack.TrackId);
+
+        if (!exist)
+        {
+            await context.FavoriteTracks.AddAsync(favoriteTrack);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    public async Task RemoveFavoriteTrack(FavoriteTrack favoriteTrack)
+    {
+        var searchingFT = await context.FavoriteTracks.FirstOrDefaultAsync(ft =>
+            ft.TrackId == favoriteTrack.TrackId && ft.UserId == favoriteTrack.UserId);
+
+        if (searchingFT != null)
+        {
+            context.FavoriteTracks.Remove(searchingFT);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    public Task<bool> IsFavoriteTrack(Guid userId, Guid trackId)
+    {
+        return context.FavoriteTracks.AnyAsync(ft =>
+            ft.TrackId == trackId && ft.UserId == userId);
+    }
 }

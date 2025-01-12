@@ -9,4 +9,9 @@ public interface IPerformerService
 {
     public Task<PerformersResponse> GetPerformers(QueryAllUsersDTO queryAllUsersDTO);
     public Task<Performer> GetPerformer(Expression<Func<Performer, bool>> predicate);
+
+    Task<IEnumerable<FavoritePerformerResponse>> GetFavoritePerformers(Guid userId);
+    Task<bool> IsFavoritePerformer(Guid userId, Guid performerId);
+    void AddFavoritePerformer(Guid userId, Guid performerId);
+    void RemoveFavoritePerformer(Guid userId, Guid performerId);
 }

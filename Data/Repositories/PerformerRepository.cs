@@ -33,4 +33,50 @@ public class PerformerRepository(B2BDbContext context) : IPerformerRepository
             .Include(p => p.User)
             .FirstAsync(predicate);
     }
+
+    public Task<List<FavoritePerformer>> GetfavoritePerformers(Guid userId)
+    {
+        return context.FavoritePerformers
+            .AsNoTracking()
+            .Where(favoritePerformer => favoritePerformer.UserId == userId)
+            .ToListAsync();
+    }
+
+    public Task<List<User>> GetPerformersRelatedUsers(Expression<Func<Performer, bool>> predicate)
+    {
+        return context.Performers
+            .AsNoTracking()
+            .Where(predicate)
+            .Include(performer => performer.User)
+            .Select(performer => performer.User)
+            .ToListAsync();
+    }
+
+    public Task<bool> IsFavoritePerformer(Guid userId, Guid performerId)
+    {
+        return context.FavoritePerformers.AnyAsync(favPerformer =>
+            favPerformer.UserId == userId && favPerformer.PerformerId == performerId);
+    }
+
+    public async void AddFavoritePerformer(FavoritePerformer favoritePerformer)
+    {
+        var exist = await IsFavoritePerformer(favoritePerformer.UserId, favoritePerformer.PerformerId);
+        if(!exist)
+        {
+            context.FavoritePerformers.Add(favoritePerformer);
+            await context.SaveChangesAsync();
+        }
+    }
+
+    public async void RemoveFavoritePerformer(Guid userId, Guid performerId)
+    {
+        var favoritePerformer = await context.FavoritePerformers.FirstOrDefaultAsync(favPerformer => 
+            favPerformer.PerformerId == performerId && favPerformer.UserId == userId);
+
+        if(favoritePerformer != null)
+        {
+            context.FavoritePerformers.Remove(favoritePerformer);
+            await context.SaveChangesAsync();
+        }
+    }
 }
