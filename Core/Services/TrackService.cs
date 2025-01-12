@@ -62,9 +62,12 @@ public class TrackService(
 
     public async Task<TracksResponse> GetTracks(QueryAllTracksDTO queryAllTracksDTO)
     {
+        var peformer = await performerService.GetPerformer(performer =>
+            performer.UserId == Guid.Parse(queryAllTracksDTO.PerformerUserId));
+
         Expression<Func<Track, bool>> predicate = track =>
-            (string.IsNullOrEmpty(queryAllTracksDTO.PerformerId)
-                || track.PerformerId == Guid.Parse(queryAllTracksDTO.PerformerId))
+            (string.IsNullOrEmpty(queryAllTracksDTO.PerformerUserId)
+                || track.PerformerId == peformer.Id)
             &&
             (queryAllTracksDTO.GenreIds == null
                 || track.Genres.Any(genre => queryAllTracksDTO.GenreIds.Contains(genre.Id.ToString())));
