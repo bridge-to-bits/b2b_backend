@@ -451,4 +451,12 @@ public class UserService(
             IsLiked = favoritePerformers.Any(performer => performer.UserId == Guid.Parse(initiatorUserId))
         };
     }
+
+    public async Task<bool> IsFavoriteTrack(Guid userId, Guid trackId)
+    {
+        var user = await userRepository.GetUser(user => user.Id == userId, UserIncludes.FavoriteTracks)
+             ?? throw new Exception("User not found");
+
+        return user.FavoriteTracks.Any(favoriteTrack => favoriteTrack.TrackId == trackId);
+    }
 }

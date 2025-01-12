@@ -145,7 +145,7 @@ public class UsersController (IUserService userService, IAuthService authService
     {
         var performerId = (Guid)HttpContext.Items["ResolvedPerformerId"]!;
         var res = await userService.IsFavoritePerformer(userId, performerId);
-        return Ok(res);
+        return Ok(new IsFavoritePerformerResponse() { IsFavoritePerformer = res });
     }
 
     [SwaggerOperation(Summary = "Add performer to favorite")]
@@ -198,6 +198,16 @@ public class UsersController (IUserService userService, IAuthService authService
     {
         var res = await userService.GetFavoriteTracks(userId);
         return Ok(res);
+    }
+
+
+    [SwaggerOperation(Summary = "Checks if a track is marked as favorite for the specified user")]
+    [ProducesResponseType(typeof(IEnumerable<IsFavoriteTrackResponse>), 200)]
+    [HttpGet("{userId}/favorites/tracks/{trackId}")]
+    public async Task<IActionResult> GetIsFavoriteTrack(Guid userId, Guid trackId)
+    {
+        var res = await userService.IsFavoriteTrack(userId, trackId);
+        return Ok(new IsFavoriteTrackResponse() { IsFavoriteTrack = res });
     }
 
     [SwaggerOperation(Summary = "Add favorite track")]

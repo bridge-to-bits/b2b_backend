@@ -41,4 +41,5 @@ public interface IUserService
     public Task<IEnumerable<FavoriteTrackResponse>> GetFavoriteTracks(Guid userId);
     public Task AddFavoriteTrack(Guid userId, Guid trackId);
     public Task RemoveFavoriteTrack(Guid userId, Guid trackId);
+    public Task<bool> IsFavoriteTrack(Guid userId, Guid trackId);
 }
