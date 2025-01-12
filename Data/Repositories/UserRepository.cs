@@ -79,7 +79,18 @@ public class UserRepository(B2BDbContext context) : IUserRepository
 
     public async Task AddRating(Rating rating)
     {
-        await context.Ratings.AddAsync(rating);
+        var existingRating = await context.Ratings.FirstOrDefaultAsync(rate => 
+            rate.TargetUserId == rating.TargetUserId
+            && rate.InitiatorUserId == rating.InitiatorUserId);
+
+        if (existingRating != null) 
+        {
+            existingRating.RatingValue = rating.RatingValue;
+        } else
+        {
+            await context.Ratings.AddAsync(rating);
+        }
+
         await context.SaveChangesAsync();
     }
 
