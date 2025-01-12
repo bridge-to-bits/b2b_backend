@@ -6,10 +6,7 @@ using Core.Interfaces.Services;
 using Core.Mapping;
 using Core.Models;
 using Core.Responses;
-using Core.Responses.Performers;
-using Core.Responses.Tracks;
 using Core.Responses.Users;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Options;
 using System.Linq.Expressions;
 
@@ -19,7 +16,6 @@ public class UserService(
     IUserRepository userRepository,
     IPerformerRepository performerRepository,
     IRatingRepository ratingRepository,
-    ITrackRepository trackRepository,
     IGenreRepository genreRepository,
     IPasswordHasher passwordHasher,
     IAuthService authService,
@@ -311,128 +307,10 @@ public class UserService(
         return userRepository.GetUserForUpdate(user => user.Id == Guid.Parse(userId));
     }
 
-
-    // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------
-    public async Task<IEnumerable<FavoritePerformerResponse>> GetFavoritePerformers(Guid userId)
-    {
-        var user = await userRepository.GetUserWithFavoritePerformers(userId)
-            ?? throw new Exception("User not found");
-
-        List<FavoritePerformerResponse> response = [];
-        foreach (var favoritePerformer in user.FavoritePerformers) 
-        {
-            var rating = await GetUserAverageRating(favoritePerformer.User.Id.ToString());
-
-            var favoritePerformerResponse = favoritePerformer.Performer.User.ToFavoritePerformerResponse();
-            favoritePerformerResponse.Rating = rating;
-            response.Add(favoritePerformerResponse);
-        }
-
-        return response;
-    }
-
-    public async Task<bool> IsFavoritePerformer(Guid userId, Guid performerId)
-    {
-        var user = await userRepository.GetUserWithFavoritePerformers(userId)
-             ?? throw new Exception("User not found");
-
-        return user.FavoritePerformers.Any(favPerformer => favPerformer.PerformerId == performerId );
-    }
-
-    public async Task AddFavoritePerformer(Guid userId, Guid performerId)
-    {
-        var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.FavoritePerformers)
-            ?? throw new Exception("User not found");
-
-        var perfomrmerExist = await performerRepository.Exist(performerId);
-        if(!perfomrmerExist) throw new Exception("Performer not found");
-
-        if (user.FavoritePerformers.Any(fp => fp.PerformerId == performerId))
-        {
-            throw new Exception("Performer is already in favorites");
-        }
-
-        var favoritePerformer = new FavoritePerformer
-        {
-            UserId = userId,
-            PerformerId = performerId
-        };
-
-        user.FavoritePerformers.Add(favoritePerformer);
-        await userRepository.SaveAsync();
-    }
-
-    public async Task RemoveFavoritePerformer(Guid userId, Guid performerId)
-    {
-        var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.FavoritePerformers)
-            ?? throw new Exception("User not found");
-
-        var perfomrmerExist = await performerRepository.Exist(performerId);
-        if (!perfomrmerExist) throw new Exception("Performer not found");
-
-        var favoritePerformer = user.FavoritePerformers.First(fp => fp.PerformerId == performerId) 
-            ?? throw new Exception();
-
-        user.FavoritePerformers.Remove(favoritePerformer);
-        await userRepository.SaveAsync();
-    }
-
-
-    // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
-
-    public async Task<IEnumerable<FavoriteTrackResponse>> GetFavoriteTracks(Guid userId)
-    {
-        var user = await userRepository.GetUser(u => u.Id == userId, UserIncludes.FavoriteTracks)
-            ?? throw new Exception("User not found");
-
-        var favoriteTrackIds = user.FavoriteTracks.Select(t => t.TrackId).ToList();
-
-        var favoriteTracks = await trackRepository.GetTracks(t => favoriteTrackIds.Contains(t.Id));
-        return favoriteTracks?.ToFavoriteTracksResponse();
-    }
-
-    public async Task AddFavoriteTrack(Guid userId, Guid trackId)
-    {
-        var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.FavoritePerformers)
-           ?? throw new Exception("User not found");
-
-        var trackExist = await trackRepository.Exist(trackId);
-        if (!trackExist) throw new Exception("Track not found");
-
-        if (user.FavoriteTracks.Any(fp => fp.TrackId == trackId))
-        {
-            throw new Exception("Track is already in favorites");
-        }
-
-        var favoriteTrack = new FavoriteTrack
-        {
-            UserId = userId,
-            TrackId = trackId,
-        };
-
-        user.FavoriteTracks.Add(favoriteTrack);
-        await userRepository.SaveAsync();
-    }
-
-    public async Task RemoveFavoriteTrack(Guid userId, Guid trackId)
-    {
-        var user = await userRepository.GetUserForUpdate(u => u.Id == userId, UserIncludes.FavoritePerformers)
-            ?? throw new Exception("User not found");
-
-        var trackExist = await trackRepository.Exist(trackId);
-        if (!trackExist) throw new Exception("Track not found");
-
-        var favoriteTrack = user.FavoriteTracks.First(fp => fp.TrackId == trackId)
-            ?? throw new Exception();
-
-        user.FavoriteTracks.Remove(favoriteTrack);
-        await userRepository.SaveAsync();
-    }
-
     public async Task<UserRatingInfoResponse> GetGivenUserRateInfo(string targetUserId, string initiatorUserId)
     {
         var initiatorUser = await userRepository.GetUser(
-            u => u.Id == Guid.Parse(initiatorUserId), 
+            u => u.Id == Guid.Parse(initiatorUserId),
             UserIncludes.FavoritePerformers
         )
             ?? throw new Exception("Initiator user not found");
@@ -440,7 +318,7 @@ public class UserService(
         var rating = await ratingRepository.GetGivenRating(Guid.Parse(initiatorUserId), Guid.Parse(targetUserId))
             ?? throw new InvalidOperationException("Rating was not set before");
 
-        
+
         var favoritePerformerIds = initiatorUser.FavoritePerformers.Select(fp => fp.PerformerId).ToList();
         var favoritePerformers = await performerRepository.GetPerformers(
             performer => favoritePerformerIds.Contains(performer.Id));
@@ -450,13 +328,5 @@ public class UserService(
             GivenRating = rating.RatingValue,
             IsLiked = favoritePerformers.Any(performer => performer.UserId == Guid.Parse(initiatorUserId))
         };
-    }
-
-    public async Task<bool> IsFavoriteTrack(Guid userId, Guid trackId)
-    {
-        var user = await userRepository.GetUser(user => user.Id == userId, UserIncludes.FavoriteTracks)
-             ?? throw new Exception("User not found");
-
-        return user.FavoriteTracks.Any(favoriteTrack => favoriteTrack.TrackId == trackId);
     }
 }

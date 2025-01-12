@@ -14,6 +14,7 @@ public class TrackService(
     ITrackRepository trackRepository,
     IGenreRepository genreRepository,
     IPerformerService performerService,
+    IUserRepository userRepository,
     IOptions<GoogleDriveOptions> googleDriveOptions) : ITrackService
 {
     private readonly FileService fileService = new(
@@ -113,5 +114,57 @@ public class TrackService(
     public Task UpdateTrackListening(Guid trackId)
     {
         return trackRepository.IncrementTrackListenings(trackId);
+    }
+
+
+    // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
+
+
+    public async Task<IEnumerable<FavoriteTrackResponse>> GetFavoriteTracks(Guid userId)
+    {
+        var favoriteTracks = await trackRepository.GetFavoriteTracks(userId);
+        var favTrackIds = favoriteTracks.Select(f => f.TrackId).ToList();
+        var tracks = await trackRepository.GetTracks(track => favTrackIds.Contains(track.Id));
+
+        return tracks?.ToFavoriteTracksResponse();
+    }
+
+    public async Task AddFavoriteTrack(Guid userId, Guid trackId)
+    {
+        var userExist = await userRepository.Exist(u => u.Id == userId);
+        if (!userExist) throw new Exception("User not found");
+
+        var trackExist = await trackRepository.Exist(trackId);
+        if (!trackExist) throw new Exception("Track not found");
+
+        var favoriteTrack = new FavoriteTrack
+        {
+            UserId = userId,
+            TrackId = trackId,
+        };
+
+        await trackRepository.AddFavoriteTrack(favoriteTrack);
+    }
+
+    public async Task RemoveFavoriteTrack(Guid userId, Guid trackId)
+    {
+        var userExist = await userRepository.Exist(u => u.Id == userId);
+        if (!userExist) throw new Exception("User not found");
+
+        var trackExist = await trackRepository.Exist(trackId);
+        if (!trackExist) throw new Exception("Track not found");
+
+        var favoriteTrack = new FavoriteTrack
+        {
+            UserId = userId,
+            TrackId = trackId,
+        };
+
+        await trackRepository.RemoveFavoriteTrack(favoriteTrack);
+    }
+
+    public Task<bool> IsFavoriteTrack(Guid userId, Guid trackId)
+    {
+        return trackRepository.IsFavoriteTrack(userId, trackId);
     }
 }

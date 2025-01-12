@@ -64,4 +64,62 @@ public class TracksController(ITrackService trackService) : ControllerBase
         await trackService.RemoveTrack(trackId);
         return Ok();
     }
+
+
+    // ------------------  FAVORITE TRACKS ENDPOINTS SECTION   ----------------------------
+
+
+    [SwaggerOperation(Summary = "Get favorite tracks")]
+    [ProducesResponseType(typeof(IEnumerable<FavoriteTrackResponse>), 200)]
+    [HttpGet("favorites")]
+    [TokenAuthorize]
+    public async Task<IActionResult> GetFavoriteTracks()
+    {
+        var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (userId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        var res = await trackService.GetFavoriteTracks(Guid.Parse(userId));
+        return Ok(res);
+    }
+
+    [SwaggerOperation(Summary = "Checks if a track is marked as favorite for the specified user")]
+    [ProducesResponseType(typeof(IEnumerable<IsFavoriteTrackResponse>), 200)]
+    [HttpGet("favorites/{trackId}")]
+    [TokenAuthorize]
+    public async Task<IActionResult> GetIsFavoriteTrack(Guid trackId)
+    {
+        var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (userId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        var res = await trackService.IsFavoriteTrack(Guid.Parse(userId), trackId);
+        return Ok(res);
+    }
+
+    [SwaggerOperation(Summary = "Add favorite track")]
+    [HttpPost("favorites/{trackId}")]
+    [TokenAuthorize]
+    public async Task<IActionResult> AddFavoriteTrack(Guid trackId)
+    {
+        var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (userId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        await trackService.AddFavoriteTrack(Guid.Parse(userId), trackId);
+        return Ok("Track added to favorites");
+    }
+
+    [SwaggerOperation(Summary = "Remove track from favorites")]
+    [HttpDelete("favorites/{trackId}")]
+    [TokenAuthorize]
+    public async Task<IActionResult> RemoveFavoriteTrack(Guid trackId)
+    {
+        var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
+        if (userId == null)
+            return Unauthorized(new { message = "userId not found in token" });
+
+        await trackService.RemoveFavoriteTrack(Guid.Parse(userId), trackId);
+        return NoContent();
+    }
 }

@@ -19,6 +19,7 @@ public interface IUserRepository
         bool sortDescending = false,
         int skip = 0,
         int take = 10);
+    public Task<bool> Exist(Expression<Func<User, bool>> predicate);
     public Task<User?> GetUserWithRolesAndGrants(Expression<Func<User, bool>> predicate);
     public Task CreateGrants(IEnumerable<Grant> grants);
     public Task CreateRole(Role role);
