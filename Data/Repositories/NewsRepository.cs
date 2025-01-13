@@ -49,7 +49,7 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
 
         return context.Article
             .AsNoTracking()
-            .Where(a => a.CreatedAt >= oneWeekAgo)
+            //.Where(a => a.CreatedAt >= oneWeekAgo)
             .ToListAsync();
     }
 
@@ -59,7 +59,7 @@ public class NewsRepository(B2BDbContext context) : INewsRespository
 
         return context.Interviews
             .AsNoTracking()
-            .Where(a => a.CreatedAt >= oneWeekAgo)
+            //.Where(a => a.CreatedAt >= oneWeekAgo)
             .ToListAsync();
     }
 
