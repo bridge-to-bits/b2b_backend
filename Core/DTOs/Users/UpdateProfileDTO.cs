@@ -16,7 +16,7 @@ public class UpdateProfileDTO
 
     public IEnumerable<AddSocialDTO>? Socials { get; set; }
 
-    public IEnumerable<string> GenreIds { get; set; }
+    public IEnumerable<string>? GenreIds { get; set; }
 
     public IFormFile? AvatarFile { get; set; }
     public IFormFile? ProfileBackgroundFile { get; set; }
