@@ -136,7 +136,13 @@ public static class DomainToResponseMapper
 
     public static PerformerResponse ToPerformerRespponse(this Performer performer)
     {
-        
+        var bestTrack = new TrackShortResponse();
+        if (performer.Tracks != null && performer.Tracks.Any()) {
+            var track = performer.Tracks.OrderByDescending(track => track.TotalListenings).First();
+            bestTrack.Url = track.Url;
+            bestTrack.Id = track.Id.ToString();
+        }
+
         return new PerformerResponse()
         {
             Id = performer.User.Id.ToString(),
@@ -145,6 +151,7 @@ public static class DomainToResponseMapper
             Socials = performer.User.Socials?.Select(ToSocialResponse),
             Username = performer.User.Username,
             Rating = performer.User.GetAvgRating(),
+            Track = bestTrack,
         };
     }
 

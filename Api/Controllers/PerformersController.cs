@@ -18,8 +18,8 @@ public class PerformersController(IPerformerService performerService, IUserServi
     [HttpGet]
     public async Task<IActionResult> GetPerformers([FromQuery] QueryAllUsersDTO queryAllperformersDTO)
     {
-        var performers = await userService.GetPerformers(queryAllperformersDTO);
-        return Ok(performers?.ToPerformersResponse());
+        var performers = await performerService.GetPerformers(queryAllperformersDTO);
+        return Ok(performers);
     }
 
     // ------------------  FAVORITE PERFORMERS ENDPOINTS SECTION   ----------------------------

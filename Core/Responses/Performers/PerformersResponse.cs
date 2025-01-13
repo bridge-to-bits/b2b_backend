@@ -13,4 +13,11 @@ public class PerformerResponse
     public IEnumerable<SocialResponse>? Socials { get; set; }
     public double Rating { get; set; }
     public string Id { get; set; }
+    public TrackShortResponse Track { get; set; }
+}
+
+public class TrackShortResponse
+{
+    public string Id { get; set; }
+    public string Url { get; set; }
 }

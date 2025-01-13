@@ -26,7 +26,7 @@ public class PerformerService (
             String.IsNullOrWhiteSpace(queryAllUsersDTO.Search)
             || performer.User.Username.Contains(queryAllUsersDTO.Search, StringComparison.CurrentCultureIgnoreCase);
 
-        var performers = await performerRepository.GetPerformers(predicate);
+        var performers = await performerRepository.GetPerformersWithTracks(predicate);
 
         return performers.ToSendInvitationPerformersResponse();
     }

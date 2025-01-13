@@ -79,4 +79,19 @@ public class PerformerRepository(B2BDbContext context) : IPerformerRepository
             await context.SaveChangesAsync();
         }
     }
+
+    public Task<List<Performer>> GetPerformersWithTracks(Expression<Func<Performer, bool>> predicate)
+    {
+        return context.Performers
+                .AsNoTracking()
+                .Where(predicate)
+                .Include(performer => performer.User)
+                    .ThenInclude(user => user.Genres)
+                .Include(performer => performer.User)
+                    .ThenInclude(user => user.Socials)
+                .Include(performer => performer.User)
+                    .ThenInclude(user => user.ReceivedRatings)
+                .Include(performer => performer.Tracks)
+                .ToListAsync();
+    }
 }
