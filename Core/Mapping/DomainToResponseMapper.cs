@@ -141,6 +141,7 @@ public static class DomainToResponseMapper
             var track = performer.Tracks.OrderByDescending(track => track.TotalListenings).First();
             bestTrack.Url = track.Url;
             bestTrack.Id = track.Id.ToString();
+            bestTrack.Name = track.Name;
         }
 
         return new PerformerResponse()
