@@ -271,6 +271,7 @@ public static class DomainToResponseMapper
             BackgroundPhotoUrl = interview.BackgroundPhotoUrl,
             Author = interview.Author.ToNewsAuthorResponse(),
             Respondent = interview.Respondent.ToNewsAuthorResponse(),
+            VideoLink = interview.VideoLink,
             Rating = rating,
             CreatedAt = interview.CreatedAt,
             Comments = interview.Comments.Select(ToInterviewCommentResponse),
