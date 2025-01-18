@@ -36,7 +36,7 @@ public class NewsController (INewsService newsService) : ControllerBase
         return Ok();
     }
 
-    [SwaggerOperation(Summary = "Get article comments")]
+    [SwaggerOperation(Summary = "Send comment to specific article")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [TokenAuthorize]
     [HttpPost("articles/{articleId}/comments")]
@@ -75,9 +75,10 @@ public class NewsController (INewsService newsService) : ControllerBase
         return Ok();
     }
 
-    [SwaggerOperation(Summary = "Get specific interview comments")]
+    [SwaggerOperation(Summary = "Send comment to specific interview")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [HttpPost("interviews/{interviewId}/comments")]
+    [TokenAuthorize]
     public async Task<IActionResult> AddInterviewComments(Guid interviewId, [FromBody] AddCommentDto addCommentDto)
     {
         var userId = HttpContext.User?.Claims?.FirstOrDefault(c => c.Type == "userId")?.Value;
