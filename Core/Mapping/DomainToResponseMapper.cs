@@ -257,12 +257,16 @@ public static class DomainToResponseMapper
         };
     }
 
-    public static InterviewResponse ToInterviewResponse(this Interview interview)
+    public static InterviewResponse ToInterviewResponse(
+        this Interview interview, 
+        double interviewerRating = 0, 
+        double respondentRating = 0
+    )
     {
         var ratings = interview.Ratings;
         var rating = ratings.Count != 0 ? ratings.Average(r => r.Value) : 0;
 
-        return new InterviewResponse()
+        var response = new InterviewResponse()
         {
             Id = interview.Id,
             Title = interview.Title,
@@ -276,6 +280,10 @@ public static class DomainToResponseMapper
             CreatedAt = interview.CreatedAt,
             Comments = interview.Comments.Select(ToInterviewCommentResponse),
         };
+
+        response.Author.Rating = interviewerRating;
+        response.Respondent.Rating = respondentRating;
+        return response;
     }
 
     private static NewsCommentResponse ToInterviewCommentResponse(this InterviewComment comment)

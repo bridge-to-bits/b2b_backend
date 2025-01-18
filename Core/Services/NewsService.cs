@@ -2,12 +2,11 @@
 using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Core.Mapping;
-using Core.Models;
 using Core.Responses.News;
 
 namespace Core.Services;
 
-public class NewsService (INewsRespository newsRespository) : INewsService
+public class NewsService (INewsRespository newsRespository, IUserService userService) : INewsService
 {
     public Task AddArticle(AddArticleDTO addArticleDTO)
     {
@@ -50,6 +49,8 @@ public class NewsService (INewsRespository newsRespository) : INewsService
     public async Task<InterviewResponse?> GetInterview(Guid interviewId)
     {
         var interview = await newsRespository.GetInterview(interviewId);
-        return interview?.ToInterviewResponse();
+        var interviewverRating = await userService.GetUserAverageRating(interview.SenderId.ToString());
+        var respondentRating = await userService.GetUserAverageRating(interview.RespondentId.ToString());
+        return interview?.ToInterviewResponse(interviewverRating, respondentRating);
     }
 }
