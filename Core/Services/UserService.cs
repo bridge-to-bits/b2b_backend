@@ -19,12 +19,12 @@ public class UserService(
     IGenreRepository genreRepository,
     IPasswordHasher passwordHasher,
     IAuthService authService,
-    IOptions<GoogleDriveOptions> googleDriveOptions
+    IOptions<AzureOptions> azureOptions
 ) : IUserService
 {
     private readonly FileService fileService = new(
-        googleDriveOptions.Value.ServiceFilePath,
-        googleDriveOptions.Value.FolderId
+        azureOptions.Value.ConnectionString,
+        azureOptions.Value.ContainerName
     );
 
     public async Task<User> Register(MainRegistrationDTO registrationDTO)

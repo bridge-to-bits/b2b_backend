@@ -68,7 +68,7 @@ public class Program
 
     private static void ServicesConfig(IServiceCollection services)
     {
-        services.Configure<GoogleDriveOptions>(AppConfig.GetSection(nameof(GoogleDriveOptions)));
+        services.Configure<AzureOptions>(AppConfig.GetSection(nameof(AzureOptions)));
         services.Configure<JwtOptions>(AppConfig.GetSection(nameof(JwtOptions)));
         services.Configure<MailerOptions>(AppConfig.GetSection(nameof(MailerOptions)));
 

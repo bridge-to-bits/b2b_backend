@@ -15,11 +15,11 @@ public class TrackService(
     IGenreRepository genreRepository,
     IPerformerService performerService,
     IUserRepository userRepository,
-    IOptions<GoogleDriveOptions> googleDriveOptions) : ITrackService
+    IOptions<AzureOptions> azureOptions) : ITrackService
 {
     private readonly FileService fileService = new(
-        googleDriveOptions.Value.ServiceFilePath,
-        googleDriveOptions.Value.FolderId
+        azureOptions.Value.ConnectionString,
+        azureOptions.Value.ContainerName
     );
 
     public async Task<TrackResponse> UploadTrack(UploadTrackDTO uploadTrackDTO, string userId)
