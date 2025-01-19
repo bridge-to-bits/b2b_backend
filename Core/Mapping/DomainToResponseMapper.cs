@@ -148,6 +148,7 @@ public static class DomainToResponseMapper
         {
             Id = performer.User.Id.ToString(),
             Avatar = performer.User.Avatar,
+            ProfileBackground = performer.User.ProfileBackground,
             Genres = performer.User.Genres?.Select(ToGenreResponse),
             Socials = performer.User.Socials?.Select(ToSocialResponse),
             Username = performer.User.Username,

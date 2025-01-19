@@ -7,6 +7,7 @@ public class PerformersResponse: PaginationResponse
 
 public class PerformerResponse
 {
+    public string ProfileBackground { get; set; }
     public string Avatar { get; set; }
     public string Username { get; set; }
     public IEnumerable<GenreResponse>? Genres { get; set; }
