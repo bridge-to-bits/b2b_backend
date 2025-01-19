@@ -1,112 +1,57 @@
-﻿using Google.Apis.Auth.OAuth2;
-using Google.Apis.Drive.v3;
-using Google.Apis.Services;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace Core.Services;
-
-public class FileService
+namespace Core.Services
 {
-    private readonly DriveService _driveService;
-    private readonly string _folderId;
-
-    public FileService(string serviceFilePath, string folderId)
+    public class FileService
     {
-        _folderId = folderId;
-        GoogleCredential credential;
+        private readonly BlobServiceClient _blobServiceClient;
+        private readonly BlobContainerClient _containerClient;
 
-        if (File.Exists(serviceFilePath))
+        public FileService(string connectionString, string containerName)
         {
-            credential = GoogleCredential.FromFile(serviceFilePath)
-                .CreateScoped(DriveService.Scope.Drive);
-        }
-        else
-        {
-            var encodedCredential = Environment.GetEnvironmentVariable("GOOGLE_SERVICE_CREDENTIAL");
-
-            if (string.IsNullOrEmpty(encodedCredential))
-            {
-                throw new InvalidOperationException("Google service credential not found in environment variables.");
-            }
-
-            var jsonCredential = System.Text.Encoding.UTF8.GetString(Convert.FromBase64String(encodedCredential));
-
-            using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(jsonCredential));
-            credential = GoogleCredential.FromStream(stream)
-                .CreateScoped(DriveService.Scope.Drive);
+            _blobServiceClient = new BlobServiceClient(connectionString);
+            _containerClient = _blobServiceClient.GetBlobContainerClient(containerName);
+            _containerClient.CreateIfNotExists(PublicAccessType.Blob);
         }
 
-        _driveService = new DriveService(new BaseClientService.Initializer
+        public async Task<string> UploadFileAsync(byte[] fileContent, string fileName, string contentType)
         {
-            HttpClientInitializer = credential,
-            ApplicationName = "GoogleDriveIntegration"
-        });
-    }
-
-    public async Task<string> UploadFileAsync(byte[] fileContent, string fileName, string mimeType)
-    {
-        return await UploadFileInternalAsync(fileContent, fileName, mimeType);
-    }
-
-    public async Task<string> UploadFileAsync(IFormFile file, string fileName)
-    {
-        var fileContent = await ConvertToByteArray(file);
-        return await UploadFileInternalAsync(fileContent, fileName, file.ContentType);
-    }
-
-    private async Task<string> UploadFileInternalAsync(byte[] fileContent, string fileName, string mimeType)
-    {
-        var existingFile = await GetFile(fileName);
-        if (existingFile != null)
-        {
-            await DeleteFileAsync(existingFile.Id);
+            return await UploadFileInternalAsync(fileContent, fileName, contentType);
         }
 
-        var fileMetadata = new Google.Apis.Drive.v3.Data.File
+        public async Task<string> UploadFileAsync(IFormFile file, string fileName)
         {
-            Name = fileName,
-            Parents = [_folderId]
-        };
-
-        FilesResource.CreateMediaUpload uploadRequest;
-        using (var stream = new MemoryStream(fileContent))
-        {
-            uploadRequest = _driveService.Files.Create(fileMetadata, stream, mimeType);
-            uploadRequest.Fields = "id, webViewLink";
-            await uploadRequest.UploadAsync();
+            var fileContent = await ConvertToByteArray(file);
+            return await UploadFileInternalAsync(fileContent, fileName, file.ContentType);
         }
 
-        var uploadedFile = uploadRequest.ResponseBody;
-
-        var permission = new Google.Apis.Drive.v3.Data.Permission
+        private async Task<string> UploadFileInternalAsync(byte[] fileContent, string fileName, string contentType)
         {
-            Role = "reader",
-            Type = "anyone"
-        };
+            var blobClient = _containerClient.GetBlobClient(fileName);
+            await using var stream = new MemoryStream(fileContent);
+            await blobClient.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
+            return blobClient.Uri.ToString();
+        }
 
-        await _driveService.Permissions.Create(permission, uploadedFile.Id).ExecuteAsync();
-        return $"https://drive.google.com/uc?export=download&id={uploadedFile.Id}";
-    }
+        public static async Task<byte[]> ConvertToByteArray(IFormFile file)
+        {
+            using var memoryStream = new MemoryStream();
+            await file.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
 
-    public static async Task<byte[]> ConvertToByteArray(IFormFile file)
-    {
-        using var memoryStream = new MemoryStream();
-        await file.CopyToAsync(memoryStream);
-        return memoryStream.ToArray();
-    }
+        public async Task<bool> FileExistsAsync(string fileName)
+        {
+            var blobClient = _containerClient.GetBlobClient(fileName);
+            return await blobClient.ExistsAsync();
+        }
 
-    public async Task<Google.Apis.Drive.v3.Data.File?> GetFile(string fileName)
-    {
-        var request = _driveService.Files.List();
-        request.Q = $"name = '{fileName}' and '{_folderId}' in parents and trashed = false";
-        request.Fields = "files(id)";
-
-        var result = await request.ExecuteAsync();
-        return result.Files.FirstOrDefault();
-    }
-
-    public async Task DeleteFileAsync(string fileId)
-    {
-        await _driveService.Files.Delete(fileId).ExecuteAsync();
+        public async Task DeleteFileAsync(string fileName)
+        {
+            var blobClient = _containerClient.GetBlobClient(fileName);
+            await blobClient.DeleteIfExistsAsync();
+        }
     }
 }
