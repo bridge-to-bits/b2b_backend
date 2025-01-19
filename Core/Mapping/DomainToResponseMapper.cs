@@ -211,6 +211,7 @@ public static class DomainToResponseMapper
         var rating = user == null ? 0 : user.GetAvgRating();
         return new NewsAuthorResponse()
         {
+            Id = user?.Id.ToString(),
             AvatarUrl = user?.Avatar,
             Rating = rating,
             Username = user?.Username,
@@ -221,6 +222,7 @@ public static class DomainToResponseMapper
     {
         return new NewsComentatorResponse()
         {
+            Id = user.Id.ToString(),
             AvatarUrl = user.Avatar,
             Username = user.Username,
         };
